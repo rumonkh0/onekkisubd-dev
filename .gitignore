@@ -16,15 +16,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/storage/logs/*
-!/storage/logs/.gitkeep
-/storage/framework/cache/*
-!/storage/framework/cache/.gitkeep
-/storage/framework/sessions/*
-!/storage/framework/sessions/.gitkeep
-/storage/framework/views/*
-!/storage/framework/views/.gitkeep
-/bootstrap/cache/*.php
-!/bootstrap/cache/.gitkeep
-.DS_Store
-Thumbs.db

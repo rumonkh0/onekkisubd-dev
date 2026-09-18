@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b093529a3afcb5d42f891bafb40a6b11",
+    "content-hash": "c1410c844d1fe32d6e357732cfc5b037",
     "packages": [
         {
             "name": "brian2694/laravel-toastr",
@@ -3949,25 +3949,17 @@
         {
             "name": "shurjopayv2/laravel8",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NAM00/spV2_Laravel8.git",
-                "reference": "9c9fce571a99f29f011d0aa0670e5ad1555baea2"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NAM00/spV2_Laravel8/zipball/9c9fce571a99f29f011d0aa0670e5ad1555baea2",
-                "reference": "9c9fce571a99f29f011d0aa0670e5ad1555baea2",
-                "shasum": ""
+                "type": "path",
+                "url": "local-packages/shurjopayv2-laravel8",
+                "reference": "12ce0efdab47b49b25a77f905b08a1881a756498"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "shurjopayv2\\ShurjopayLaravelPackage8\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3978,11 +3970,10 @@
                 }
             ],
             "description": "Online Payment Gateway",
-            "support": {
-                "issues": "https://github.com/NAM00/spV2_Laravel8/issues",
-                "source": "https://github.com/NAM00/spV2_Laravel8/tree/master"
-            },
-            "time": "2021-11-01T06:12:18+00:00"
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "spatie/array-to-xml",
@@ -9117,6 +9108,9 @@
     "platform": {
         "php": "^8.0.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.1.13"
+    },
     "plugin-api-version": "2.6.0"
 }
