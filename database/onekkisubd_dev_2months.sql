@@ -9031,7 +9031,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES
-(1,'Super Admin','admin@gmail.com',NULL,'$2y$10$BAKpnswWVt1T.dt9NcIwKO9HhSQi0aNnymq80bs4sQaVXwz53Gdee','JaTqQkFJJDGW09uCWooDpFBYBMmGjm2ZZzk9Txm2Imu2hRLiJ9JvDr0tFGNM','public/uploads/users/1741286013-superadmin.webp',1,'2023-01-11 06:33:08','2026-09-18 11:05:05'),
+(1,'Super Admin','admin@gmail.com',NULL,'$2y$10$CLqip3Gcwoc2DBX6Xim6pOZL7y/d2PGWEmqchq4k59uGTFg9pxUQq','JaTqQkFJJDGW09uCWooDpFBYBMmGjm2ZZzk9Txm2Imu2hRLiJ9JvDr0tFGNM','public/uploads/users/1741286013-superadmin.webp',1,'2023-01-11 06:33:08','2026-09-18 11:05:05'),
 (10,'SiteManager','onekkisuponno@gmail.com',NULL,'$2y$10$JyqcSarD1JWCi7fGpCUYOOFMO882J5uOVMjxAEfildNza.CIeniC6','GmITVzssXCK9FZE3c7Sk1IImKahYNU7bRvmdFis7ZiJV29bdcBzeDFaoCzKr','public/uploads/users/1741285827-sitemanager.webp',1,'2025-03-07 00:30:28','2025-11-15 21:08:08'),
 (11,'Manager','bappy@gmail.com',NULL,'$2y$10$6S8SZuNGNR8Wo.X7AUwBqOsdiEjrQZbQM7/EQPOgEa4VvOmNmURYu','DjuoyfmmroxOmIxCPS8a67W07xRIh9qoHHgWOiyw4Io4y0pU5UnpH0sakOIy','public/uploads/users/1745034959-images.jfif',1,'2025-04-19 09:55:59','2026-04-07 08:02:23'),
 (13,'Roman','roman@gmail.com',NULL,'$2y$10$fA0peUflwiYf2UR.J/u0YeFsXVopn8U0UY5FmDGmbepwguNkQr81m','NQAwya7gzuTh11HvVne1rLu4xLOWfRri7aPyAByaITt3QUGW2Cfs7rTWus8c','public/uploads/users/1754712852-sitemanager.webp',1,'2025-08-09 10:14:12','2025-08-10 08:50:52');
@@ -9047,4 +9047,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-23 18:49:32
+-- Dump completed on 2026-09-23 19:00:33
