@@ -7,7 +7,8 @@
     <title>{{ $campaign_data->name }} | {{ $generalsetting->name }}</title>
     <link rel="shortcut icon" href="{{ asset($generalsetting->favicon) }}" type="image/x-icon" />
 
-    <!-- Font Awesome & Bootstrap 5 -->
+    <!-- Font Awesome 6 & Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/all.css" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/animate.css" />
@@ -97,8 +98,27 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
             scroll-behavior: smooth;
+        }
+
+        body, input, button, select, textarea, p, h1, h2, h3, h4, h5, h6, a, label, span:not(.fa):not(.fas):not(.fab):not(.far):not([class*="fa-"]) {
+            font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .fa, .fas, .fa-solid, [class*="fa-"] {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
+        }
+        .fab, .fa-brands {
+            font-family: "Font Awesome 6 Brands", "FontAwesome" !important;
+            font-weight: 400 !important;
+            font-style: normal !important;
+        }
+        .far, .fa-regular {
+            font-family: "Font Awesome 6 Free", "FontAwesome" !important;
+            font-weight: 400 !important;
+            font-style: normal !important;
         }
 
         body {
@@ -1743,6 +1763,7 @@
     <!-- Scripts -->
     <script src="{{ asset('public/frontEnd/campaign/js') }}/jquery-2.1.4.min.js"></script>
     <script src="{{ asset('public/frontEnd/campaign/js') }}/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="{{ asset('public/frontEnd/campaign/js') }}/owl.carousel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
