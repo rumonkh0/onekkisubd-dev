@@ -444,27 +444,53 @@
             gap: 8px;
         }
         .tea-cart-checkout-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 18px;
-            border-radius: 28px;
-            background: linear-gradient(135deg, #173f2c 0%, #0a211b 100%);
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 10px !important;
+            width: 100% !important;
+            padding: 13px 18px !important;
+            border-radius: 28px !important;
+            background: linear-gradient(135deg, #173f2c 0%, #0a211b 100%) !important;
             color: #ffffff !important;
-            font-size: 14px;
-            font-weight: 800;
-            text-decoration: none;
-            box-shadow: 0 6px 18px rgba(10, 33, 27, 0.2);
-            border: 1px solid rgba(205, 176, 106, 0.4);
-            transition: all 0.25s ease;
+            font-size: 14.5px !important;
+            font-weight: 800 !important;
+            text-decoration: none !important;
+            box-shadow: 0 6px 18px rgba(10, 33, 27, 0.25) !important;
+            border: 1px solid rgba(205, 176, 106, 0.45) !important;
+            transition: all 0.25s ease !important;
+            cursor: pointer !important;
+        }
+        .tea-cart-checkout-btn,
+        .tea-cart-checkout-btn span,
+        .tea-cart-dropdown .tea-cart-checkout-btn span,
+        .cshort-summary .tea-cart-checkout-btn span {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 14.5px !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+        }
+        .tea-cart-checkout-btn i,
+        .tea-cart-dropdown .tea-cart-checkout-btn i,
+        .cshort-summary .tea-cart-checkout-btn i {
+            color: #e2cf9c !important;
+            font-size: 14px !important;
         }
         .tea-cart-checkout-btn:hover {
-            background: linear-gradient(135deg, #cdb06a 0%, #b39247 100%);
+            background: linear-gradient(135deg, #cdb06a 0%, #dfc88a 50%, #b39247 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 24px rgba(205, 176, 106, 0.45) !important;
+            border-color: #cdb06a !important;
+        }
+        .tea-cart-checkout-btn:hover,
+        .tea-cart-checkout-btn:hover span,
+        .tea-cart-dropdown .tea-cart-checkout-btn:hover span,
+        .cshort-summary .tea-cart-checkout-btn:hover span,
+        .tea-cart-checkout-btn:hover i,
+        .tea-cart-dropdown .tea-cart-checkout-btn:hover i,
+        .cshort-summary .tea-cart-checkout-btn:hover i {
             color: #0a211b !important;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(205, 176, 106, 0.4);
+            text-shadow: none !important;
         }
         .tea-cart-view-link {
             display: flex;
@@ -853,13 +879,26 @@
                                     @foreach($headerCartItems as $key => $value)
                                         @php
                                             $itemSlug = $value->options->slug ?? '';
-                                            $itemImg = !empty($value->options->image) ? asset($value->options->image) : asset('public/uploads/default.png');
+                                            $rawImg = (string) ($value->options->image ?? '');
+                                            $cleanImgPath = ltrim($rawImg, '/');
+                                            if (str_starts_with($cleanImgPath, 'public/')) {
+                                                $cleanImgPath = substr($cleanImgPath, 7);
+                                            }
+                                            if (!empty($cleanImgPath) && file_exists(public_path($cleanImgPath))) {
+                                                $itemImg = asset($cleanImgPath);
+                                            } elseif (!empty($rawImg) && file_exists(base_path($rawImg))) {
+                                                $itemImg = asset($rawImg);
+                                            } else {
+                                                $itemImg = asset('public/uploads/settings/1740644407-onekkisu.webp');
+                                            }
+                                            $fallbackImg = asset('public/uploads/settings/1740644407-onekkisu.webp');
                                             $itemPrice = (float) str_replace(',', '', $value->price);
                                             $itemTotal = $itemPrice * $value->qty;
                                         @endphp
                                         <div class="tea-cart-dropdown-item">
                                             <a href="{{ $itemSlug ? route('product', $itemSlug) : '#' }}" class="tea-cart-item-thumb">
-                                                <img src="{{ $itemImg }}" alt="{{ $value->name }}" loading="lazy" />
+                                                <img src="{{ $itemImg }}" alt="{{ $value->name }}"
+                                                     onerror="if(this.src!=='{{ $fallbackImg }}'){this.src='{{ $fallbackImg }}';}" />
                                             </a>
                                             <div class="tea-cart-item-details">
                                                 <h4 class="tea-cart-item-name">
@@ -895,10 +934,10 @@
                                     </div>
 
                                     <div class="tea-cart-cta-actions">
-                                        <a href="{{ route('customer.checkout') }}" class="tea-cart-checkout-btn">
-                                            <i class="fa-solid fa-lock"></i>
-                                            <span>অর্ডার সম্পন্ন করুন</span>
-                                            <i class="fa-solid fa-arrow-right"></i>
+                                        <a href="{{ route('customer.checkout') }}" class="tea-cart-checkout-btn" style="background: linear-gradient(135deg, #173f2c 0%, #0a211b 100%) !important; color: #ffffff !important;">
+                                            <i class="fa-solid fa-lock" style="color: #e2cf9c !important; font-size: 14px;"></i>
+                                            <span style="color: #ffffff !important; font-weight: 800 !important; font-size: 14.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">অর্ডার সম্পন্ন করুন</span>
+                                            <i class="fa-solid fa-arrow-right" style="color: #e2cf9c !important; font-size: 14px;"></i>
                                         </a>
                                         <a href="{{ route('cart.show') }}" class="tea-cart-view-link">
                                             <i class="fa-solid fa-eye"></i> সম্পূর্ণ কার্ট দেখুন

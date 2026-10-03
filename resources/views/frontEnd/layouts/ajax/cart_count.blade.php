@@ -34,13 +34,26 @@
             @foreach($headerCartItems as $key => $value)
                 @php
                     $itemSlug = $value->options->slug ?? '';
-                    $itemImg = !empty($value->options->image) ? asset($value->options->image) : asset('public/uploads/default.png');
+                    $rawImg = (string) ($value->options->image ?? '');
+                    $cleanImgPath = ltrim($rawImg, '/');
+                    if (str_starts_with($cleanImgPath, 'public/')) {
+                        $cleanImgPath = substr($cleanImgPath, 7);
+                    }
+                    if (!empty($cleanImgPath) && file_exists(public_path($cleanImgPath))) {
+                        $itemImg = asset($cleanImgPath);
+                    } elseif (!empty($rawImg) && file_exists(base_path($rawImg))) {
+                        $itemImg = asset($rawImg);
+                    } else {
+                        $itemImg = asset('public/uploads/settings/1740644407-onekkisu.webp');
+                    }
+                    $fallbackImg = asset('public/uploads/settings/1740644407-onekkisu.webp');
                     $itemPrice = (float) str_replace(',', '', $value->price);
                     $itemTotal = $itemPrice * $value->qty;
                 @endphp
                 <div class="tea-cart-dropdown-item">
                     <a href="{{ $itemSlug ? route('product', $itemSlug) : '#' }}" class="tea-cart-item-thumb">
-                        <img src="{{ $itemImg }}" alt="{{ $value->name }}" loading="lazy" />
+                        <img src="{{ $itemImg }}" alt="{{ $value->name }}"
+                             onerror="if(this.src!=='{{ $fallbackImg }}'){this.src='{{ $fallbackImg }}';}" />
                     </a>
                     <div class="tea-cart-item-details">
                         <h4 class="tea-cart-item-name">
@@ -76,10 +89,10 @@
             </div>
 
             <div class="tea-cart-cta-actions">
-                <a href="{{ route('customer.checkout') }}" class="tea-cart-checkout-btn">
-                    <i class="fa-solid fa-lock"></i>
-                    <span>অর্ডার সম্পন্ন করুন</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                <a href="{{ route('customer.checkout') }}" class="tea-cart-checkout-btn" style="background: linear-gradient(135deg, #173f2c 0%, #0a211b 100%) !important; color: #ffffff !important;">
+                    <i class="fa-solid fa-lock" style="color: #e2cf9c !important; font-size: 14px;"></i>
+                    <span style="color: #ffffff !important; font-weight: 800 !important; font-size: 14.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">অর্ডার সম্পন্ন করুন</span>
+                    <i class="fa-solid fa-arrow-right" style="color: #e2cf9c !important; font-size: 14px;"></i>
                 </a>
                 <a href="{{ route('cart.show') }}" class="tea-cart-view-link">
                     <i class="fa-solid fa-eye"></i> সম্পূর্ণ কার্ট দেখুন
