@@ -1642,8 +1642,8 @@
             // Related Products Slider
             $(".related_slider").owlCarousel({
                 margin: 16,
-                items: 4,
-                loop: false,
+                items: 5,
+                loop: true,
                 dots: true,
                 nav: true,
                 autoplay: true,
@@ -1652,7 +1652,7 @@
                 responsive: {
                     0: { items: 2, margin: 8 },
                     600: { items: 3, margin: 12 },
-                    1024: { items: 4, margin: 16 }
+                    1024: { items: 5, margin: 16 }
                 }
             });
 
