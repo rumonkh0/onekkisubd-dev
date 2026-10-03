@@ -209,6 +209,64 @@
         cursor: pointer;
     }
 
+    /* Prev / Next Article Navigation */
+    .tea-post-navigation {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #e8e4dc;
+    }
+    .tea-nav-post {
+        display: flex;
+        flex-direction: column;
+        padding: 16px 18px;
+        background: #fbf9f5;
+        border: 1px solid #e8e4dc;
+        border-radius: 16px;
+        text-decoration: none;
+        transition: all 0.22s ease;
+    }
+    .tea-nav-post:hover {
+        border-color: #cdb06a;
+        background: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(10, 33, 27, 0.06);
+    }
+    .tea-nav-next {
+        text-align: right;
+    }
+    .tea-nav-direction {
+        font-size: 12px;
+        font-weight: 700;
+        color: #173f2c;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .tea-nav-next .tea-nav-direction {
+        justify-content: flex-end;
+    }
+    .tea-nav-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1.4;
+    }
+    @media (max-width: 640px) {
+        .tea-post-navigation {
+            grid-template-columns: 1fr;
+        }
+        .tea-nav-next {
+            text-align: left;
+        }
+        .tea-nav-next .tea-nav-direction {
+            justify-content: flex-start;
+        }
+    }
+
     /* Sidebar */
     .tea-blog-sidebar {
         display: flex;
@@ -387,7 +445,7 @@
         <div class="tea-blog-breadcrumb">
             <a href="{{ route('home') }}"><i class="fas fa-home"></i> হোম</a>
             <i class="fas fa-chevron-right"></i>
-            <span>চা জার্নাল ও নিবন্ধ</span>
+            <a href="{{ route('blog_list') }}">চা জার্নাল ও নিবন্ধ</a>
             <i class="fas fa-chevron-right"></i>
             <span>{{ Str::limit($blog->b_title, 35) }}</span>
         </div>
@@ -456,6 +514,27 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Prev / Next Article Navigation -->
+                @if($prevPost || $nextPost)
+                    <div class="tea-post-navigation">
+                        @if($prevPost)
+                            <a href="{{ route('single_blog', $prevPost->id) }}" class="tea-nav-post tea-nav-prev">
+                                <span class="tea-nav-direction"><i class="fas fa-arrow-left"></i> পূর্ববর্তী আর্টিকেল</span>
+                                <span class="tea-nav-title">{{ Str::limit($prevPost->b_title, 45) }}</span>
+                            </a>
+                        @else
+                            <div></div>
+                        @endif
+
+                        @if($nextPost)
+                            <a href="{{ route('single_blog', $nextPost->id) }}" class="tea-nav-post tea-nav-next">
+                                <span class="tea-nav-direction">পরবর্তী আর্টিকেল <i class="fas fa-arrow-right"></i></span>
+                                <span class="tea-nav-title">{{ Str::limit($nextPost->b_title, 45) }}</span>
+                            </a>
+                        @endif
+                    </div>
+                @endif
             </article>
 
             <!-- Right: Sidebar -->

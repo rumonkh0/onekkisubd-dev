@@ -519,5 +519,6 @@ Route::get('status/{id}', [BlogController::class, 'status'])->name('status');
 
 
 //blog front
-
+Route::get('blog-list', [BlogController::class, 'frontIndex'])->name('blog_list');
+Route::get('blogs', [BlogController::class, 'frontIndex'])->name('blogs');
 Route::get('single_blog/{id}', [BlogController::class, 'blog'])->name('single_blog');

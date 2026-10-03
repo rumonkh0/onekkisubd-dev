@@ -9,10 +9,31 @@ use App\Models\Blog;
 
 class BlogController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        if (auth()->check()) {
+            return view('backEnd.blog.index');
+        }
+        return $this->frontIndex($request);
+    }
 
+    public function frontIndex(Request $request){
+        $query = Blog::where('status', 1);
 
-        return view('backEnd.blog.index');
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('b_title', 'like', "%{$search}%")
+                  ->orWhere('b_short_des', 'like', "%{$search}%")
+                  ->orWhere('b_long_des', 'like', "%{$search}%")
+                  ->orWhere('b_author', 'like', "%{$search}%");
+            });
+        }
+
+        $blogs = $query->latest()->paginate(9)->withQueryString();
+        $featured = Blog::where('status', 1)->latest()->first();
+        $recentPosts = Blog::where('status', 1)->latest()->take(5)->get();
+
+        return view('frontEnd.blog.list', compact('blogs', 'featured', 'recentPosts'));
     }
 
 
@@ -119,12 +140,16 @@ class BlogController extends Controller
 
 
         // front blog
-
         public function blog($id){
-        $resentpost=Blog::latest()->take(4)->get();;
-        $blog=Blog::find($id);
-        return view('frontEnd.blog.blog',compact('blog','resentpost'));
+            $blog = Blog::find($id);
+            if (!$blog) {
+                abort(404, 'Blog article not found');
+            }
+            $resentpost = Blog::where('status', 1)->where('id', '!=', $id)->latest()->take(5)->get();
+            $prevPost = Blog::where('status', 1)->where('id', '<', $id)->orderBy('id', 'desc')->first();
+            $nextPost = Blog::where('status', 1)->where('id', '>', $id)->orderBy('id', 'asc')->first();
 
+            return view('frontEnd.blog.blog', compact('blog', 'resentpost', 'prevPost', 'nextPost'));
         }
 
         public function status($id){
