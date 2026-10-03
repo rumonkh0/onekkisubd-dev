@@ -411,6 +411,26 @@
     .quantity input {
         display: none !important;
     }
+    .stock-out-badge,
+    .cart_qty .badge,
+    .cart_qty .bg-danger {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        padding: 4px 10px !important;
+        border-radius: 12px !important;
+        white-space: nowrap !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: 62px !important;
+        text-align: center !important;
+        box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25) !important;
+    }
 
     /* Summary Totals */
     .cart_table tfoot th {
@@ -817,7 +837,9 @@
                                                     </div>
                                                 </div>
                                                 @if ($available_stock < $value->qty)
-                                                    <div class="mt-1"><span class="badge bg-danger text-white">স্টক শেষ</span></div>
+                                                    <div class="mt-1 d-flex justify-content-center">
+                                                        <span class="stock-out-badge bg-danger text-white" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #dc2626 !important; color: #ffffff !important; font-size: 11px !important; font-weight: 700 !important; line-height: 1 !important; padding: 4px 10px !important; border-radius: 12px !important; white-space: nowrap !important; width: auto !important; height: auto !important; min-width: 62px !important; text-align: center !important; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25) !important;">স্টক শেষ</span>
+                                                    </div>
                                                 @endif
                                             </td>
                                             <td class="text-end">
