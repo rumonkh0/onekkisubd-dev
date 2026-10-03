@@ -149,6 +149,390 @@
         #claude-header-spacer.active {
             display: block;
         }
+
+        /* ========================================================
+           LUXURY DARK TEA HEADER MINI-CART DROPDOWN
+           ======================================================== */
+        .cart-dialog {
+            position: relative;
+        }
+
+        /* Nav Cart Trigger */
+        .tea-cart-nav-trigger {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #173f2c;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .tea-cart-nav-trigger:hover,
+        #cart-qty:hover .tea-cart-nav-trigger {
+            background: #f4f8f2;
+            color: #cdb06a;
+        }
+        .tea-cart-nav-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #cdb06a 0%, #b39247 100%);
+            color: #0a211b;
+            font-weight: 800;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 6px rgba(10, 33, 27, 0.25);
+            border: 1.5px solid #ffffff;
+            transition: transform 0.2s ease;
+        }
+        #cart-qty:hover .tea-cart-nav-badge {
+            transform: scale(1.1);
+        }
+
+        /* Dropdown Container */
+        .cshort-summary,
+        .tea-header-cart-dropdown {
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            width: 375px !important;
+            max-width: 92vw !important;
+            background: #ffffff !important;
+            border: 1px solid #ebd0a0 !important;
+            border-radius: 20px !important;
+            box-shadow: 0 22px 50px -10px rgba(10, 33, 27, 0.2), 0 0 0 1px rgba(205, 176, 106, 0.15) !important;
+            z-index: 1050 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(14px) scale(0.98) !important;
+            transition: all 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            margin: 0 !important;
+            text-align: left !important;
+        }
+
+        /* Mouse Bridge to prevent accidental mouseout */
+        .cshort-summary::before,
+        .tea-header-cart-dropdown::before {
+            content: '' !important;
+            position: absolute !important;
+            top: -16px !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 18px !important;
+            background: transparent !important;
+        }
+
+        /* Active on hover */
+        #cart-qty:hover .cshort-summary,
+        #cart-qty:hover .tea-header-cart-dropdown {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(8px) scale(1) !important;
+        }
+
+        /* Top Header Bar */
+        .tea-cart-dropdown-header {
+            background: linear-gradient(135deg, #0a211b 0%, #173f2c 100%);
+            padding: 14px 18px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(205, 176, 106, 0.3);
+        }
+        .tea-cart-dropdown-title {
+            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tea-cart-dropdown-title i {
+            color: #cdb06a;
+            font-size: 14px;
+        }
+        .tea-cart-dropdown-badge {
+            background: rgba(205, 176, 106, 0.18);
+            color: #e2cf9c;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(205, 176, 106, 0.35);
+        }
+
+        /* Scrollable Items List */
+        .tea-cart-dropdown-list {
+            max-height: 270px;
+            overflow-y: auto;
+            padding: 8px 16px;
+            scrollbar-width: thin;
+            scrollbar-color: #cdb06a #f4f2ee;
+        }
+        .tea-cart-dropdown-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .tea-cart-dropdown-list::-webkit-scrollbar-track {
+            background: #f4f2ee;
+        }
+        .tea-cart-dropdown-list::-webkit-scrollbar-thumb {
+            background: #cdb06a;
+            border-radius: 10px;
+        }
+
+        /* Single Item Row */
+        .tea-cart-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e8e4dc;
+            position: relative;
+            transition: background 0.15s ease;
+        }
+        .tea-cart-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .tea-cart-item-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            border: 1px solid #ebd0a0;
+            background: #fdfcf9;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+        .tea-cart-item-thumb img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            transition: transform 0.3s ease;
+        }
+        .tea-cart-dropdown-item:hover .tea-cart-item-thumb img {
+            transform: scale(1.08);
+        }
+
+        .tea-cart-item-details {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .tea-cart-item-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0a211b;
+            margin: 0 0 3px 0;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tea-cart-item-name a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .tea-cart-item-name a:hover {
+            color: #173f2c;
+        }
+        .tea-cart-item-size {
+            font-size: 11px;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 1px 7px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        .tea-cart-item-pricing {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+        }
+        .tea-cart-item-unit {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .tea-cart-item-total {
+            font-weight: 800;
+            color: #173f2c;
+        }
+
+        /* Remove button */
+        .tea-cart-item-del {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            padding: 0;
+        }
+        .tea-cart-item-del:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+            transform: scale(1.1);
+        }
+
+        /* Footer Section */
+        .tea-cart-dropdown-footer {
+            padding: 16px 18px 18px;
+            background: #fcfbf9;
+            border-top: 1px solid #e8e4dc;
+        }
+        .tea-cart-subtotal-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .tea-cart-subtotal-lbl {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #374151;
+        }
+        .tea-cart-subtotal-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: #c53030;
+        }
+
+        .tea-cart-perk-note {
+            font-size: 11.5px;
+            color: #173f2c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+        .tea-cart-perk-note i {
+            color: #10b981;
+        }
+
+        .tea-cart-cta-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .tea-cart-checkout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #173f2c 0%, #0a211b 100%);
+            color: #ffffff !important;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(10, 33, 27, 0.2);
+            border: 1px solid rgba(205, 176, 106, 0.4);
+            transition: all 0.25s ease;
+        }
+        .tea-cart-checkout-btn:hover {
+            background: linear-gradient(135deg, #cdb06a 0%, #b39247 100%);
+            color: #0a211b !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(205, 176, 106, 0.4);
+        }
+        .tea-cart-view-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #173f2c;
+            text-decoration: none;
+            padding: 4px 0;
+            transition: color 0.15s ease;
+        }
+        .tea-cart-view-link:hover {
+            color: #cdb06a;
+        }
+
+        /* Empty State */
+        .tea-cart-empty-box {
+            padding: 36px 24px;
+            text-align: center;
+        }
+        .tea-cart-empty-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #f4f8f2;
+            border: 1.5px solid #c9dec4;
+            color: #173f2c;
+            font-size: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+        .tea-cart-empty-heading {
+            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-size: 16.5px;
+            font-weight: 700;
+            color: #0a211b;
+            margin: 0 0 6px 0;
+        }
+        .tea-cart-empty-text {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0 0 18px 0;
+        }
+        .tea-cart-empty-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 22px;
+            border-radius: 20px;
+            background: #173f2c;
+            color: #e2cf9c !important;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(23, 63, 44, 0.15);
+            transition: all 0.2s ease;
+        }
+        .tea-cart-empty-cta:hover {
+            background: #cdb06a;
+            color: #0a211b !important;
+            transform: translateY(-2px);
+        }
     </style>
 
 </head>
@@ -432,8 +816,15 @@
 
                     <!-- Cart with Dropdown -->
                     <div class="relative group cart-dialog" id="cart-qty">
+                        @php
+                            $headerCartItems = Cart::instance('shopping')->content();
+                            $headerCartCount = Cart::instance('shopping')->count();
+                            $rawSubtotal = Cart::instance('shopping')->subtotal();
+                            $rawSubtotal = str_replace(',', '', $rawSubtotal);
+                            $headerSubtotal = (float) str_replace('.00', '', $rawSubtotal);
+                        @endphp
                         <a href="{{ route('customer.checkout') }}" aria-label="Cart"
-                            class="relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                            class="tea-cart-nav-trigger relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="8" cy="21" r="1" />
@@ -441,26 +832,92 @@
                                 <path
                                     d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                             </svg>
-                            <span
-                                class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">{{ Cart::instance('shopping')->count() }}</span>
+                            <span class="tea-cart-nav-badge absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">
+                                {{ $headerCartCount }}
+                            </span>
                         </a>
-                        <div class="cshort-summary">
-                            <ul>
-                                @foreach(Cart::instance('shopping')->content() as $key => $value)
-                                    <li>
-                                        <a href=""><img src="{{ asset($value->options->image) }}" alt="" /></a>
-                                    </li>
-                                    <li><a href="">{{ Str::limit($value->name, 28) }}</a></li>
-                                    <li>Qty: {{ $value->qty }}</li>
-                                    <li>
-                                        <p>৳{{ $value->price }}</p>
-                                        <button class="remove-cart cart_remove" data-id="{{ $value->rowId }}"><i
-                                                data-feather="x"></i></button>
-                                    </li>
-                                @endforeach
-                            </ul>
-                            <p><strong>TOTAL : ৳{{ $subtotal }}</strong></p>
-                            <a href="{{ route('customer.checkout') }}" class="go_cart">PROCEED TO CHECKOUT</a>
+
+                        <div class="cshort-summary tea-header-cart-dropdown">
+                            <!-- Dropdown Header -->
+                            <div class="tea-cart-dropdown-header">
+                                <div class="tea-cart-dropdown-title">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span>শপিং ব্যাগ</span>
+                                </div>
+                                <span class="tea-cart-dropdown-badge">{{ $headerCartCount }}টি আইটেম</span>
+                            </div>
+
+                            @if($headerCartCount > 0)
+                                <!-- Items List -->
+                                <div class="tea-cart-dropdown-list">
+                                    @foreach($headerCartItems as $key => $value)
+                                        @php
+                                            $itemSlug = $value->options->slug ?? '';
+                                            $itemImg = !empty($value->options->image) ? asset($value->options->image) : asset('public/uploads/default.png');
+                                            $itemPrice = (float) str_replace(',', '', $value->price);
+                                            $itemTotal = $itemPrice * $value->qty;
+                                        @endphp
+                                        <div class="tea-cart-dropdown-item">
+                                            <a href="{{ $itemSlug ? route('product', $itemSlug) : '#' }}" class="tea-cart-item-thumb">
+                                                <img src="{{ $itemImg }}" alt="{{ $value->name }}" loading="lazy" />
+                                            </a>
+                                            <div class="tea-cart-item-details">
+                                                <h4 class="tea-cart-item-name">
+                                                    <a href="{{ $itemSlug ? route('product', $itemSlug) : '#' }}" title="{{ $value->name }}">
+                                                        {{ $value->name }}
+                                                    </a>
+                                                </h4>
+                                                @if(!empty($value->options->size))
+                                                    <span class="tea-cart-item-size">সাইজ: {{ $value->options->size }}</span>
+                                                @endif
+                                                <div class="tea-cart-item-pricing">
+                                                    <span class="tea-cart-item-unit">{{ $value->qty }} × ৳{{ number_format($itemPrice, 0) }}</span>
+                                                    <span class="tea-cart-item-total">৳{{ number_format($itemTotal, 0) }}</span>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="tea-cart-item-del cart_remove" data-id="{{ $value->rowId }}" title="কার্ট থেকে মুছুন" aria-label="Remove item">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="tea-cart-dropdown-footer">
+                                    <div class="tea-cart-subtotal-bar">
+                                        <span class="tea-cart-subtotal-lbl">সাবটোটাল (Subtotal):</span>
+                                        <span class="tea-cart-subtotal-val">৳{{ number_format($headerSubtotal, 0) }}</span>
+                                    </div>
+
+                                    <div class="tea-cart-perk-note">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                        <span>ক্যাশ অন ডেলিভারি সারা দেশে প্রযোজ্য</span>
+                                    </div>
+
+                                    <div class="tea-cart-cta-actions">
+                                        <a href="{{ route('customer.checkout') }}" class="tea-cart-checkout-btn">
+                                            <i class="fa-solid fa-lock"></i>
+                                            <span>অর্ডার সম্পন্ন করুন</span>
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                        <a href="{{ route('cart.show') }}" class="tea-cart-view-link">
+                                            <i class="fa-solid fa-eye"></i> সম্পূর্ণ কার্ট দেখুন
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Empty State -->
+                                <div class="tea-cart-empty-box">
+                                    <div class="tea-cart-empty-icon">
+                                        <i class="fa-solid fa-basket-shopping"></i>
+                                    </div>
+                                    <h4 class="tea-cart-empty-heading">আপনার ব্যাগটি এখনো খালি</h4>
+                                    <p class="tea-cart-empty-text">আমাদের সতেজ ও খাঁটি পাহাড়ি চা সম্ভার থেকে আপনার পছন্দের চা যোগ করুন।</p>
+                                    <a href="{{ route('shop') }}" class="tea-cart-empty-cta">
+                                        <i class="fa-solid fa-leaf"></i> চা কালেকশন দেখুন
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
 

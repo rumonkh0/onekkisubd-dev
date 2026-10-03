@@ -15,10 +15,13 @@ use DB;
 class ShoppingController extends Controller
 {
 
-    public function addTocartGet($id, Request $request)
+    public function addTocartGet($id, $qty = 1, Request $request = null)
     {
-        $qty = 1;
+        $qty = $qty ? (int) $qty : 1;
         $productInfo = DB::table('products')->where('id', $id)->first();
+        if (!$productInfo) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
         $productImage = DB::table('productimages')->where('product_id', $id)->first();
         $cartinfo = Cart::instance('shopping')->add([
             'id' => $productInfo->id,
@@ -26,14 +29,13 @@ class ShoppingController extends Controller
             'qty' => $qty,
             'price' => $productInfo->new_price,
             'options' => [
-                'image' => $productImage->image,
+                'image' => $productImage ? $productImage->image : 'public/uploads/default.png',
                 'old_price' => $productInfo->old_price,
                 'slug' => $productInfo->slug,
                 'purchase_price' => $productInfo->purchase_price,
             ]
         ]);
 
-        // return redirect()->back();
         return response()->json($cartinfo);
     }
 
