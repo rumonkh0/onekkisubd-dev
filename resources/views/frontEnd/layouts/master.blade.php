@@ -13,6 +13,10 @@
     <link rel="canonical" href="" />
     @stack('seo')
     @stack('css')
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/js/all.min.js"
@@ -23,9 +27,6 @@
         integrity="sha512-phGxLIsvHFArdI7IyLjv14dchvbVkEDaH95efvAae/y2exeWBQCQDpNFbOTdV1p4/pIa/XtbuDCnfhDEIXhvGQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-        integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
         integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -40,7 +41,7 @@
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/wsit-menu.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/style.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/responsive.css')}}" />
-    <link rel="stylesheet" href="{{asset('public/frontEnd/css/theme.css')}}?v=1.0" />
+    <link rel="stylesheet" href="{{asset('public/frontEnd/css/theme.css')}}?v={{ time() }}" />
 
 
     @foreach($pixels as $pixel)
@@ -113,9 +114,8 @@
             margin-top: 56px;
         }
 
-        #mainheadertp {
-            position: relative;
-            z-index: 999999;
+        #content {
+            padding-top: 0 !important;
         }
     </style>
 
@@ -179,177 +179,227 @@
             @endforeach
         </ul>
     </div>
-    <!-- ==================== FIGMA REDESIGNED TOPBAR & NAVBAR ==================== -->
-    <div class="figma-theme">
-        <!-- Topbar (42px) -->
-        <div class="figma-topbar d-none d-md-flex">
-            <div class="figma-container">
-                <div class="topbar-content">
-                    <div class="topbar-left">
-                        <span class="topbar-item"><i class="fas fa-leaf text-warning"></i> 100% Natural &amp;
-                            Organic</span>
-                        <span class="topbar-divider">|</span>
-                        <span class="topbar-item"><i class="fas fa-truck-fast text-warning"></i> Nationwide Delivery
-                            Available</span>
-                        <span class="topbar-divider">|</span>
-                        <span class="topbar-item"><i class="fas fa-gift text-warning"></i> Exclusive Offers for Tea
-                            Lovers</span>
-                    </div>
-                    <div class="topbar-right">
-                        <a href="tel:{{ $contact->phone ?? '01850945080' }}" class="topbar-phone">
-                            <i class="fas fa-phone-volume text-warning"></i> {{ $contact->phone ?? '01850945080' }}
-                        </a>
-                        <div class="topbar-socials">
-                            <span>Follow Us:</span>
-                            <span class="topbar-divider">|</span>
-                            @if(isset($socialicons) && $socialicons->count() > 0)
-                                @foreach($socialicons as $sicon)
-                                    <a href="{{ $sicon->link }}" class="topbar-social-link" target="_blank"><i
-                                            class="{{ $sicon->icon }}"></i></a>
-                                @endforeach
-                            @else
-                                <a href="#" class="topbar-social-link"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="topbar-social-link"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="topbar-social-link"><i class="fab fa-youtube"></i></a>
-                            @endif
-                        </div>
+    <!-- ==================== TOPBAR & NAVBAR (CLAUDE DESIGN) ==================== -->
+    <div class="claude-theme">
+        <!-- TopBar -->
+        <div class="bg-tea-800 text-white text-xs">
+            <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-2 sm:px-6">
+                <ul class="flex items-center gap-3 sm:gap-5 overflow-hidden">
+                    <li class="flex items-center gap-1.5 whitespace-nowrap">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        <span>100% Natural &amp; Organic</span>
+                    </li>
+                    <li class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                        <span>Nationwide Delivery Available</span>
+                    </li>
+                    <li class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+                        <span>Exclusive Offers for Tea Lovers</span>
+                    </li>
+                </ul>
+
+                <div class="flex items-center gap-5">
+                    <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}" class="hidden items-center gap-1.5 hover:text-gold-300 sm:flex text-white">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span>{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}</span>
+                    </a>
+                    <div class="flex items-center gap-3">
+                        <span class="hidden text-white/80 lg:inline">Follow Us:</span>
+                        <span class="hidden h-3.5 w-px bg-white/20 lg:inline"></span>
+                        @if(isset($socialicons) && $socialicons->count() > 0)
+                            @foreach($socialicons as $sicon)
+                                <a href="{{ $sicon->link }}" target="_blank" aria-label="Social Link" class="text-white transition-colors hover:text-gold-300">
+                                    <i class="{{ $sicon->icon }} text-xs"></i>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="#" aria-label="Facebook" class="text-white transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="#" aria-label="Instagram" class="text-white transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                            </a>
+                            <a href="#" aria-label="YouTube" class="text-white transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Navbar (78px) -->
-        <header class="figma-navbar">
-            <div class="figma-container">
-                <div class="nav-content">
-                    <!-- Mobile Toggle -->
-                    <button type="button" class="btn toggle d-lg-none p-0 me-2"
-                        style="background: none; border: none; font-size: 22px; color: var(--fk-primary);">
-                        <i class="fas fa-bars"></i>
-                    </button>
+        <!-- Sticky Header Navbar -->
+        <header id="claude-header" class="sticky top-0 z-50 bg-white/95 backdrop-blur transition-shadow shadow-[0_6px_24px_-12px_rgba(18,48,27,0.35)]">
+            <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
+                <!-- Logo -->
+                <a href="{{ route('home') }}" class="flex items-center gap-2.5 select-none" aria-label="OnekkisuBD home">
+                    <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
+                        <svg viewBox="0 0 48 48" class="h-12 w-12" fill="none">
+                            <circle cx="24" cy="24" r="22" fill="#245a2d" />
+                            <circle cx="24" cy="24" r="22" stroke="#cdb06a" stroke-width="1.5" stroke-dasharray="4 3" />
+                            <path d="M14 30c0-9 7-15 18-16-1 11-7 17-16 17 4-5 7-8 11-11" stroke="#e2cf9c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#468a47" />
+                        </svg>
+                    </span>
+                    <span class="leading-none">
+                        <span class="block font-serif text-[22px] font-bold tracking-tight text-tea-800">
+                            Onekkisu<span class="text-gold-500">BD</span>
+                        </span>
+                        <span class="mt-1 block text-[10px] font-medium tracking-[0.12em] uppercase text-tea-600">
+                            Pure Taste, Better Life
+                        </span>
+                    </span>
+                </a>
 
-                    <!-- Brand Logo -->
-                    <a href="{{ route('home') }}" class="figma-logo">
-                        @if(!empty($generalsetting->dark_logo))
-                            <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name }}"
-                                style="max-height: 48px; max-width: 170px;" />
-                        @elseif(!empty($generalsetting->white_logo))
-                            <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}"
-                                style="max-height: 48px; max-width: 170px;" />
-                        @else
-                            <div class="figma-logo-text">
-                                <span class="figma-logo-title">OnekkisuBD</span>
-                                <span class="figma-logo-subtitle">Pure Taste, Better Life</span>
-                            </div>
-                        @endif
+                <!-- Desktop Nav -->
+                <nav class="hidden items-center gap-5 xl:flex 2xl:gap-7">
+                    <div class="group relative">
+                        <a href="{{ route('home') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('/') ? 'text-tea-700' : 'text-tea-900' }}">
+                            Home
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('/') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('shop') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('shop') ? 'text-tea-700' : 'text-tea-900' }}">
+                            Shop
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('shop') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('shop') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
+                            Tea Collection
+                            <svg class="h-3.5 w-3.5 transition-transform group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
+                        </a>
+                        <div class="invisible absolute left-0 top-full z-50 w-56 translate-y-2 rounded-xl border border-tea-100 bg-white p-2 opacity-0 shadow-card-hover transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                            @foreach($menucategories as $cat)
+                                <a href="{{ route('category', $cat->slug) }}" class="block rounded-lg px-3 py-2 text-sm text-tea-900 transition-colors hover:bg-tea-50 hover:text-tea-700">
+                                    {{ $cat->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('/') }}#features" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
+                            Health Benefits
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('page/about-us') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/about-us') ? 'text-tea-700' : 'text-tea-900' }}">
+                            About Us
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/about-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('blog-list') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('blog*') ? 'text-tea-700' : 'text-tea-900' }}">
+                            Blog
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('blog*') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
+                        <a href="{{ url('page/contact-us') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/contact-us') ? 'text-tea-700' : 'text-tea-900' }}">
+                            Contact
+                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/contact-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Right Side Actions -->
+                <div class="flex shrink-0 items-center gap-2 sm:gap-3 2xl:gap-4">
+                    <!-- Search input -->
+                    <form action="{{ route('search') }}" method="GET" class="hidden items-center rounded-full border border-tea-200 bg-tea-50/60 pl-4 pr-1.5 py-1 lg:flex focus-within:border-tea-400 focus-within:ring-2 focus-within:ring-tea-100 position-relative">
+                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..." class="search_keyword search_click w-44 bg-transparent text-xs text-tea-900 outline-none placeholder:text-tea-900/50 xl:w-36 2xl:w-48" autocomplete="off" />
+                        <button type="submit" aria-label="Search" class="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-tea-700 hover:bg-white">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </button>
+                        <div class="search_result position-absolute w-100" style="top: 48px; left: 0; z-index: 9999;"></div>
+                    </form>
+
+                    <!-- Wishlist -->
+                    <a href="{{ route('wishlist') }}" aria-label="Wishlist" class="relative rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        <span class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white" id="wishlistCount">{{ Cart::instance('wishlist')->count() }}</span>
                     </a>
 
-                    <!-- Navigation Menu (Desktop) -->
-                    <ul class="figma-nav-menu d-none d-lg-flex">
-                        <li class="figma-nav-item {{ request()->is('/') ? 'active' : '' }}">
-                            <a href="{{ route('home') }}">Home</a>
-                        </li>
-                        <li class="figma-nav-item {{ request()->is('shop') ? 'active' : '' }}">
-                            <a href="{{ url('shop') }}">Shop</a>
-                        </li>
-                        <li class="figma-nav-item dropdown">
-                            <a href="{{ url('shop') }}" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Tea Collection <i class="fas fa-chevron-down ms-1" style="font-size: 11px;"></i>
-                            </a>
-                            <ul class="dropdown-menu shadow-sm"
-                                style="border-radius: 12px; border: 1px solid var(--fk-border); padding: 8px 0; min-width: 220px;">
-                                @foreach ($menucategories as $cat)
+                    <!-- Cart with Dropdown -->
+                    <div class="relative group cart-dialog" id="cart-qty">
+                        <a href="{{ route('customer.checkout') }}" aria-label="Cart" class="relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="8" cy="21" r="1"/>
+                                <circle cx="19" cy="21" r="1"/>
+                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                            </svg>
+                            <span class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">{{ Cart::instance('shopping')->count() }}</span>
+                        </a>
+                        <div class="cshort-summary">
+                            <ul>
+                                @foreach(Cart::instance('shopping')->content() as $key => $value)
                                     <li>
-                                        <a class="dropdown-item py-2 px-3 fw-semibold"
-                                            href="{{ route('category', $cat->slug) }}"
-                                            style="color: var(--fk-text-dark); font-size: 14px;">
-                                            <i class="fas fa-leaf me-2"
-                                                style="color: var(--fk-primary); font-size: 12px;"></i> {{ $cat->name }}
-                                        </a>
+                                        <a href=""><img src="{{ asset($value->options->image) }}" alt="" /></a>
+                                    </li>
+                                    <li><a href="">{{ Str::limit($value->name, 28) }}</a></li>
+                                    <li>Qty: {{ $value->qty }}</li>
+                                    <li>
+                                        <p>৳{{ $value->price }}</p>
+                                        <button class="remove-cart cart_remove" data-id="{{ $value->rowId }}"><i data-feather="x"></i></button>
                                     </li>
                                 @endforeach
                             </ul>
-                        </li>
-                        <li class="figma-nav-item {{ request()->is('page/about-us') ? 'active' : '' }}">
-                            <a href="{{ url('page/about-us') }}">About Us</a>
-                        </li>
-                        <li class="figma-nav-item {{ request()->is('blog*') ? 'active' : '' }}">
-                            <a href="{{ url('blog-list') }}">Blog</a>
-                        </li>
-                        <li class="figma-nav-item {{ request()->is('page/contact-us') ? 'active' : '' }}">
-                            <a href="{{ url('page/contact-us') }}">Contact</a>
-                        </li>
-                    </ul>
-
-                    <!-- Right Search & Action Icons -->
-                    <div class="figma-nav-actions">
-                        <!-- Search Pill Box -->
-                        <form action="{{ route('search') }}" method="GET"
-                            class="figma-search-box d-none d-xl-block position-relative">
-                            <input type="text" class="search_keyword search_click" name="keyword"
-                                placeholder="Search for tea, herbs..." autocomplete="off" />
-                            <button type="submit" class="figma-search-btn"><i class="fas fa-search"></i></button>
-                            <div class="search_result position-absolute w-100"
-                                style="top: 48px; left: 0; z-index: 9999;"></div>
-                        </form>
-
-                        <!-- Wishlist Icon -->
-                        <a href="{{ route('wishlist') }}" class="figma-action-btn" title="My Wishlist">
-                            <i class="far fa-heart" style="font-size: 19px;"></i>
-                            <span class="figma-action-badge"
-                                id="wishlistCount">{{ Cart::instance('wishlist')->count() }}</span>
-                        </a>
-
-                        <!-- Cart Dialog Dropdown -->
-                        <div class="header-list-items p-0 m-0" style="list-style: none;">
-                            <ul>
-                                <li class="cart-dialog" id="cart-qty" style="list-style: none;">
-                                    <a href="{{ route('customer.checkout') }}" class="figma-action-btn"
-                                        title="View Cart">
-                                        <i class="fas fa-bag-shopping" style="font-size: 19px;"></i>
-                                        <span
-                                            class="figma-action-badge">{{ Cart::instance('shopping')->count() }}</span>
-                                    </a>
-                                    <div class="cshort-summary">
-                                        <ul>
-                                            @foreach(Cart::instance('shopping')->content() as $key => $value)
-                                                <li>
-                                                    <a href=""><img src="{{ asset($value->options->image) }}" alt="" /></a>
-                                                </li>
-                                                <li><a href="">{{ Str::limit($value->name, 28) }}</a></li>
-                                                <li>Qty: {{ $value->qty }}</li>
-                                                <li>
-                                                    <p>৳{{ $value->price }}</p>
-                                                    <button class="remove-cart cart_remove" data-id="{{ $value->rowId }}"><i
-                                                            data-feather="x"></i></button>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                        <p><strong>TOTAL : ৳{{ $subtotal }}</strong></p>
-                                        <a href="{{ route('customer.checkout') }}" class="go_cart">PROCEED TO
-                                            CHECKOUT</a>
-                                    </div>
-                                </li>
-                            </ul>
+                            <p><strong>TOTAL : ৳{{ $subtotal }}</strong></p>
+                            <a href="{{ route('customer.checkout') }}" class="go_cart">PROCEED TO CHECKOUT</a>
                         </div>
-
-                        <!-- Auth Button -->
-                        @if (Auth::guard('customer')->check())
-                            <a href="{{ route('customer.account') }}" class="figma-auth-btn d-none d-sm-inline-flex">
-                                <i class="fas fa-user-circle" style="font-size: 18px;"></i> Account
-                            </a>
-                        @else
-                            <a href="{{ url('customer/login') }}" class="figma-auth-btn d-none d-sm-inline-flex">
-                                <i class="far fa-user" style="font-size: 17px;"></i> Login
-                            </a>
-                        @endif
                     </div>
+
+                    <!-- Auth button -->
+                    @if (Auth::guard('customer')->check())
+                        <a href="{{ route('customer.account') }}" class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Account
+                        </a>
+                    @else
+                        <a href="{{ url('customer/login') }}" class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Login / Register
+                        </a>
+                    @endif
+
+                    <!-- Mobile Menu Hamburger -->
+                    <button type="button" id="claude-mobile-toggle" aria-label="Toggle menu" class="rounded-lg p-2 text-tea-800 hover:bg-tea-50 xl:hidden">
+                        <svg class="h-6 w-6" id="claude-hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                        <svg class="h-6 w-6 hidden" id="claude-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Drawer Menu -->
+            <div id="claude-mobile-menu" class="hidden overflow-hidden border-t border-tea-100 bg-white xl:hidden">
+                <div class="space-y-1 px-4 py-4 sm:px-6">
+                    <form action="{{ route('search') }}" method="GET" class="mb-3 flex items-center rounded-full border border-tea-200 bg-tea-50/60 px-4 py-2 lg:hidden">
+                        <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..." class="ml-2 w-full bg-transparent text-sm outline-none placeholder:text-tea-900/50" autocomplete="off" />
+                    </form>
+                    <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Home</a>
+                    <a href="{{ url('shop') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Shop</a>
+                    <a href="{{ url('/') }}#categories" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Tea Collection</a>
+                    <a href="{{ url('/') }}#features" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Health Benefits</a>
+                    <a href="{{ url('page/about-us') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">About Us</a>
+                    <a href="{{ url('blog-list') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Blog</a>
+                    <a href="{{ url('page/contact-us') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Contact</a>
+                    @if (Auth::guard('customer')->check())
+                        <a href="{{ route('customer.account') }}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Account
+                        </a>
+                    @else
+                        <a href="{{ url('customer/login') }}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Login / Register
+                        </a>
+                    @endif
                 </div>
             </div>
         </header>
     </div>
-    <!-- ==================== END FIGMA NAVBAR ==================== -->
+    <!-- ==================== END NAVBAR (CLAUDE DESIGN) ==================== -->
 
     <div id="content">
         @yield('content')
@@ -436,134 +486,314 @@
 
 
 
-    <!-- ==================== FIGMA LUXURY BRAND FOOTER ==================== -->
-    <footer class="figma-footer">
-        <div class="figma-container">
-            <div class="figma-footer-grid">
-                <!-- Col 1: Brand & Contact -->
-                <div class="footer-col-brand">
-                    <a href="{{ route('home') }}" class="d-inline-block mb-2">
-                        @if(!empty($generalsetting->white_logo))
-                            <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}"
-                                style="max-height: 44px;" />
-                        @else
-                            <span class="fs-4 fw-bold text-white">OnekkisuBD</span>
-                        @endif
-                    </a>
-                    <h4 class="footer-headline">Good Tea <span class="gold-accent">Better Living</span></h4>
-                    <p class="brand-bio">
+    <!-- ==================== LUXURY FOOTER (CLAUDE DESIGN) ==================== -->
+    <footer id="contact" class="claude-theme relative overflow-hidden bg-tea-950 text-white">
+        <!-- Decorative leaves -->
+        <svg viewBox="0 0 64 64" class="pointer-events-none absolute right-[26%] top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow" fill="none" aria-hidden="true">
+            <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot1)" />
+            <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <defs>
+                <linearGradient id="leafGradFoot1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#2f6f37" />
+                    <stop offset="1" stop-color="#6ba367" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <svg viewBox="0 0 64 64" class="pointer-events-none absolute right-[18%] top-24 h-14 w-14 rotate-[30deg] opacity-30 animate-float" style="animation-delay: 1.5s;" fill="none" aria-hidden="true">
+            <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot2)" />
+            <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <defs>
+                <linearGradient id="leafGradFoot2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#2f6f37" />
+                    <stop offset="1" stop-color="#6ba367" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <svg viewBox="0 0 64 64" class="pointer-events-none absolute left-[30%] -bottom-6 h-24 w-24 rotate-[200deg] opacity-20 animate-float-slow" style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
+            <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot3)" />
+            <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <defs>
+                <linearGradient id="leafGradFoot3" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#2f6f37" />
+                    <stop offset="1" stop-color="#6ba367" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <!-- Corner tea image with radial mask -->
+        <div class="pointer-events-none absolute -bottom-10 -right-10 hidden h-[340px] w-[340px] lg:block xl:h-[420px] xl:w-[420px]">
+            <img src="{{ asset('images/footer-tea.jpg') }}" alt="" class="h-full w-full object-cover opacity-80" style="mask-image: radial-gradient(circle at 70% 70%, black 20%, transparent 68%); -webkit-mask-image: radial-gradient(circle at 70% 70%, black 20%, transparent 68%);" />
+        </div>
+
+        <div class="relative mx-auto max-w-[1400px] px-4 pt-16 pb-8 sm:px-6">
+            <div class="grid gap-12 md:grid-cols-2 xl:grid-cols-[1.25fr_1fr_1fr_1.35fr]">
+                <!-- Brand Column -->
+                <div id="about">
+                    <div class="flex items-center gap-3">
+                        <span class="relative flex h-14 w-14 shrink-0 items-center justify-center">
+                            <svg viewBox="0 0 56 56" class="h-14 w-14" fill="none">
+                                <circle cx="28" cy="28" r="26" stroke="#cdb06a" stroke-width="1.5" />
+                                <path d="M16 36c0-11 8-18 22-19-1 13-8 20-20 20 5-6 8-9 13-13" stroke="#e2cf9c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#2f6f37" />
+                            </svg>
+                        </span>
+                        <div class="leading-none">
+                            <p class="font-bengali text-[26px] font-bold text-white">অনেককিছু</p>
+                            <p class="mt-1 text-[10px] tracking-[0.15em] text-gold-300 uppercase">Purity With Price &amp; Trust</p>
+                        </div>
+                    </div>
+
+                    <h3 class="mt-6 font-serif text-3xl font-semibold leading-tight text-white">
+                        Good Tea
+                        <br />
+                        <span class="text-gold-400">Better Living</span>
+                    </h3>
+                    <p class="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
                         Bringing you the finest teas, herbs and natural flavours for a healthier, happier you.
                     </p>
-                    <ul class="footer-contact-list">
-                        <li><i class="fas fa-map-marker-alt text-warning"></i>
-                            {{ $contact->address ?? 'Najir Shankorpur, Jashore' }}</li>
-                        <li><i class="fas fa-envelope text-warning"></i> {{ $contact->email ??
-                            'onnekkisuponno@gmail.com' }}</li>
-                        <li><i class="fas fa-phone-alt text-warning"></i> <a
-                                href="tel:{{ $contact->phone ?? '01850945080' }}"
-                                class="text-white text-decoration-none">{{ $contact->phone ?? '01850945080' }}</a></li>
+
+                    <ul class="mt-6 space-y-2.5 text-[13px] text-white/85">
+                        <li class="flex items-center gap-2.5">
+                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>{{ $contact->address ?? 'Najir Shankorpur, Jashore' }}</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <a href="mailto:{{ $contact->email ?? 'onekkisuponno@gmail.com' }}" class="text-white/85 hover:text-gold-300">{{ $contact->email ?? 'onekkisuponno@gmail.com' }}</a>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}" class="text-white/85 hover:text-gold-300">{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}</a>
+                        </li>
                     </ul>
-                    <div class="footer-social-circles">
+
+                    <div class="mt-6 flex items-center gap-3">
                         @if(isset($socialicons) && $socialicons->count() > 0)
                             @foreach($socialicons as $value)
-                                <a href="{{ $value->link }}" target="_blank"><i class="{{ $value->icon }}"></i></a>
+                                <a href="{{ $value->link }}" target="_blank" aria-label="Social Link" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                                    <i class="{{ $value->icon }}"></i>
+                                </a>
                             @endforeach
                         @else
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="#" aria-label="Facebook" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="#" aria-label="Instagram" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                            </a>
+                            <a href="#" aria-label="YouTube" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            </a>
                         @endif
                     </div>
                 </div>
 
-                <!-- Col 2: Popular Links -->
-                <div class="footer-col-links">
-                    <h5 class="footer-col-title">Popular Links</h5>
-                    <ul class="footer-links-list">
-                        <li><a href="{{ url('/') }}"><i class="fas fa-arrow-right" style="font-size: 11px;"></i>
-                                Home</a></li>
-                        <li><a href="{{ url('page/about-us') }}"><i class="fas fa-arrow-right"
-                                    style="font-size: 11px;"></i> About Us</a></li>
-                        <li><a href="{{ url('page/contact-us') }}"><i class="fas fa-arrow-right"
-                                    style="font-size: 11px;"></i> Contact Us</a></li>
-                        <li><a href="{{ url('page/order-procedure') }}"><i class="fas fa-arrow-right"
-                                    style="font-size: 11px;"></i> Order Procedure</a></li>
+                <!-- Popular Links -->
+                <div>
+                    <h4 class="font-serif text-2xl font-semibold text-white">Popular Links</h4>
+                    <ul class="mt-6 space-y-3.5">
+                        <li>
+                            <a href="{{ url('/') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('page/about-us') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                About Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('page/contact-us') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Contact Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('page/order-procedure') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Order Procedure
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Quick Links -->
-                <div class="footer-col-links">
-                    <h5 class="footer-col-title">Quick Links</h5>
-                    <ul class="footer-links-list">
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-serif text-2xl font-semibold text-white">Quick Links</h4>
+                    <ul class="mt-6 space-y-3.5">
                         @php
                             $quick_links = App\Models\CreatePage::where('status', 1)->whereNotIn('slug', ['contact-us', 'about-us', 'order-procedure'])->get();
                         @endphp
-                        @if($quick_links->count() > 0)
+                        @if($quick_links && $quick_links->count() > 0)
                             @foreach($quick_links as $page)
-                                <li><a href="{{ route('page', ['slug' => $page->slug]) }}"><i class="fas fa-arrow-right"
-                                            style="font-size: 11px;"></i> {{ $page->name }}</a></li>
+                                <li>
+                                    <a href="{{ route('page', ['slug' => $page->slug]) }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                        <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                        {{ $page->name }}
+                                    </a>
+                                </li>
                             @endforeach
                         @else
-                            <li><a href="{{ url('page/delivery-rules') }}"><i class="fas fa-arrow-right"
-                                        style="font-size: 11px;"></i> Delivery Rules</a></li>
-                            <li><a href="{{ url('page/return-policy') }}"><i class="fas fa-arrow-right"
-                                        style="font-size: 11px;"></i> Return Policy</a></li>
-                            <li><a href="{{ url('page/terms-conditions') }}"><i class="fas fa-arrow-right"
-                                        style="font-size: 11px;"></i> Terms &amp; Conditions</a></li>
-                            <li><a href="{{ url('page/privacy-policy') }}"><i class="fas fa-arrow-right"
-                                        style="font-size: 11px;"></i> Privacy Policy</a></li>
+                            <li>
+                                <a href="{{ url('page/delivery-rules') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    Delivery Rules
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('page/return-policy') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    Return Policy
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('page/terms-conditions') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    Terms &amp; Conditions
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('page/privacy-policy') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
+                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    Privacy Policy
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </div>
 
-                <!-- Col 4: Stay Connected & Newsletter -->
-                <div class="footer-col-newsletter">
-                    <h5 class="footer-col-title">Stay Connected</h5>
-                    <p style="font-size: 13px; color: #9ab2a4; line-height: 1.5; margin-bottom: 15px;">
+                <!-- Stay Connected -->
+                <div class="relative">
+                    <h4 class="font-serif text-2xl font-semibold text-white">Stay Connected</h4>
+                    <p class="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
                         Subscribe to get latest offers, new arrivals and tea tips.
                     </p>
-                    <div class="footer-newsletter-box">
-                        <form action="#" method="POST"
-                            onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');"
-                            class="footer-newsletter-form">
-                            <input type="email" placeholder="Your email address" />
-                            <button type="submit">Subscribe</button>
-                        </form>
-                    </div>
-                    <div class="footer-mini-badges">
-                        <div class="footer-mini-badge-item">
-                            <i class="fas fa-leaf"></i>
-                            <span>100% Natural</span>
-                        </div>
-                        <div class="footer-mini-badge-item">
-                            <i class="fas fa-truck-fast"></i>
-                            <span>Fast Delivery</span>
-                        </div>
-                        <div class="footer-mini-badge-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure Payment</span>
-                        </div>
-                        <div class="footer-mini-badge-item">
-                            <i class="fas fa-heart"></i>
-                            <span>Loved by Lovers</span>
-                        </div>
-                    </div>
+
+                    <form action="#" method="POST" onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');" class="mt-5 flex max-w-sm items-center rounded-full bg-white/10 p-1 ring-1 ring-white/15 focus-within:ring-gold-400">
+                        <svg class="ml-3 h-4 w-4 shrink-0 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <input type="email" placeholder="Your email address" class="w-full bg-transparent px-3 py-2 text-[13px] text-white outline-none placeholder:text-white/50" />
+                        <button type="submit" class="shrink-0 rounded-full bg-gold-400 px-5 py-2 text-[13px] font-semibold text-tea-950 transition-colors hover:bg-gold-300">
+                            Subscribe
+                        </button>
+                    </form>
+
+                    <ul class="mt-8 grid max-w-sm grid-cols-4">
+                        <li class="flex flex-col items-center py-1 text-center">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                            </span>
+                            <span class="mt-2 text-[11px] leading-tight text-white/85">
+                                100%<br />Natural
+                            </span>
+                        </li>
+                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                            </span>
+                            <span class="mt-2 text-[11px] leading-tight text-white/85">
+                                Fast<br />Delivery
+                            </span>
+                        </li>
+                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                            </span>
+                            <span class="mt-2 text-[11px] leading-tight text-white/85">
+                                Secure<br />Payment
+                            </span>
+                        </li>
+                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                            </span>
+                            <span class="mt-2 text-[11px] leading-tight text-white/85">
+                                Loved by<br />Tea Lovers
+                            </span>
+                        </li>
+                    </ul>
+
+                    <p class="mt-6 -rotate-6 font-script text-3xl leading-tight text-white/60 xl:absolute xl:right-0 xl:top-[68%] xl:mt-0">
+                        A Cup
+                        <br />
+                        A Better
+                        <br />
+                        You <span class="text-gold-300">♡</span>
+                    </p>
                 </div>
             </div>
 
-            <!-- Footer Bottom Bar -->
-            <div class="figma-footer-bottom">
-                <div>
+            <!-- Bottom bar -->
+            <div class="mt-14 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-[12.5px] text-white/70 sm:flex-row">
+                <p>
                     © {{ date('Y') }} {{ $generalsetting->name ?? 'OnekkisuBD' }} | All rights reserved | Developed by
-                    <a href="https://danpite.tech/" target="_blank" class="fw-bold text-white">Danpite.Tech</a>
-                </div>
-                <div>
-                    Drink Good Tea <i class="fas fa-leaf text-success mx-1"></i> Live a Better Life
-                </div>
+                    <a href="https://danpite.tech/" target="_blank" class="font-semibold text-white hover:text-gold-300">
+                        Danpite.Tech
+                    </a>
+                </p>
+                <p class="flex items-center gap-2">
+                    Drink Good Tea
+                    <svg viewBox="0 0 64 64" class="h-5 w-5 rotate-45 pointer-events-none" fill="none">
+                        <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2" stroke-linecap="round" />
+                        <path d="M33 22c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#468a47" />
+                        <path d="M34 36c9-1 15-7 16-16-9 1-15 7-16 16z" fill="#2f6f37" />
+                        <path d="M32 50c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#6ba367" />
+                        <path d="M33 22l-9-9M34 36l9-9M32 50l-9-9" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" />
+                    </svg>
+                    <span class="text-gold-300">Live a Better Life</span>
+                </p>
             </div>
         </div>
     </footer>
-    <!-- ==================== END FIGMA FOOTER ==================== -->
+    <!-- ==================== END LUXURY FOOTER (CLAUDE DESIGN) ==================== -->
+
+    <!-- Floating ScrollTop button -->
+    <button id="claude-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top" class="fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+
+    <script>
+        (function() {
+            const btn = document.getElementById('claude-scroll-top');
+            const mobileToggle = document.getElementById('claude-mobile-toggle');
+            const mobileMenu = document.getElementById('claude-mobile-menu');
+            const burgerIcon = document.getElementById('claude-hamburger-icon');
+            const closeIcon = document.getElementById('claude-close-icon');
+
+            if (mobileToggle && mobileMenu) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    if (isHidden) {
+                        mobileMenu.classList.remove('hidden');
+                        if (burgerIcon) burgerIcon.classList.add('hidden');
+                        if (closeIcon) closeIcon.classList.remove('hidden');
+                    } else {
+                        mobileMenu.classList.add('hidden');
+                        if (burgerIcon) burgerIcon.classList.remove('hidden');
+                        if (closeIcon) closeIcon.classList.add('hidden');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', function() {
+                if (btn) {
+                    if (window.scrollY > 400) {
+                        btn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                        btn.classList.add('opacity-100', 'translate-y-0');
+                    } else {
+                        btn.classList.remove('opacity-100', 'translate-y-0');
+                        btn.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                    }
+                }
+            }, { passive: true });
+        })();
+    </script>
 
 
 

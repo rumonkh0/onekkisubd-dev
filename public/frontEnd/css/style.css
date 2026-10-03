@@ -3646,7 +3646,7 @@ form.sort-form .form-select:focus {
 
 #content {
     width: 100%;
-    padding-top: 60px !important;
+    padding-top: 0 !important;
 }
 
 .main-header {
