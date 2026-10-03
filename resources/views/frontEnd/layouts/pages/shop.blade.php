@@ -31,6 +31,10 @@
         --font-sans: 'Poppins', 'Hind Siliguri', sans-serif;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     #content {
         width: 100%;
         padding-top: 0 !important;
@@ -162,10 +166,11 @@
         white-space: nowrap;
         transition: all 0.2s ease;
     }
-    .tea-jump-chip:hover {
-        background: var(--tea-gold);
-        color: var(--tea-dark);
-        border-color: var(--tea-gold);
+    .tea-jump-chip:hover,
+    .tea-jump-chip.active {
+        background: var(--tea-gold) !important;
+        color: var(--tea-dark) !important;
+        border-color: var(--tea-gold) !important;
         font-weight: 600;
         transform: translateY(-2px);
     }
@@ -173,6 +178,7 @@
     /* Category Section */
     .tea-category-section {
         margin-bottom: 44px;
+        scroll-margin-top: 110px;
     }
     .tea-section-header-card {
         background: #ffffff;
@@ -493,6 +499,9 @@
         }
     }
     @media (max-width: 991px) {
+        .tea-category-section {
+            scroll-margin-top: 90px;
+        }
         .tea-shop-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
@@ -503,6 +512,9 @@
         }
     }
     @media (max-width: 576px) {
+        .tea-category-section {
+            scroll-margin-top: 85px;
+        }
         .tea-shop-hero {
             padding: 32px 0 28px;
         }
@@ -736,3 +748,55 @@
     </div>
 </div>
 @endsection
+
+@push('script')
+<script>
+    $(document).ready(function() {
+        // Smooth scroll with dynamic header offset calculation
+        $('.tea-jump-chip').on('click', function(e) {
+            var targetId = $(this).attr('href');
+            if (targetId && targetId.startsWith('#')) {
+                var $target = $(targetId);
+                if ($target.length) {
+                    e.preventDefault();
+
+                    var headerEl = document.getElementById('claude-header') || document.querySelector('header');
+                    var headerHeight = headerEl ? headerEl.offsetHeight : 80;
+                    var extraGap = 20; // 20px comfortable clearance
+                    var targetOffset = $target.offset().top - (headerHeight + extraGap);
+
+                    $('html, body').stop().animate({
+                        scrollTop: Math.max(0, targetOffset)
+                    }, 450);
+
+                    // Update active state visual
+                    $('.tea-jump-chip').removeClass('active');
+                    $(this).addClass('active');
+
+                    // Update URL hash cleanly
+                    if (history.pushState) {
+                        history.pushState(null, null, targetId);
+                    }
+                }
+            }
+        });
+
+        // ScrollSpy to highlight chips as user scrolls
+        var sections = $('.tea-category-section');
+        if (sections.length) {
+            $(window).on('scroll', function() {
+                var scrollPos = $(window).scrollTop() + 140;
+                sections.each(function() {
+                    var top = $(this).offset().top;
+                    var bottom = top + $(this).outerHeight();
+                    var id = $(this).attr('id');
+                    if (scrollPos >= top && scrollPos < bottom) {
+                        $('.tea-jump-chip').removeClass('active');
+                        $('.tea-jump-chip[href="#' + id + '"]').addClass('active');
+                    }
+                });
+            });
+        }
+    });
+</script>
+@endpush
