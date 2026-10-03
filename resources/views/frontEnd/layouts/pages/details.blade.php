@@ -710,17 +710,37 @@
         .tea-tab-pane.active {
             display: block;
         }
+        .tea-tab-content-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid rgba(23, 63, 44, 0.08);
+            box-shadow: 0 4px 24px rgba(10, 33, 27, 0.03);
+            padding: 36px 40px;
+            transition: box-shadow 0.3s ease;
+        }
+        .tea-tab-content-card:hover {
+            box-shadow: 0 8px 32px rgba(10, 33, 27, 0.06);
+        }
         @media (max-width: 768px) {
             .tea-tab-content-card {
-                padding: 20px;
+                padding: 22px 18px;
+                border-radius: 18px;
             }
         }
 
         .tea-description-body {
             font-family: var(--font-bn);
-            font-size: 15px;
-            line-height: 1.85;
+            font-size: 15.5px;
+            line-height: 1.9;
             color: #374151;
+        }
+        .tea-description-body p {
+            margin-bottom: 16px;
+        }
+        .tea-description-body strong,
+        .tea-description-body b {
+            color: var(--tea-dark);
+            font-weight: 700;
         }
         .tea-description-body h2,
         .tea-description-body h3,
@@ -772,48 +792,81 @@
         }
 
         /* Reviews Section */
+        .tea-reviews-card {
+            background: #ffffff;
+            border: 1px solid rgba(23, 63, 44, 0.09);
+            box-shadow: 0 6px 30px rgba(10, 33, 27, 0.04);
+            border-radius: 24px;
+            position: relative;
+        }
         .tea-reviews-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 16px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid rgba(216, 183, 124, 0.2);
-            margin-bottom: 28px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid rgba(23, 63, 44, 0.08);
+            margin-bottom: 24px;
         }
         .tea-reviews-header h3 {
             font-family: var(--font-serif);
-            font-size: 24px;
+            font-size: 22px;
             color: var(--tea-dark);
             margin: 0;
+            font-weight: 700;
+        }
+        .tea-reviews-summary-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 63, 44, 0.06);
+            color: var(--tea-dark);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(23, 63, 44, 0.12);
+        }
+        .tea-reviews-summary-badge i {
+            color: #eab308;
         }
         .tea-btn-write-review {
             background: var(--tea-dark);
-            color: var(--tea-gold);
-            border: 1px solid var(--tea-border);
-            padding: 10px 20px;
+            color: #ffffff;
+            border: 1px solid rgba(216, 183, 124, 0.35);
+            padding: 10px 22px;
             border-radius: 30px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 4px 14px rgba(10, 33, 27, 0.15);
+        }
+        .tea-btn-write-review svg {
+            color: var(--tea-gold);
         }
         .tea-btn-write-review:hover {
             background: var(--tea-green);
             color: #ffffff;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 63, 44, 0.25);
         }
 
         .tea-review-card {
             background: #faf8f5;
-            border-radius: 16px;
-            border: 1px solid rgba(216, 183, 124, 0.2);
-            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(216, 183, 124, 0.25);
+            padding: 22px 24px;
             margin-bottom: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .tea-review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(10, 33, 27, 0.05);
         }
         .tea-review-author {
             display: flex;
@@ -842,30 +895,49 @@
         }
         .tea-author-info strong {
             display: block;
-            font-size: 14px;
+            font-size: 14.5px;
             color: var(--tea-dark);
         }
         .tea-author-info small {
             color: var(--tea-muted);
-            font-size: 11.5px;
+            font-size: 12px;
+        }
+        .tea-stars i {
+            color: #eab308;
+            margin-right: 2px;
+            font-size: 13px;
         }
         .tea-review-text {
-            font-size: 13.5px;
-            line-height: 1.6;
-            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #374151;
             margin-top: 8px;
         }
 
         .tea-empty-reviews {
             text-align: center;
-            padding: 40px 20px;
-            color: var(--tea-muted);
+            padding: 48px 24px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #fbfaf7 0%, #f4f8f2 100%);
+            border: 1.5px dashed rgba(23, 63, 44, 0.18);
+            margin-top: 6px;
         }
-        .tea-empty-reviews svg {
-            width: 48px;
-            height: 48px;
+        .tea-empty-reviews-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #ffffff;
             color: var(--tea-gold);
-            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(10, 33, 27, 0.08);
+            margin-bottom: 14px;
+        }
+        .tea-empty-reviews-icon svg {
+            width: 26px;
+            height: 26px;
+            color: #b8963e;
         }
 
         /* Review Modal */
@@ -1452,15 +1524,26 @@
         </section>
 
         <!-- Customer Reviews Section (Directly under Description) -->
-        <section class="tea-reviews-section mt-5" id="reviews-section">
-            <div class="tea-tab-content-card">
+        <section class="tea-reviews-section mt-5 pt-3" id="reviews-section">
+            <div class="tea-section-header text-start mb-4">
+                <span class="tea-section-subtitle">Customer Voices & Feedback</span>
+                <h2 class="tea-section-title" style="font-size: 26px;">গ্রাহকদের রিভিউ (Customer Reviews)</h2>
+                <div class="tea-divider-leaf" style="justify-content: flex-start;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path></svg>
+                </div>
+            </div>
+
+            <div class="tea-reviews-card p-4 p-md-5">
                 <div class="tea-reviews-header">
                     <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <h3 class="m-0">Customer Reviews (গ্রাহকদের রিভিউ)</h3>
+                        <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+                            <span class="tea-reviews-summary-badge">
+                                <i class="fa-solid fa-star"></i>
+                                {{ $reviews->count() > 0 ? number_format($reviews->avg('ratting'), 1) . ' / 5.0' : '0.0 / 5.0' }}
+                            </span>
                             <span class="tea-tab-badge">{{ $reviews->count() }} Reviews</span>
                         </div>
-                        <p class="text-muted m-0 mt-1" style="font-size: 13px;">Real experiences from customers who tasted this authentic blend.</p>
+                        <p class="text-muted m-0" style="font-size: 13px;">Real experiences from verified customers who tasted this authentic blend.</p>
                     </div>
                     <button type="button" class="tea-btn-write-review" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
@@ -1494,9 +1577,15 @@
                     </div>
                 @else
                     <div class="tea-empty-reviews">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
-                        <p style="font-size: 15px; font-weight: 600; color: var(--tea-dark);">No reviews yet for this tea.</p>
-                        <p style="font-size: 13px;">Be the first tea lover to share your brewing experience and taste notes!</p>
+                        <div class="tea-empty-reviews-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                        </div>
+                        <h4 style="font-family: var(--font-serif); font-size: 19px; font-weight: 700; color: var(--tea-dark); margin-bottom: 6px;">এখনও কোনো রিভিউ নেই (No Reviews Yet)</h4>
+                        <p style="font-size: 13.5px; color: var(--tea-muted); max-width: 480px; margin: 0 auto 18px;">এই প্রিমিয়াম চায়ের স্বাদ, ঘ্রাণ ও আপনার অভিজ্ঞতা শেয়ার করে প্রথম রিভিউটি দিন।</p>
+                        <button type="button" class="tea-btn-write-review" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            প্রথম রিভিউটি লিখুন (Be the First to Review)
+                        </button>
                     </div>
                 @endif
             </div>
