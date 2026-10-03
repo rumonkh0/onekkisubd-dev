@@ -210,18 +210,32 @@
         font-size: 16px;
         flex-shrink: 0;
     }
+    .tea-section-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .tea-section-text {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
     .tea-section-title-wrap h3 {
         margin: 0;
         font-family: var(--font-serif);
-        font-size: 20px;
+        font-size: 21px;
         font-weight: 700;
         color: var(--tea-dark);
+        line-height: 1.35;
     }
     .tea-section-count-badge {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
         font-size: 11.5px;
         font-weight: 600;
         background: #faf8f5;
-        color: #6b7280;
+        color: #4b5563;
         padding: 3px 10px;
         border-radius: 12px;
         border: 1px solid var(--tea-border);
@@ -588,7 +602,7 @@
                     @if (count($homecat->products) > 0)
                         <a href="#category-{{ $homecat->id }}" class="tea-jump-chip">
                             <i class="fa-solid fa-mug-saucer"></i>
-                            <span>{{ $homecat->name }}</span>
+                            <span>{{ preg_replace('/(?<=\S)\(/u', ' (', $homecat->name) }}</span>
                         </a>
                     @endif
                 @endforeach
@@ -607,8 +621,8 @@
                             <div class="tea-section-icon">
                                 <i class="fa-solid fa-leaf"></i>
                             </div>
-                            <div>
-                                <h3>{{ $homecat->name }}</h3>
+                            <div class="tea-section-text">
+                                <h3>{{ preg_replace('/(?<=\S)\(/u', ' (', $homecat->name) }}</h3>
                                 <span class="tea-section-count-badge">{{ count($homecat->products) }}টি পণ্য প্রদর্শিত হচ্ছে</span>
                             </div>
                         </div>

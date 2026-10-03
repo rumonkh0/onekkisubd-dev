@@ -884,13 +884,13 @@
                 <span class="sep">/</span>
                 <a href="{{ route('shop') }}">চা সম্ভার (Shop)</a>
                 <span class="sep">/</span>
-                <span class="active">{{ $category->name }}</span>
+                <span class="active">{{ preg_replace('/(?<=\S)\(/u', ' (', $category->name) }}</span>
             </div>
 
             <!-- Title & Count -->
             <div class="tea-cat-header-content">
                 <div class="tea-cat-title-wrap">
-                    <h1>{{ $category->name }}</h1>
+                    <h1>{{ preg_replace('/(?<=\S)\(/u', ' (', $category->name) }}</h1>
                     <p>
                         @if (!empty($category->meta_description))
                             {{ Str::limit(strip_tags($category->meta_description), 140) }}
