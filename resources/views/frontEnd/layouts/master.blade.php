@@ -1598,7 +1598,7 @@
             }
         });
 
-        $(".cart_remove").on("click", function () {
+        $(document).on("click", ".cart_remove", function () {
             var id = $(this).data("id");
             if (id) {
                 $.ajax({
@@ -1608,14 +1608,17 @@
                     success: function (data) {
                         if (data) {
                             $(".cartlist").html(data);
-                            return cart_count() + mobile_cart() + cart_summary();
+                            cart_count();
+                            mobile_cart();
+                            if (typeof cart_summary === 'function') { cart_summary(); }
+                            if (typeof checkStockState === 'function') { checkStockState(); }
                         }
                     },
                 });
             }
         });
 
-        $(".cart_increment").on("click", function () {
+        $(document).on("click", ".cart_increment", function () {
             var id = $(this).data("id");
             if (id) {
                 $.ajax({
@@ -1625,21 +1628,16 @@
                     success: function (data) {
                         if (data) {
                             $(".cartlist").html(data);
-
                             cart_count();
                             mobile_cart();
-
-                            setTimeout(function () {
-                                location.reload();
-                            }, 300);
+                            if (typeof checkStockState === 'function') { checkStockState(); }
                         }
                     },
                 });
             }
         });
 
-
-        $(".cart_decrement").on("click", function () {
+        $(document).on("click", ".cart_decrement", function () {
             var id = $(this).data("id");
             if (id) {
                 $.ajax({
@@ -1649,13 +1647,9 @@
                     success: function (data) {
                         if (data) {
                             $(".cartlist").html(data);
-
                             cart_count();
                             mobile_cart();
-
-                            setTimeout(function () {
-                                location.reload();
-                            }, 300);
+                            if (typeof checkStockState === 'function') { checkStockState(); }
                         }
                     },
                 });
@@ -1669,8 +1663,10 @@
                 success: function (data) {
                     if (data) {
                         $("#cart-qty").html(data);
+                        $("#order_summary_items_count").html(data);
                     } else {
                         $("#cart-qty").empty();
+                        $("#order_summary_items_count").html(0);
                     }
                 },
             });
@@ -1787,9 +1783,10 @@
                     loadCartItems();
                     cartCount();
 
-                    // Check if the current URL contains "checkout"
                     if (window.location.href.includes("checkout")) {
-                        location.reload(); // Reload the page
+                        if (data && $(".cartlist").length) {
+                            $(".cartlist").html(data);
+                        }
                     }
                 },
             });

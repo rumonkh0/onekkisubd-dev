@@ -338,6 +338,7 @@ class CustomerController extends Controller
         $order->order_status     = 1;
         $order->note             = $request->note;
         $order->city             = $request->city;
+        $order->postal_code      = $request->postal_code;
         $order->save();
 
         // shipping data save
@@ -348,6 +349,7 @@ class CustomerController extends Controller
         $shipping->phone       =   $request->phone;
         $shipping->address     =   $request->address;
         $shipping->area        =   $shipping_area->name;
+        $shipping->postal_code =   $request->postal_code;
         $shipping->save();
 
         // payment data save
@@ -504,6 +506,7 @@ class CustomerController extends Controller
         $order->shipping_charge  = $shippingfee;
         $order->customer_id      = $customer_id;
         $order->order_status     = 1;
+        $order->postal_code      = $request->postal_code;
         $order->save();
 
         // shipping data save
@@ -514,6 +517,7 @@ class CustomerController extends Controller
         $shipping->phone       =   $request->phone;
         $shipping->address     =   $request->address;
         $shipping->area        =   $shipping_area->name;
+        $shipping->postal_code =   $request->postal_code;
         $shipping->save();
 
         // payment data save

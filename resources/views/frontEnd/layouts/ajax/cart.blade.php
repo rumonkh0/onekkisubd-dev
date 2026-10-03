@@ -5,32 +5,39 @@
     $shipping = Session::get('shipping') ? Session::get('shipping') : 0;
     $discount = Session::get('discount') ? Session::get('discount') : 0;
 @endphp
-<table class="cart_table table table-bordered table-striped text-center mb-0">
+<table class="cart_table table mb-0">
     <thead>
         <tr>
-            <th style="width: 20%;">DELETE</th>
-            <th style="width: 40%;">PRODUCT</th>
-            <th style="width: 20%;">QTY</th>
-            <th style="width: 20%;">PRICE</th>
+            <th style="width: 12%; text-align: center;">মুছুন</th>
+            <th style="width: 48%;">পণ্য (Product)</th>
+            <th style="width: 20%; text-align: center;">পরিমাণ</th>
+            <th style="width: 20%; text-align: right;">মূল্য</th>
         </tr>
     </thead>
 
     <tbody>
         @foreach (Cart::instance('shopping')->content() as $value)
             <tr>
-                <td>
-                    <a class="cart_remove" data-id="{{ $value->rowId }}"><i class="fas fa-trash text-danger"></i></a>
+                <td class="text-center">
+                    <a class="cart_remove" data-id="{{ $value->rowId }}" title="Remove item">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </td>
-                <td class="text-left">
-                    <a href="{{ route('product', $value->options->slug) }}"> <img
-                            src="{{ asset($value->options->image) }}" width="30" />
-                        {{ Str::limit($value->name, 20) }}</a>
-                    @if ($value->options->product_size)
-                        <p>Size: {{ $value->options->product_size }}</p>
-                    @endif
-                    @if ($value->options->product_color)
-                        <p>Color: {{ $value->options->product_color }}</p>
-                    @endif
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="{{ asset($value->options->image) }}" class="cart-prod-img" alt="{{ $value->name }}" />
+                        <div>
+                            <a href="{{ route('product', $value->options->slug) }}" class="cart-prod-title">
+                                {{ Str::limit($value->name, 24) }}
+                            </a>
+                            @if ($value->options->product_size)
+                                <div class="cart-variant-tag">সাইজ: {{ $value->options->product_size }}</div>
+                            @endif
+                            @if ($value->options->product_color)
+                                <div class="cart-variant-tag">রঙ: {{ $value->options->product_color }}</div>
+                            @endif
+                        </div>
+                    </div>
                 </td>
                 @php
                     $single_product = App\Models\Product::find($value->id);
@@ -45,51 +52,47 @@
                         $available_stock = $single_stock_quantity;
                     }
                 @endphp
-                <td class="cart_qty">
+                <td class="cart_qty text-center">
                     <div class="qty-cart vcart-qty">
                         <div class="quantity">
-                            <button class="minus cart_decrement" data-id="{{ $value->rowId }}">-</button>
+                            <button type="button" class="minus cart_decrement" data-id="{{ $value->rowId }}">-</button>
                             <input type="text" value="{{ $value->qty }}" readonly />
-                            <button class="plus cart_increment" data-id="{{ $value->rowId }}">+</button>
+                            <button type="button" class="plus cart_increment" data-id="{{ $value->rowId }}">+</button>
                         </div>
                     </div>
-                    <br>
                     @if ($available_stock < $value->qty)
-                        <span class="bg-danger text-white p-2">No Stock </span>
+                        <div class="mt-1"><span class="badge bg-danger text-white">স্টক শেষ</span></div>
                     @endif
                 </td>
-                <td><span class="alinur">৳ </span><strong>{{ $value->price }}</strong>
+                <td class="text-end">
+                    <span class="alinur">৳ </span><strong>{{ $value->price * $value->qty }}</strong>
                 </td>
             </tr>
         @endforeach
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="3" class="text-end px-4">SUB TOTAL</th>
-            <td class="px-4">
-                <span id="net_total"><span class="alinur">৳
-                    </span><strong>{{ $subtotal }}</strong></span>
+            <th colspan="3" class="text-end">সাবটোটাল (Subtotal)</th>
+            <td class="text-end">
+                <span id="net_total"><span class="alinur">৳ </span><strong>{{ $subtotal }}</strong></span>
             </td>
         </tr>
         <tr>
-            <th colspan="3" class="text-end px-4">DISCOUNT</th>
-            <td class="px-4">
-                <span id="discount_amount"><span class="alinur">৳
-                    </span><strong id="discount">00</strong></span>
+            <th colspan="3" class="text-end">ডিসকাউন্ট (Discount)</th>
+            <td class="text-end text-success">
+                <span id="discount_amount"><span class="alinur">৳ </span><strong id="discount">00</strong></span>
             </td>
         </tr>
         <tr>
-            <th colspan="3" class="text-end px-4">DELIVERY CHARGE</th>
-            <td class="px-4">
-                <span id="cart_shipping_cost"><span class="alinur">৳
-                    </span><strong>{{ $shipping }}</strong></span>
+            <th colspan="3" class="text-end">ডেলিভারি চার্জ (Delivery Charge)</th>
+            <td class="text-end">
+                <span id="cart_shipping_cost"><span class="alinur">৳ </span><strong>{{ $shipping }}</strong></span>
             </td>
         </tr>
         <tr>
-            <th colspan="3" class="text-end px-4">TOTAL</th>
-            <td class="px-4">
-                <span id="grand_total"><span class="alinur">৳
-                    </span><strong>{{ $subtotal + $shipping - session('discount', 0) }}</strong></span>
+            <th colspan="3" class="text-end">সর্বমোট (Grand Total)</th>
+            <td class="text-end">
+                <span id="grand_total"><span class="alinur">৳ </span><strong>{{ $subtotal + $shipping - session('discount', 0) }}</strong></span>
             </td>
         </tr>
     </tfoot>
@@ -130,6 +133,7 @@
                     if (data) {
                         $(".cartlist").html(data);
                         if (typeof checkStockState === 'function') { checkStockState(); }
+                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
                         return cart_count();
                     }
                 }
@@ -150,6 +154,7 @@
                     if (data) {
                         $(".cartlist").html(data);
                         if (typeof checkStockState === 'function') { checkStockState(); }
+                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
                         return cart_count();
                     }
                 }
@@ -170,6 +175,7 @@
                     if (data) {
                         $(".cartlist").html(data);
                         if (typeof checkStockState === 'function') { checkStockState(); }
+                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
                         return cart_count();
                     }
                 }
@@ -184,8 +190,10 @@
             success: function(data) {
                 if (data) {
                     $("#cart-qty").html(data);
+                    $("#order_summary_items_count").html(data);
                 } else {
                     $("#cart-qty").empty();
+                    $("#order_summary_items_count").html(0);
                 }
             }
         });

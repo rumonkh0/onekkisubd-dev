@@ -114,7 +114,11 @@
 <script>
     @php
         $postal_code = '';
-        if ($order->shipping && !empty($order->shipping->address)) {
+        if (!empty($order->postal_code)) {
+            $postal_code = $order->postal_code;
+        } elseif ($order->shipping && !empty($order->shipping->postal_code)) {
+            $postal_code = $order->shipping->postal_code;
+        } elseif ($order->shipping && !empty($order->shipping->address)) {
             if (preg_match('/\b[0-9]{4}\b/', $order->shipping->address, $matches)) {
                 $postal_code = $matches[0];
             }
