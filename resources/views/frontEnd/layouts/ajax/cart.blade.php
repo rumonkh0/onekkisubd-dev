@@ -53,11 +53,12 @@
                     }
                 @endphp
                 <td class="cart_qty text-center">
-                    <div class="qty-cart vcart-qty">
-                        <div class="quantity">
-                            <button type="button" class="minus cart_decrement" data-id="{{ $value->rowId }}">-</button>
-                            <input type="text" value="{{ $value->qty }}" readonly />
-                            <button type="button" class="plus cart_increment" data-id="{{ $value->rowId }}">+</button>
+                    <div class="qty-cart vcart-qty d-inline-block">
+                        <div class="quantity d-inline-flex align-items-center justify-content-between" style="width: 100px !important; height: 36px !important; border: 1.5px solid #d1d5db !important; border-radius: 20px !important; background: #ffffff !important; overflow: hidden !important; margin: 0 auto !important; position: relative !important; box-sizing: border-box !important;">
+                            <button type="button" class="minus cart_decrement" data-id="{{ $value->rowId }}" style="position: static !important; width: 32px !important; height: 36px !important; border: 0 !important; background: #f3f4f6 !important; color: #111827 !important; font-size: 18px !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; line-height: 1 !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important;">-</button>
+                            <span class="qty-count-display" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 36px !important; height: 36px !important; text-align: center !important; font-size: 15px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1 !important; user-select: none !important; margin: 0 !important; padding: 0 !important; flex-grow: 1 !important;">{{ $value->qty }}</span>
+                            <input type="hidden" class="cart_qty_input" value="{{ $value->qty }}" />
+                            <button type="button" class="plus cart_increment" data-id="{{ $value->rowId }}" style="position: static !important; width: 32px !important; height: 36px !important; border: 0 !important; background: #f3f4f6 !important; color: #111827 !important; font-size: 18px !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; line-height: 1 !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important;">+</button>
                         </div>
                     </div>
                     @if ($available_stock < $value->qty)

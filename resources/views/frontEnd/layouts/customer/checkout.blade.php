@@ -333,39 +333,78 @@
     }
 
     /* Quantity Stepper */
-    .qty-cart .quantity {
-        display: inline-flex;
-        align-items: center;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #ffffff;
+    .cart_table .qty-cart .quantity,
+    .cart_qty .quantity,
+    .vcart-qty .quantity {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        position: relative !important;
+        width: 100px !important;
+        height: 36px !important;
+        border: 1.5px solid #d1d5db !important;
+        border-radius: 20px !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
     }
-    .qty-cart .quantity button {
-        width: 28px;
-        height: 28px;
-        border: 0;
-        background: #faf8f5;
-        color: var(--tea-dark);
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s;
-        cursor: pointer;
+    .cart_table .qty-cart .quantity button,
+    .cart_qty .quantity button,
+    .cart_qty .quantity .minus,
+    .cart_qty .quantity .plus,
+    .vcart-qty .quantity .minus,
+    .vcart-qty .quantity .plus {
+        position: static !important;
+        width: 32px !important;
+        height: 36px !important;
+        border: 0 !important;
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: background 0.2s !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        box-shadow: none !important;
+        flex-shrink: 0 !important;
     }
-    .qty-cart .quantity button:hover {
-        background: #e5e7eb;
+    .cart_table .qty-cart .quantity button:hover,
+    .cart_qty .quantity button:hover,
+    .cart_qty .quantity .minus:hover,
+    .cart_qty .quantity .plus:hover {
+        background: #e5e7eb !important;
+        color: #173f2c !important;
     }
-    .qty-cart .quantity input {
-        width: 32px;
-        height: 28px;
-        border: 0;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--tea-dark);
-        background: transparent;
+    .cart_table .qty-cart .quantity .qty-count-display,
+    .cart_qty .quantity .qty-count-display,
+    .vcart-qty .quantity .qty-count-display,
+    .quantity .qty-count-display {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 36px !important;
+        height: 36px !important;
+        text-align: center !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #111827 !important;
+        line-height: 1 !important;
+        user-select: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-grow: 1 !important;
+    }
+    .cart_table .qty-cart .quantity input,
+    .cart_qty .quantity input,
+    .vcart-qty .quantity input,
+    .quantity input {
+        display: none !important;
     }
 
     /* Summary Totals */
@@ -578,7 +617,6 @@
                                             maxlength="10"
                                             value="{{ old('postal_code') }}"
                                             placeholder="যেমন: 1216" />
-                                        <small class="text-muted" style="font-size: 11.5px;">সঠিক ডেলিভারির জন্য আপনার ৪ ডিজিটের পোস্টকোড দিন</small>
                                         @error('postal_code')
                                             <span class="invalid-feedback d-block" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -765,11 +803,12 @@
                                                 }
                                             @endphp
                                             <td class="cart_qty text-center">
-                                                <div class="qty-cart vcart-qty">
-                                                    <div class="quantity">
-                                                        <button type="button" class="minus cart_decrement" data-id="{{ $value->rowId }}">-</button>
-                                                        <input type="text" value="{{ $value->qty }}" readonly />
-                                                        <button type="button" class="plus cart_increment" data-id="{{ $value->rowId }}">+</button>
+                                                <div class="qty-cart vcart-qty d-inline-block">
+                                                    <div class="quantity d-inline-flex align-items-center justify-content-between" style="width: 100px !important; height: 36px !important; border: 1.5px solid #d1d5db !important; border-radius: 20px !important; background: #ffffff !important; overflow: hidden !important; margin: 0 auto !important; position: relative !important; box-sizing: border-box !important;">
+                                                        <button type="button" class="minus cart_decrement" data-id="{{ $value->rowId }}" style="position: static !important; width: 32px !important; height: 36px !important; border: 0 !important; background: #f3f4f6 !important; color: #111827 !important; font-size: 18px !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; line-height: 1 !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important;">-</button>
+                                                        <span class="qty-count-display" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 36px !important; height: 36px !important; text-align: center !important; font-size: 15px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1 !important; user-select: none !important; margin: 0 !important; padding: 0 !important; flex-grow: 1 !important;">{{ $value->qty }}</span>
+                                                        <input type="hidden" class="cart_qty_input" value="{{ $value->qty }}" />
+                                                        <button type="button" class="plus cart_increment" data-id="{{ $value->rowId }}" style="position: static !important; width: 32px !important; height: 36px !important; border: 0 !important; background: #f3f4f6 !important; color: #111827 !important; font-size: 18px !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; line-height: 1 !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important;">+</button>
                                                     </div>
                                                 </div>
                                                 @if ($available_stock < $value->qty)
