@@ -277,18 +277,21 @@
         .camp-props-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
+            gap: 16px;
             margin-bottom: 28px;
-            text-align: left;
+            text-align: center;
         }
         .camp-prop-box {
             background: #fcfbf9;
             border: 1px solid #ebd0a0;
-            border-radius: 16px;
-            padding: 16px 14px;
+            border-radius: 18px;
+            padding: 22px 14px;
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            gap: 12px;
             transition: all 0.25s ease;
         }
         .camp-prop-box:hover {
@@ -298,29 +301,36 @@
             box-shadow: 0 6px 18px -4px rgba(10, 33, 27, 0.08);
         }
         .camp-prop-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: #fdf5f5;
             color: var(--roselle-crimson);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
+            margin: 0 auto;
             flex-shrink: 0;
-            border: 1px solid #fecaca;
+            border: 1.5px solid #fecaca;
+        }
+        .camp-prop-text {
+            width: 100%;
+            text-align: center;
         }
         .camp-prop-text h4 {
-            font-size: 13.5px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--tea-dark);
-            margin: 0 0 3px 0;
+            margin: 0 0 6px 0;
+            text-align: center;
         }
         .camp-prop-text p {
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--text-muted);
             margin: 0;
-            line-height: 1.4;
+            line-height: 1.45;
+            text-align: center;
         }
 
         /* Primary Jump Order Button */
@@ -408,10 +418,12 @@
             background: #fcfbf9;
             border: 1px solid #e8e4dc;
             border-radius: 20px;
-            padding: 14px;
+            padding: 16px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: center;
+            text-align: center;
             transition: all 0.28s ease;
         }
         .camp-media-card:hover {
@@ -419,19 +431,24 @@
             border-color: var(--tea-gold);
             box-shadow: 0 12px 28px -6px rgba(10, 33, 27, 0.1);
         }
+        .camp-media-card > div:first-child {
+            width: 100%;
+            text-align: center;
+        }
 
         .camp-media-badge {
-            align-self: flex-start;
+            align-self: center;
+            margin: 0 auto 12px auto;
             background: rgba(10, 33, 27, 0.85);
             color: #e2cf9c;
             font-size: 11px;
             font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            padding: 4px 12px;
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            gap: 6px;
         }
 
         /* 1:1 Square Wrapper */
@@ -492,17 +509,24 @@
             transform: scale(1.06);
         }
 
+        .camp-media-info {
+            width: 100%;
+            text-align: center;
+            padding-top: 4px;
+        }
         .camp-media-info h4 {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--tea-dark);
-            margin: 0 0 4px 0;
+            margin: 0 0 6px 0;
+            text-align: center;
         }
         .camp-media-info p {
-            font-size: 12.5px;
+            font-size: 13px;
             color: var(--text-muted);
             margin: 0;
-            line-height: 1.45;
+            line-height: 1.5;
+            text-align: center;
         }
 
         /* Video Showcase */
@@ -558,10 +582,14 @@
         .camp-compare-header {
             font-size: 18px;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
         }
         .camp-compare-good .camp-compare-header { color: #173f2c; }
         .camp-compare-bad .camp-compare-header { color: #9b1c1c; }
@@ -791,12 +819,14 @@
         .camp-area-card {
             border: 1.5px solid #e5e7eb;
             border-radius: 14px;
-            padding: 12px;
+            padding: 14px 12px;
             cursor: pointer;
             background: #fdfcf9;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             gap: 10px;
         }
         .camp-area-card.selected,
@@ -810,17 +840,24 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
+            flex-shrink: 0;
+        }
+        .camp-area-info {
+            text-align: center;
         }
         .camp-area-info h5 {
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--tea-dark);
-            margin: 0;
+            margin: 0 0 2px 0;
+            text-align: center;
         }
         .camp-area-info span {
             font-size: 13px;
             font-weight: 800;
             color: var(--roselle-crimson);
+            display: block;
+            text-align: center;
         }
 
         /* Package Option Tiles */
@@ -889,6 +926,7 @@
             margin: 0 0 16px 0;
             padding-bottom: 10px;
             border-bottom: 1.5px solid #e8e4dc;
+            text-align: center;
         }
 
         .camp-sum-prod {
