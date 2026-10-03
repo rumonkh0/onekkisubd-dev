@@ -117,19 +117,19 @@ class ProductController extends Controller
 
         $time = microtime('.') * 10000;
 
-        $image = $request->file('image');
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name =  time() . '-' . $image->getClientOriginalName();
+            $name = strtolower(preg_replace('/\s+/', '-', $name));
+            $uploadPath = 'public/uploads/product/';
+            $image->move($uploadPath, $name);
+            $imageUrl = $uploadPath . $name;
 
-        $name =  time() . '-' . $image->getClientOriginalName();
-        $name = strtolower(preg_replace('/\s+/', '-', $name));
-        $name = strtolower(preg_replace('/\s+/', '-', $name));
-        $uploadPath = 'public/uploads/product/';
-        $image->move($uploadPath, $name);
-        $imageUrl = $uploadPath . $name;
-
-        $pimage             = new Productimage();
-        $pimage->product_id = $product->id;
-        $pimage->image      = $imageUrl;
-        $pimage->save();
+            $pimage             = new Productimage();
+            $pimage->product_id = $product->id;
+            $pimage->image      = $imageUrl;
+            $pimage->save();
+        }
 
         if ($result) {
             if (!empty($variants)) {
@@ -191,7 +191,9 @@ class ProductController extends Controller
     public function removevarient($id)
     {
         $variant = Productcolor::where('id', $id)->first();
-        $variant->delete();
+        if ($variant) {
+            $variant->delete();
+        }
         $response['status'] = 'success';
         $response['message'] = 'Colour Varient Remove Sucessfully';
         return json_encode($response);
@@ -200,7 +202,9 @@ class ProductController extends Controller
     public function removesize($id)
     {
         $size = Productsize::where('id', $id)->first();
-        $size->delete();
+        if ($size) {
+            $size->delete();
+        }
         $response['status'] = 'success';
         $response['message'] = 'Size /Weight Remove Sucessfully';
         return json_encode($response);
@@ -451,17 +455,29 @@ class ProductController extends Controller
     }
     public function update_deals(Request $request)
     {
-        $products = Product::whereIn('id', $request->input('product_ids'))->update(['topsale' => $request->status]);
+        $ids = (array) $request->input('product_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status' => 'error', 'message' => 'Please select at least one product']);
+        }
+        Product::whereIn('id', $ids)->update(['topsale' => $request->status]);
         return response()->json(['status' => 'success', 'message' => 'Hot deals product status change']);
     }
-    // public function update_feature(Request $request)
-    // {
-    //     $products = Product::whereIn('id', $request->input('product_ids'))->update(['feature_product' => $request->status]);
-    //     return response()->json(['status' => 'success', 'message' => 'Feature product status change']);
-    // }
+    public function update_feature(Request $request)
+    {
+        $ids = (array) $request->input('product_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status' => 'error', 'message' => 'Please select at least one product']);
+        }
+        Product::whereIn('id', $ids)->update(['feature_product' => $request->status]);
+        return response()->json(['status' => 'success', 'message' => 'Feature product status change']);
+    }
     public function update_status(Request $request)
     {
-        $products = Product::whereIn('id', $request->input('product_ids'))->update(['status' => $request->status]);
+        $ids = (array) $request->input('product_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status' => 'error', 'message' => 'Please select at least one product']);
+        }
+        Product::whereIn('id', $ids)->update(['status' => $request->status]);
         return response()->json(['status' => 'success', 'message' => 'Product status change successfully']);
     }
 }

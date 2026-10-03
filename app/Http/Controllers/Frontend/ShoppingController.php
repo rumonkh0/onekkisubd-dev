@@ -40,16 +40,16 @@ class ShoppingController extends Controller
     public function cart_store(Request $request)
     {
         $product = Product::where(['id' => $request->id])->first();
-        if ($product->type == 0) {
+        if ($product->type == 0 || (empty($request->product_size) && empty($request->product_color))) {
             Cart::instance('shopping')->add([
                 'id' => $product->id,
                 'name' => $product->name,
-                'qty' => $request->qty,
+                'qty' => $request->qty ?? 1,
                 'price' => $product->new_price,
                 'options' => [
                     'slug' => $product->slug,
-                    'image' => $product->image->image,
-                    'old_price' => $product->new_price,
+                    'image' => $product->image ? $product->image->image : '',
+                    'old_price' => $product->old_price,
                     'purchase_price' => $product->purchase_price,
                     'preebooking' => $product->prebooking,
                     'product_size' => $request->product_size,
@@ -58,23 +58,33 @@ class ShoppingController extends Controller
                 ],
             ]);
         } else {
-            $size = Productsize::where('product_id', $product->id)->where('size', $request->product_size)->first();
-            $color = Productcolor::where('product_id', $product->id)->where('color', $request->product_color)->first();
+            $size = Productsize::where('product_id', $product->id)->where('size', $request->product_size)->first() ?? Productsize::where('product_id', $product->id)->first();
+            $color = Productcolor::where('product_id', $product->id)->where('color', $request->product_color)->first() ?? Productcolor::where('product_id', $product->id)->first();
+            $price = $size ? $size->SalePrice : $product->new_price;
+            $old_price = $size ? $size->RegularPrice : $product->old_price;
+            $img = $color && $color->Image ? $color->Image : ($product->image ? $product->image->image : '');
             Cart::instance('shopping')->add([
                 'id' => $product->id,
                 'name' => $product->name,
-                'qty' => $request->qty,
-                'price' => $size->SalePrice,
+                'qty' => $request->qty ?? 1,
+                'price' => $price,
                 'options' => [
                     'slug' => $product->slug,
-                    'image' => $color->Image,
-                    'old_price' => $size->RegularPrice,
+                    'image' => $img,
+                    'old_price' => $old_price,
                     'purchase_price' => $product->purchase_price,
                     'preebooking' => $product->prebooking,
                     'product_size' => $request->product_size,
                     'product_color' => $request->product_color,
                     'pro_unit' => $request->pro_unit,
                 ],
+            ]);
+        }
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product successfully added to cart',
+                'count' => Cart::instance('shopping')->count(),
             ]);
         }
         Toastr::success('Product successfully add to cart', 'Success!');
@@ -111,5 +121,10 @@ class ShoppingController extends Controller
     {
         $data = Cart::instance('shopping')->count();
         return view('frontEnd.layouts.ajax.mobilecart_qty', compact('data'));
+    }
+    public function cart_show()
+    {
+        $data = Cart::instance('shopping')->content();
+        return view('frontEnd.layouts.pages.cart', compact('data'));
     }
 }

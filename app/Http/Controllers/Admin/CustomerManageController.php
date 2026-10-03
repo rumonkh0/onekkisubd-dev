@@ -94,6 +94,10 @@ class CustomerManageController extends Controller
     }
     public function profile(Request $request){
         $profile = Customer::with('orders')->find($request->id);
+        if (!$profile) {
+            Toastr::error('Customer not found');
+            return redirect()->route('customers.index');
+        }
         return view('backEnd.customer.profile',compact('profile'));
     }
     public function adminlog(Request $request){

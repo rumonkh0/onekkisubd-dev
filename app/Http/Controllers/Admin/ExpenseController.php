@@ -40,7 +40,10 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            '*' => 'required',
+            'title' => 'required',
+            'amount' => 'required|numeric',
+            'expense_type' => 'required',
+            'payment_type' => 'required',
         ]);
 
         $expense = new Expense();

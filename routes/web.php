@@ -90,7 +90,7 @@ Route::group(['namespace' => 'Frontend', 'middleware' => ['ipcheck', 'check_refe
 
 
     // cart route
-    Route::post('cart/store', [ShoppingController::class, 'cart_store'])->name('cart.store');
+    Route::match(['get', 'post'], 'cart/store', [ShoppingController::class, 'cart_store'])->name('cart.store');
 
     Route::get('/add-to-cart/{id}/{qty}', [ShoppingController::class, 'addTocartGet']);
 
@@ -166,8 +166,8 @@ Route::group(['namespace' => 'Frontend', 'middleware' => ['ipcheck', 'check_refe
     });
 });
 
-// unathenticate admin route
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['customer', 'ipcheck', 'check_refer']], function () {
+// unauthenticate admin route
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'ipcheck', 'check_refer']], function () {
     Route::get('locked', [DashboardController::class, 'locked'])->name('locked');
     Route::post('unlocked', [DashboardController::class, 'unlocked'])->name('unlocked');
 });
@@ -209,7 +209,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // permissions
     Route::get('permissions/manage', [PermissionController::class, 'index'])->name('permissions.index');
-    Route::get('permissions/{id}/show', [PermissionController::class, 'show'])->name('permissions.show');
     Route::get('permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
     Route::post('permissions/save', [PermissionController::class, 'store'])->name('permissions.store');
     Route::get('permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
@@ -218,7 +217,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // categories
     Route::get('categories/manage', [CategoryController::class, 'index'])->name('categories.index');
-    Route::get('categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('categories/save', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
@@ -229,7 +227,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // Subcategories
     Route::get('subcategories/manage', [SubcategoryController::class, 'index'])->name('subcategories.index');
-    Route::get('subcategories/{id}/show', [SubcategoryController::class, 'show'])->name('subcategories.show');
     Route::get('subcategories/create', [SubcategoryController::class, 'create'])->name('subcategories.create');
     Route::post('subcategories/save', [SubcategoryController::class, 'store'])->name('subcategories.store');
     Route::get('subcategories/{id}/edit', [SubcategoryController::class, 'edit'])->name('subcategories.edit');
@@ -240,7 +237,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // Childcategories
     Route::get('childcategories/manage', [ChildcategoryController::class, 'index'])->name('childcategories.index');
-    Route::get('childcategories/{id}/show', [ChildcategoryController::class, 'show'])->name('childcategories.show');
     Route::get('childcategories/create', [ChildcategoryController::class, 'create'])->name('childcategories.create');
     Route::post('childcategories/save', [ChildcategoryController::class, 'store'])->name('childcategories.store');
     Route::get('childcategories/{id}/edit', [ChildcategoryController::class, 'edit'])->name('childcategories.edit');
@@ -263,7 +259,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // attribute
     Route::get('orderstatus/manage', [OrderStatusController::class, 'index'])->name('orderstatus.index');
-    Route::get('orderstatus/{id}/show', [OrderStatusController::class, 'show'])->name('orderstatus.show');
     Route::get('orderstatus/create', [OrderStatusController::class, 'create'])->name('orderstatus.create');
     Route::post('orderstatus/save', [OrderStatusController::class, 'store'])->name('orderstatus.store');
     Route::get('orderstatus/{id}/edit', [OrderStatusController::class, 'edit'])->name('orderstatus.edit');
@@ -274,7 +269,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // pixels
     Route::get('pixels/manage', [PixelsController::class, 'index'])->name('pixels.index');
-    Route::get('pixels/{id}/show', [PixelsController::class, 'show'])->name('pixels.show');
     Route::get('pixels/create', [PixelsController::class, 'create'])->name('pixels.create');
     Route::post('pixels/save', [PixelsController::class, 'store'])->name('pixels.store');
     Route::get('pixels/{id}/edit', [PixelsController::class, 'edit'])->name('pixels.edit');
@@ -285,7 +279,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // tag manager
     Route::get('tag-manager/manage', [TagManagerController::class, 'index'])->name('tagmanagers.index');
-    Route::get('tag-manager/{id}/show', [TagManagerController::class, 'show'])->name('tagmanagers.show');
     Route::get('tag-manager/create', [TagManagerController::class, 'create'])->name('tagmanagers.create');
     Route::post('tag-manager/save', [TagManagerController::class, 'store'])->name('tagmanagers.store');
     Route::get('tag-manager/{id}/edit', [TagManagerController::class, 'edit'])->name('tagmanagers.edit');
@@ -296,7 +289,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // attribute
     Route::get('brands/manage', [BrandController::class, 'index'])->name('brands.index');
-    Route::get('brands/{id}/show', [BrandController::class, 'show'])->name('brands.show');
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create');
     Route::post('brands/save', [BrandController::class, 'store'])->name('brands.store');
     Route::get('brands/{id}/edit', [BrandController::class, 'edit'])->name('brands.edit');
@@ -307,7 +299,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // color
     Route::get('color/manage', [ColorController::class, 'index'])->name('colors.index');
-    Route::get('color/{id}/show', [ColorController::class, 'show'])->name('colors.show');
     Route::get('color/create', [ColorController::class, 'create'])->name('colors.create');
     Route::post('color/save', [ColorController::class, 'store'])->name('colors.store');
     Route::get('color/{id}/edit', [ColorController::class, 'edit'])->name('colors.edit');
@@ -318,7 +309,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // size
     Route::get('size/manage', [SizeController::class, 'index'])->name('sizes.index');
-    Route::get('size/{id}/show', [SizeController::class, 'show'])->name('sizes.show');
     Route::get('size/create', [SizeController::class, 'create'])->name('sizes.create');
     Route::post('size/save', [SizeController::class, 'store'])->name('sizes.store');
     Route::get('size/{id}/edit', [SizeController::class, 'edit'])->name('sizes.edit');
@@ -330,7 +320,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // product
     Route::get('products/manage', [ProductController::class, 'index'])->name('products.index');
-    Route::get('products/{id}/show', [ProductController::class, 'show'])->name('products.show');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('products/save', [ProductController::class, 'store'])->name('products.store');
     Route::get('products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
@@ -368,7 +357,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // campaign
     Route::get('campaign/manage', [CampaignController::class, 'index'])->name('campaign.index');
-    Route::get('campaign/{id}/show', [CampaignController::class, 'show'])->name('campaign.show');
     Route::get('campaign/create', [CampaignController::class, 'create'])->name('campaign.create');
     Route::post('campaign/save', [CampaignController::class, 'store'])->name('campaign.store');
     Route::get('campaign/{id}/edit', [CampaignController::class, 'edit'])->name('campaign.edit');

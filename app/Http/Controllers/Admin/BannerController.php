@@ -33,6 +33,7 @@ class BannerController extends Controller
     {
         $this->validate($request, [
             'link' => 'required',
+            'image' => 'required',
             'status' => 'required',
         ]);
         

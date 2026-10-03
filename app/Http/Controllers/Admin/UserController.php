@@ -35,20 +35,24 @@ class UserController extends Controller
         ]);
         // image with intervention 
         $image = $request->file('image');
-        $name =  time().'-'.$image->getClientOriginalName();
-        $name = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp',$name);
-        $name = strtolower(preg_replace('/\s+/', '-', $name));
-        $uploadpath = 'public/uploads/users/';
-        $imageUrl = $uploadpath.$name; 
-        $img=Image::make($image->getRealPath());
-        $img->encode('webp', 90);
-        $width = 100;
-        $height = 100;
-        $img->height() > $img->width() ? $width=null : $height=null;
-        $img->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $img->save($imageUrl);
+        if ($image) {
+            $name =  time().'-'.$image->getClientOriginalName();
+            $name = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp',$name);
+            $name = strtolower(preg_replace('/\s+/', '-', $name));
+            $uploadpath = 'public/uploads/users/';
+            $imageUrl = $uploadpath.$name; 
+            $img=Image::make($image->getRealPath());
+            $img->encode('webp', 90);
+            $width = 100;
+            $height = 100;
+            $img->height() > $img->width() ? $width=null : $height=null;
+            $img->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->save($imageUrl);
+        } else {
+            $imageUrl = null;
+        }
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);

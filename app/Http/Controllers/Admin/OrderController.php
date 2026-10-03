@@ -193,11 +193,11 @@ class OrderController extends Controller
                     'cod_amount' => $order->amount
                 ];
                 $client = new Client();
-                $response = $client->post('$courier_info->url', [
+                $response = $client->post($courier_info->url, [
                     'json' => $consignmentData,
                     'headers' => [
-                        'Api-Key' => '$courier_info->api_key',
-                        'Secret-Key' => '$courier_info->secret_key',
+                        'Api-Key' => $courier_info->api_key,
+                        'Secret-Key' => $courier_info->secret_key,
                         'Accept' => 'application/json',
                     ],
                 ]);
@@ -223,21 +223,31 @@ class OrderController extends Controller
     }
 
     public function order_assign(Request $request){
-        $products = Order::whereIn('id', $request->input('order_ids'))->update(['user_id' => $request->user_id]);
+        $ids = (array) $request->input('order_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status'=>'error','message'=>'Please select at least one order']);
+        }
+        $products = Order::whereIn('id', $ids)->update(['user_id' => $request->user_id]);
         return response()->json(['status'=>'success','message'=>'Order user id assign']);
     }
 
     public function order_status(Request $request){
-        $orders = Order::whereIn('id', $request->input('order_ids'))->update(['order_status' => $request->order_status]);
+        $ids = (array) $request->input('order_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status'=>'error','message'=>'Please select at least one order']);
+        }
+        $orders = Order::whereIn('id', $ids)->update(['order_status' => $request->order_status]);
 
         if($request->order_status == 5){
-            $orders = Order::whereIn('id', $request->input('order_ids'))->get();
+            $orders = Order::whereIn('id', $ids)->get();
             foreach($orders as $order){
                 $orders_details = OrderDetails::select('id','order_id','product_id')->where('order_id',$order->id)->get();
                 foreach($orders_details as $order_details){
                     $product = Product::select('id','stock')->find($order_details->product_id);
-                    $product->stock -= $order_details->qty;
-                    $product->save();
+                    if ($product) {
+                        $product->stock -= $order_details->qty;
+                        $product->save();
+                    }
                 }
             }
         }
@@ -245,7 +255,7 @@ class OrderController extends Controller
     }
 
     public function bulk_destroy(Request $request){
-        $orders_id = $request->order_ids;
+        $orders_id = (array) $request->input('order_ids', []);
         foreach($orders_id as $order_id){
             $order = Order::where('id',$order_id)->delete();
             $order_details = OrderDetails::where('order_id',$order_id)->delete();
@@ -255,7 +265,11 @@ class OrderController extends Controller
         return response()->json(['status'=>'success','message'=>'Order delete successfully']);
     }
     public function order_print(Request $request){
-        $orders = Order::whereIn('id', $request->input('order_ids'))->with('orderdetails','payment','shipping','customer')->get();
+        $ids = (array) $request->input('order_ids', []);
+        if (empty($ids)) {
+            return response()->json(['status'=>'error','message'=>'Please select at least one order']);
+        }
+        $orders = Order::whereIn('id', $ids)->with('orderdetails','payment','shipping','customer')->get();
         $view = view('backEnd.order.print', ['orders' => $orders])->render();
         return response()->json(['status' => 'success', 'view' => $view]);
     }
@@ -462,6 +476,8 @@ class OrderController extends Controller
         $subtotal = str_replace('.00', '',$subtotal);
         $discount = Session::get('pos_discount')+Session::get('product_discount');
         $shippingfee  = ShippingCharge::find($request->area);
+        $shipping_charge_amount = $shippingfee ? $shippingfee->amount : 0;
+        $shipping_area_name = $shippingfee ? $shippingfee->name : 'Inside Dhaka';
 
         $exits_customer = Customer::where('phone',$request->phone)->select('phone','id')->first();
         if($exits_customer){
@@ -482,9 +498,9 @@ class OrderController extends Controller
          // order data save
         $order                   = new Order();
         $order->invoice_id       = rand(11111,99999);
-        $order->amount           = ($subtotal + $shippingfee->amount) - $discount;
+        $order->amount           = ($subtotal + $shipping_charge_amount) - $discount;
         $order->discount         = $discount ? $discount : 0;
-        $order->shipping_charge  = $shippingfee->amount;
+        $order->shipping_charge  = $shipping_charge_amount;
         $order->customer_id      =  $customer_id;
         $order->order_status     = 1;
         $order->note             = $request->note;
@@ -497,7 +513,7 @@ class OrderController extends Controller
         $shipping->name        =   $request->name;
         $shipping->phone       =   $request->phone;
         $shipping->address     =   $request->address;
-        $shipping->area        =   $shippingfee->name;
+        $shipping->area        =   $shipping_area_name;
         $shipping->save();
 
         // payment data save
@@ -560,12 +576,14 @@ class OrderController extends Controller
         return view('backEnd.order.cart_details',compact('cartinfo'));
     }
     public function cart_increment(Request $request){
-        $qty = $request->qty + 1;
+        $item = Cart::instance('pos_shopping')->get($request->id);
+        $qty = $request->has('qty') ? ($request->qty + 1) : ($item ? $item->qty + 1 : 1);
         $cartinfo = Cart::instance('pos_shopping')->update($request->id, $qty);
         return response()->json($cartinfo);
     }
     public function cart_decrement(Request $request){
-        $qty = $request->qty - 1;
+        $item = Cart::instance('pos_shopping')->get($request->id);
+        $qty = $request->has('qty') ? max(1, $request->qty - 1) : ($item ? max(1, $item->qty - 1) : 1);
         $cartinfo = Cart::instance('pos_shopping')->update($request->id, $qty);
         return response()->json($cartinfo);
     }
@@ -577,6 +595,9 @@ class OrderController extends Controller
     public function product_discount(Request $request){
         $discount = $request->discount;
         $cart = Cart::instance('pos_shopping')->content()->where('rowId', $request->id)->first();
+        if (!$cart) {
+            return response()->json(['error' => 'Cart item not found'], 404);
+        }
         $cartinfo = Cart::instance('pos_shopping')->update($request->id, [
             'options' => [
                 'slug' => $cart->options->slug,
@@ -650,6 +671,8 @@ class OrderController extends Controller
     // Discounts and shipping
     $discount     = Session::get('pos_discount') + Session::get('product_discount');
     $shippingfee  = ShippingCharge::find($request->area);
+    $shipping_charge_amount = $shippingfee ? $shippingfee->amount : 0;
+    $shipping_area_name = $shippingfee ? $shippingfee->name : 'Inside Dhaka';
 
     // Handle customer
     $exits_customer = Customer::where('phone', $request->phone)->select('phone', 'id')->first();
@@ -670,9 +693,9 @@ class OrderController extends Controller
 
     // Update Order
     $order                   = Order::where('id', $request->order_id)->first();
-    $order->amount           = ($subtotal + $shippingfee->amount) - $discount;
+    $order->amount           = ($subtotal + $shipping_charge_amount) - $discount;
     $order->discount         = $discount ? $discount : 0;
-    $order->shipping_charge  = $shippingfee->amount;
+    $order->shipping_charge  = $shipping_charge_amount;
     $order->customer_id      = $customer_id;
     $order->order_status     = 1;
     $order->note             = $request->note;
@@ -685,7 +708,7 @@ class OrderController extends Controller
     $shipping->name        = $request->name;
     $shipping->phone       = $request->phone;
     $shipping->address     = $request->address;
-    $shipping->area        = $shippingfee->name;
+    $shipping->area        = $shipping_area_name;
     $shipping->save();
 
     // Update Payment

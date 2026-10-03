@@ -106,11 +106,16 @@ class FrontendController extends Controller
     public function index()
     {
 
-        // $blog = Blog::all();
-        $blog = Blog::orderBy('created_at', 'desc')->paginate(4);
-        // return "Welcome to Kenakatar.com";
-        $frontcategory = Category::where(['status' => 1,'front_view'=>1])
-            ->select('id', 'name', 'image', 'slug', 'status')->limit(6)
+        $blog = Blog::where('status', 1)
+            ->where('id', '!=', 7)
+            ->orderByRaw("FIELD(id, 4, 6, 5, 1, 3)")
+            ->limit(5)
+            ->get();
+
+        $frontcategory = Category::where(['status' => 1, 'front_view' => 1])
+            ->select('id', 'name', 'image', 'slug', 'status')
+            ->orderByRaw("FIELD(id, 1, 2, 3, 4, 5, 7)")
+            ->limit(6)
             ->get();
 
         $sliders = Banner::where(['status' => 1, 'category_id' => 1])
@@ -127,34 +132,32 @@ class FrontendController extends Controller
             ->limit(2)
             ->get();
 
-        $hotdeal_top = Product::where(['status' => 1, 'topsale' => 1])
-            ->orderBy('id', 'DESC')
+        $hotdeal_top = Product::where(['status' => 1])
+            ->orderByRaw("FIELD(id, 29, 11, 10, 9, 6, 43, 38, 36, 41)")
             ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->with('prosizes', 'procolors')
-            ->limit(12)
+            ->with('prosizes', 'procolors', 'image')
+            ->limit(6)
             ->get();
-        // return $hotdeal_top;
 
         $feature_products = Product::where(['status' => 1, 'feature_product' => 1])
-        ->orderBy('id', 'DESC')
+            ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->with('prosizes', 'procolors')
+            ->with('prosizes', 'procolors', 'image')
             ->limit(12)
             ->get();
 
         $dealofthe_products = Product::where(['status' => 1, 'deal_of_theday' => 1])
-        ->orderBy('id', 'DESC')
+            ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->with('prosizes', 'procolors')
+            ->with('prosizes', 'procolors', 'image')
             ->limit(12)
             ->get();
 
         $new_products = Product::where(['status' => 1])
-        ->orderBy('id', 'DESC')
+            ->orderByRaw("FIELD(id, 38, 36, 29, 11, 10, 9, 6, 43, 41)")
             ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->with('prosizes', 'procolors')
-            ->limit(12)
-            ->latest()
+            ->with('prosizes', 'procolors', 'image')
+            ->limit(6)
             ->get();
 
         $hotdeal_bottom = Product::where(['status' => 1, 'topsale' => 1])

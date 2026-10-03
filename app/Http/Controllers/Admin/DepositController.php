@@ -40,7 +40,10 @@ class DepositController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            '*' => 'required',
+            'title' => 'required',
+            'amount' => 'required|numeric',
+            'deposit_type' => 'required',
+            'payment_type' => 'required',
         ]);
 
         $deposit = new Deposit();
@@ -139,6 +142,6 @@ class DepositController extends Controller
 
         $deposit->delete();
         Toastr::success('Success', 'Data delete successfully');
-        return redirect()->route('depo$deposit.index');
+        return redirect()->route('deposit.index');
     }
 }
