@@ -205,7 +205,8 @@ class FrontendController extends Controller
     {
         $category = Category::where(['slug' => $slug, 'status' => 1])->first();
         $products = Product::where(['status' => 1, 'category_id' => $category->id])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id');
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'stock')
+            ->with(['image', 'prosizes', 'procolors']);
         $subcategories = Subcategory::where('category_id', $category->id)->get();
 
         // return $request->sort;
@@ -247,7 +248,8 @@ class FrontendController extends Controller
     {
         $subcategory = Subcategory::where(['slug' => $slug, 'status' => 1])->first();
         $products = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id');
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'stock')
+            ->with(['image', 'prosizes', 'procolors']);
         $childcategories = Childcategory::where('subcategory_id', $subcategory->id)->get();
 
         // return $request->sort;
@@ -296,8 +298,9 @@ class FrontendController extends Controller
     {
         $childcategory = Childcategory::where(['slug' => $slug, 'status' => 1])->first();
         $childcategories = Childcategory::where('subcategory_id', $childcategory->subcategory_id)->get();
-        $products = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->with('category')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'childcategory_id');
+        $products = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'childcategory_id', 'stock')
+            ->with(['category', 'image', 'prosizes', 'procolors']);
 
 
         // return $request->sort;
