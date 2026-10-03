@@ -121,68 +121,7 @@
         }
     });
 
-    $('.cart_remove').on('click', function() {
-        var id = $(this).data('id');
-        if (id) {
-            $.ajax({
-                type: "GET",
-                data: {
-                    'id': id
-                },
-                url: "{{ route('cart.remove') }}",
-                success: function(data) {
-                    if (data) {
-                        $(".cartlist").html(data);
-                        if (typeof checkStockState === 'function') { checkStockState(); }
-                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
-                        return cart_count();
-                    }
-                }
-            });
-        }
-    });
-
-    $('.cart_increment').on('click', function() {
-        var id = $(this).data('id');
-        if (id) {
-            $.ajax({
-                type: "GET",
-                data: {
-                    'id': id
-                },
-                url: "{{ route('cart.increment') }}",
-                success: function(data) {
-                    if (data) {
-                        $(".cartlist").html(data);
-                        if (typeof checkStockState === 'function') { checkStockState(); }
-                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
-                        return cart_count();
-                    }
-                }
-            });
-        }
-    });
-
-    $('.cart_decrement').on('click', function() {
-        var id = $(this).data('id');
-        if (id) {
-            $.ajax({
-                type: "GET",
-                data: {
-                    'id': id
-                },
-                url: "{{ route('cart.decrement') }}",
-                success: function(data) {
-                    if (data) {
-                        $(".cartlist").html(data);
-                        if (typeof checkStockState === 'function') { checkStockState(); }
-                        $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
-                        return cart_count();
-                    }
-                }
-            });
-        }
-    });
+    $('#order_summary_items_count').text("{{ Cart::instance('shopping')->count() }}");
 
     function cart_count() {
         $.ajax({
@@ -191,10 +130,13 @@
             success: function(data) {
                 if (data) {
                     $("#cart-qty").html(data);
-                    $("#order_summary_items_count").html(data);
+                    var countVal = $('<div>').html(data).find('a span').first().text().trim();
+                    if (countVal) {
+                        $("#order_summary_items_count").text(countVal);
+                    }
                 } else {
                     $("#cart-qty").empty();
-                    $("#order_summary_items_count").html(0);
+                    $("#order_summary_items_count").text(0);
                 }
             }
         });

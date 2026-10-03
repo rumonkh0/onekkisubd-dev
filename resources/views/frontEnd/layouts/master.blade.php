@@ -1663,10 +1663,13 @@
                 success: function (data) {
                     if (data) {
                         $("#cart-qty").html(data);
-                        $("#order_summary_items_count").html(data);
+                        var countVal = $('<div>').html(data).find('a span').first().text().trim();
+                        if (countVal) {
+                            $("#order_summary_items_count").text(countVal);
+                        }
                     } else {
                         $("#cart-qty").empty();
-                        $("#order_summary_items_count").html(0);
+                        $("#order_summary_items_count").text(0);
                     }
                 },
             });

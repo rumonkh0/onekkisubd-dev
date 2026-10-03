@@ -265,6 +265,11 @@
     .checkout-summary-badge i {
         color: #e2cf9c !important;
     }
+    #order_summary_items_count svg,
+    #order_summary_items_count a,
+    #order_summary_items_count .cshort-summary {
+        display: none !important;
+    }
 
     /* Cart Table Styling */
     .cart_table {
