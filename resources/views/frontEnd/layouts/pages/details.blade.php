@@ -240,6 +240,7 @@
                                                                                         value="{{ $prosize->size }}"
                                                                                         name="product_size"
                                                                                         class="selector-item_radio emptyalert select_product_size"
+                                                                                        {{ $loop->first ? 'checked' : '' }}
                                                                                         required />
                                                                                     <label style="padding:0px 8px"
                                                                                         for="f-option{{ $prosize->id }}"
@@ -640,7 +641,7 @@
                             item_id: Number("<?php echo $details->id; ?>"),
                             price: Number("<?php echo $details->new_price; ?>"),
                             item_brand: "{{ $details->brand ? $details->brand->name : '' }}",
-                            item_category: "{{ $details->category->name }}",
+                            item_category: "{{ $details->category ? $details->category->name : '' }}",
                             item_variant: Number("<?php echo $details->pro_unit; ?>"),
                             currency: "BDT",
                             quantity: $('#getqty').val()
@@ -822,21 +823,23 @@
 
     <script>
         function sendSuccess() {
-            // size validation
-            size = document.forms["formName"]["product_size"].value;
-            if (size != "") {
-                // access
-            } else {
-                toastr.warning("Please select any size");
-                return false;
+            // Validate size ONLY if the product has size options
+            if ($('input[name="product_size"]').length > 0) {
+                if (!$('input[name="product_size"]:checked').val()) {
+                    toastr.warning("Please select a size / weight");
+                    return false;
+                }
             }
-            color = document.forms["formName"]["product_color"].value;
-            if (color != "") {
-                // access
-            } else {
-                toastr.error("Please select any color");
-                return false;
+
+            // Validate color ONLY if the product has color options
+            if ($('input[name="product_color"]').length > 0) {
+                if (!$('input[name="product_color"]:checked').val()) {
+                    toastr.error("Please select a color");
+                    return false;
+                }
             }
+
+            return true;
         }
     </script>
     <script>

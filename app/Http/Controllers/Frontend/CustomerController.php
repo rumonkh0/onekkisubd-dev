@@ -303,8 +303,8 @@ class CustomerController extends Controller
         $subtotal = str_replace(',', '', $subtotal);
         $subtotal = str_replace('.00', '', $subtotal);
         $discount = Session::get('discount');
-        $shippingfee  = Session::get('shipping');
         $shipping_area  = ShippingCharge::where('id', $request->area)->first();
+        $shippingfee  = $shipping_area ? $shipping_area->amount : (Session::get('shipping') ? Session::get('shipping') : 0);
         if (Auth::guard('customer')->user()) {
             $customer_id = Auth::guard('customer')->user()->id;
         } else {

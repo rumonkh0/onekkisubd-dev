@@ -10,9 +10,7 @@ class Customer extends Authenticatable
     use HasFactory;
 
     protected $guard = 'customer';
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $guarded = [];
     protected $hidden = [
       'password', 'remember_token',
     ];

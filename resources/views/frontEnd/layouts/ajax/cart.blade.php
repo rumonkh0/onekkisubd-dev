@@ -34,10 +34,16 @@
                 </td>
                 @php
                     $single_product = App\Models\Product::find($value->id);
-                    $single_stock_quantity = $single_product->stock;
-                    $variant_stock_quantity = App\Models\Productsize::where('product_id', $value->id)
-                        ->where('size', $value->options->product_size)
-                        ->sum('quantity');
+                    $single_stock_quantity = $single_product ? $single_product->stock : 0;
+                    $has_variant_size = $value->options->product_size && App\Models\Productsize::where('product_id', $value->id)->where('size', $value->options->product_size)->exists();
+                    if ($has_variant_size) {
+                        $variant_qty = App\Models\Productsize::where('product_id', $value->id)
+                            ->where('size', $value->options->product_size)
+                            ->sum('quantity');
+                        $available_stock = $variant_qty > 0 ? $variant_qty : $single_stock_quantity;
+                    } else {
+                        $available_stock = $single_stock_quantity;
+                    }
                 @endphp
                 <td class="cart_qty">
                     <div class="qty-cart vcart-qty">
@@ -48,14 +54,8 @@
                         </div>
                     </div>
                     <br>
-                    @if ($single_product->type == 1)
-                        @if ($variant_stock_quantity < $value->qty)
-                            <span class="bg-danger text-white p-2">No Stock </span>
-                        @endif
-                    @else
-                        @if ($single_stock_quantity < $value->qty)
-                            <span class="bg-danger text-white p-2">No Stock </span>
-                        @endif
+                    @if ($available_stock < $value->qty)
+                        <span class="bg-danger text-white p-2">No Stock </span>
                     @endif
                 </td>
                 <td><span class="alinur">৳ </span><strong>{{ $value->price }}</strong>
@@ -95,7 +95,6 @@
     </tfoot>
 </table>
 
-<script src="{{ asset('public/frontEnd/js/jquery-3.6.3.min.js') }}"></script>
 <!-- cart js start -->
 <script>
     $('.cart_store').on('click', function() {
@@ -130,6 +129,7 @@
                 success: function(data) {
                     if (data) {
                         $(".cartlist").html(data);
+                        if (typeof checkStockState === 'function') { checkStockState(); }
                         return cart_count();
                     }
                 }
@@ -149,6 +149,7 @@
                 success: function(data) {
                     if (data) {
                         $(".cartlist").html(data);
+                        if (typeof checkStockState === 'function') { checkStockState(); }
                         return cart_count();
                     }
                 }
@@ -168,6 +169,7 @@
                 success: function(data) {
                     if (data) {
                         $(".cartlist").html(data);
+                        if (typeof checkStockState === 'function') { checkStockState(); }
                         return cart_count();
                     }
                 }

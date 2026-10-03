@@ -19,7 +19,8 @@ return new class extends Migration
             $table->integer('amount');
             $table->string('expense_type');
             $table->string('payment_type');
-            $table->string('file');
+            $table->string('file')->nullable();
+            $table->date('date')->nullable();
             $table->integer('status');
             $table->timestamps();
         });

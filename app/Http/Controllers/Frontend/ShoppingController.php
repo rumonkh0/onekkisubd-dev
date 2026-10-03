@@ -88,6 +88,9 @@ class ShoppingController extends Controller
             ]);
         }
         Toastr::success('Product successfully add to cart', 'Success!');
+        if ($request->has('add_cart')) {
+            return redirect()->back();
+        }
         return redirect()->route('customer.checkout');
     }
     public function cart_remove(Request $request)

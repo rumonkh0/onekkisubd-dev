@@ -72,21 +72,21 @@
         <!-- End Facebook Pixel Code -->
     @endforeach
 
-    @foreach($gtm_code as $gtm)
-        <!-- Google tag (gtag.js) -->
-        <script>(function (w, d, s, l, i) {
-                w[l] = w[l] || []; w[l].push({
-                    'gtm.start':
-                        new Date().getTime(), event: 'gtm.js'
-                }); var f = d.getElementsByTagName(s)[0],
-                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                        'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-{{ $gtm->code }}');</script>
-        <!-- End Google Tag Manager -->
-    @endforeach
-
-
-    <!-- Google Tag Manager -->
+    @if(count($gtm_code) > 0)
+        @foreach($gtm_code as $gtm)
+            <!-- Google Tag Manager -->
+            <script>(function (w, d, s, l, i) {
+                    w[l] = w[l] || []; w[l].push({
+                        'gtm.start':
+                            new Date().getTime(), event: 'gtm.js'
+                    }); var f = d.getElementsByTagName(s)[0],
+                        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                            'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+                })(window, document, 'script', 'dataLayer', 'GTM-{{ $gtm->code }}');</script>
+            <!-- End Google Tag Manager -->
+        @endforeach
+    @else
+        <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {
                 w[l] = w[l] || []; w[l].push({
                     'gtm.start':
@@ -95,7 +95,8 @@
                     j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                         'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', 'GTM-KGRF7VNK');</script>
-    <!-- End Google Tag Manager -->
+        <!-- End Google Tag Manager -->
+    @endif
 
     <style>
         @media only screen and (min-width: 320px) and (max-width: 767px) {
@@ -122,8 +123,15 @@
 
 <body class="gotop">
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KGRF7VNK" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
+    @if(count($gtm_code) > 0)
+        @foreach($gtm_code as $gtm)
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-{{ $gtm->code }}" height="0" width="0"
+                    style="display:none;visibility:hidden"></iframe></noscript>
+        @endforeach
+    @else
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KGRF7VNK" height="0" width="0"
+                style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
     <!-- End Google Tag Manager (noscript) -->
 
     @php $subtotal = Cart::instance('shopping')->subtotal(); @endphp
@@ -518,7 +526,7 @@
                         <form action="#" method="POST"
                             onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');"
                             class="footer-newsletter-form">
-                            <input type="email" placeholder="Your email address" required />
+                            <input type="email" placeholder="Your email address" />
                             <button type="submit">Subscribe</button>
                         </form>
                     </div>
@@ -1037,7 +1045,9 @@
             'event': 'Pageview',
             'pagePath': window.location.href,
             'pageTitle': document.title,
-            'visitorType': 'customer'
+            'visitorType': 'customer',
+            'client_ip_address': '{{ request()->ip() }}',
+            'client_user_agent': navigator.userAgent
         });
     </script>
 
@@ -1384,24 +1394,26 @@
     </script>
 
     <script>
-        var menu = new MmenuLight(document.querySelector("#menu"), "all");
+        var menuEl = document.querySelector("#menu");
+        if (menuEl && typeof MmenuLight !== 'undefined') {
+            var menu = new MmenuLight(menuEl, "all");
 
-        var navigator = menu.navigation({
-            selectedClass: "Selected",
-            slidingSubmenus: true,
-            // theme: 'dark',
-            title: "ক্যাটাগরি",
-        });
+            var navigator = menu.navigation({
+                selectedClass: "Selected",
+                slidingSubmenus: true,
+                title: "ক্যাটাগরি",
+            });
 
-        var drawer = menu.offcanvas({
-            // position: 'left'
-        });
+            var drawer = menu.offcanvas({});
 
-        //  Open the menu.
-        document.querySelector('a[href="#menu"]').addEventListener("click", (evnt) => {
-            evnt.preventDefault();
-            drawer.open();
-        });
+            var menuTrigger = document.querySelector('a[href="#menu"]');
+            if (menuTrigger) {
+                menuTrigger.addEventListener("click", (evnt) => {
+                    evnt.preventDefault();
+                    drawer.open();
+                });
+            }
+        }
     </script>
 
     <script>

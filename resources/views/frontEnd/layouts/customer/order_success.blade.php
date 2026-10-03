@@ -112,21 +112,42 @@
 @endsection
 @push('script')
 <script>
+    @php
+        $postal_code = '';
+        if ($order->shipping && !empty($order->shipping->address)) {
+            if (preg_match('/\b[0-9]{4}\b/', $order->shipping->address, $matches)) {
+                $postal_code = $matches[0];
+            }
+        }
+    @endphp
+
     // Clear the previous ecommerce object.
     dataLayer.push({ ecommerce: null });
 
-    // Push the begin_checkout event to dataLayer.
+    // Push the purchase event to dataLayer with user data, IP, and user agent.
     dataLayer.push({
         event: "purchase",
+        client_ip_address: "{{ request()->ip() }}",
+        client_user_agent: navigator.userAgent,
+        user_data: {
+            phone_number: "{{ $order->shipping ? $order->shipping->phone : '' }}",
+            address: {
+                first_name: "{{ $order->shipping ? $order->shipping->name : '' }}",
+                street: "{{ $order->shipping ? $order->shipping->address : '' }}",
+                city: "{{ $order->city ?? '' }}",
+                postal_code: "{{ $postal_code }}",
+                country: "BD"
+            }
+        },
         ecommerce: {
             currency: "BDT",
             value: Number("<?php echo $order->amount ?>"),
             shipping: "<?php echo $order->shipping_charge ?>",
-            tax:0,
-            coupon:"",
-            affiliation:"",
-            external_id :"<?php echo $order->id ?>",
-            transaction_id:"<?php echo 'TRXLR'.$order->id ?>",
+            tax: 0,
+            coupon: "",
+            affiliation: "",
+            external_id: "<?php echo $order->id ?>",
+            transaction_id: "<?php echo 'TRXLR' . $order->id ?>",
             items: [@foreach ($order->orderdetails as $cartInfo)
                 {
                     item_name: "{{$cartInfo->product_name}}",
@@ -138,14 +159,17 @@
                     quantity: {{$cartInfo->qty ?? 0}}
                 },
             @endforeach],
-            more:[
+            more: [
                 {
-                    Customer_Name:"<?php echo $order->shipping->name ?>",
-                    Customer_Address:"<?php echo $order->shipping->address ?>",
-                    Customer_Phone_Number:"<?php echo $order->shipping->phone ?>",
-                    Customer_Country:'Bangladesh',
-                    Customer_Visitor_ID :"<?php echo $order->shipping->id ?>",
-                    payment_method:"<?php echo $payments->payment_method ?>",
+                    Customer_Name: "{{ $order->shipping ? $order->shipping->name : '' }}",
+                    Customer_Address: "{{ $order->shipping ? $order->shipping->address : '' }}",
+                    Customer_Phone_Number: "{{ $order->shipping ? $order->shipping->phone : '' }}",
+                    Customer_Country: 'Bangladesh',
+                    Customer_Postal_Code: "{{ $postal_code }}",
+                    Customer_IP: "{{ request()->ip() }}",
+                    Customer_User_Agent: navigator.userAgent,
+                    Customer_Visitor_ID: "{{ $order->shipping ? $order->shipping->id : '' }}",
+                    payment_method: "{{ $payments ? $payments->payment_method : '' }}",
                 }
             ]
         }

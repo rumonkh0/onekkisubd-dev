@@ -33,7 +33,7 @@
                         }
                     @endphp
 
-                    <form action="{{ route('customer.ordersave') }}" method="POST" data-parsley-validate="">
+                    <form action="{{ route('customer.ordersave') }}" method="POST" id="checkout_order_form">
                         @csrf
                         <input type="hidden" name="paid_partial_payment_amount" value="{{ $partial_payment }}">
                         <div class="card">
@@ -61,12 +61,10 @@
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
                                             <label for="phone">Phone *</label>
-                                            <input type="text" minlength="11" id="number" maxlength="11"
-                                                pattern="0[0-9]+"
-                                                title="please enter number only and 0 must first character"
-                                                title="Please enter an 11-digit number." id="phone"
+                                            <input type="tel" minlength="11" maxlength="11" id="phone"
                                                 class="form-control @error('phone') is-invalid @enderror" name="phone"
                                                 value="@if ($customer) {{ $customer->phone }} @endif"
+                                                placeholder="01XXXXXXXXX"
                                                 required />
                                             @error('phone')
                                                 <span class="invalid-feedback" role="alert">
@@ -97,7 +95,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
                                             <label for="address">Address * (District, Thana, Village )</label>
-                                            <input type="address" id="address"
+                                            <input type="text" id="address"
                                                 class="form-control @error('address') is-invalid @enderror"
                                                 name="address"
                                                 value="@if ($customer) {{ $customer->address }} @endif"
@@ -113,11 +111,10 @@
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
                                             <label for="area">Select Your Area *</label>
-                                            <select type="area" id="area" class="form-select"
-                                                @error('area') is-invalid @enderror" name="area" required>
+                                            <select id="area" class="form-select @error('area') is-invalid @enderror" name="area" required>
                                                 <option value="">Select Shipping Option</option>
                                                 @foreach ($shippingcharge as $key => $value)
-                                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                                    <option value="{{ $value->id }}" {{ $loop->first ? 'selected' : '' }}>{{ $value->name }}</option>
                                                 @endforeach
                                             </select>
                                             @error('email')
@@ -131,7 +128,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
                                             <label for="note">Note (optional)</label>
-                                            <input type="note" id="note"
+                                            <input type="text" id="note"
                                                 class="form-control @error('note') is-invalid @enderror" name="note"
                                                 value="{{ old('note') }}" />
                                         </div>
@@ -232,13 +229,16 @@
                                             </td>
                                             @php
                                                 $single_product = App\Models\Product::find($value->id);
-                                                $single_stock_quantity = $single_product->stock;
-                                                $variant_stock_quantity = App\Models\Productsize::where(
-                                                    'product_id',
-                                                    $value->id,
-                                                )
-                                                    ->where('size', $value->options->product_size)
-                                                    ->sum('quantity');
+                                                $single_stock_quantity = $single_product ? $single_product->stock : 0;
+                                                $has_variant_size = $value->options->product_size && App\Models\Productsize::where('product_id', $value->id)->where('size', $value->options->product_size)->exists();
+                                                if ($has_variant_size) {
+                                                    $variant_qty = App\Models\Productsize::where('product_id', $value->id)
+                                                        ->where('size', $value->options->product_size)
+                                                        ->sum('quantity');
+                                                    $available_stock = $variant_qty > 0 ? $variant_qty : $single_stock_quantity;
+                                                } else {
+                                                    $available_stock = $single_stock_quantity;
+                                                }
                                             @endphp
                                             <td class="cart_qty">
                                                 <div class="qty-cart vcart-qty">
@@ -251,14 +251,8 @@
                                                     </div>
                                                 </div>
                                                 <br>
-                                                @if ($single_product->type == 1)
-                                                    @if ($variant_stock_quantity < $value->qty)
-                                                        <span class="bg-danger text-white p-2">No Stock </span>
-                                                    @endif
-                                                @else
-                                                    @if ($single_stock_quantity < $value->qty)
-                                                        <span class="bg-danger text-white p-2">No Stock </span>
-                                                    @endif
+                                                @if ($available_stock < $value->qty)
+                                                    <span class="bg-danger text-white p-2">No Stock </span>
                                                 @endif
                                             </td>
                                             
@@ -330,8 +324,6 @@
         </div>
 </section>
 @endsection @push('script')
-<script src="{{ asset('public/frontEnd/') }}/js/parsley.min.js"></script>
-<script src="{{ asset('public/frontEnd/') }}/js/form-validation.init.js"></script>
 <script src="{{ asset('public/frontEnd/') }}/js/select2.min.js"></script>
 <script>
     $('#applyCoupon').on('click', function() {
@@ -362,7 +354,6 @@
                     $('#hidden_coupon').val(response.discount);
                     $('#hidden_couponId').val(response.id);
                     $('#grand_total > strong').html(parseInt(response.amount) + parseInt(shipping));
-                    c
                     $('#error').html(response.message).css({
                         'color': 'green',
                     });
@@ -385,6 +376,14 @@
     });
 </script>
 <script>
+    function checkStockState() {
+        if ($('.cart_qty .bg-danger').length > 0) {
+            $('.order_place').prop('disabled', true);
+        } else {
+            $('.order_place').prop('disabled', false);
+        }
+    }
+
     $("#area").on("change", function() {
         var id = $(this).val();
         $.ajax({
@@ -397,6 +396,7 @@
             dataType: "html",
             success: function(response) {
                 $(".cartlist").html(response);
+                checkStockState();
             },
         });
     });
@@ -440,6 +440,8 @@
     // Push the begin_checkout event to dataLayer.
     dataLayer.push({
         event: "begin_checkout",
+        client_ip_address: "{{ request()->ip() }}",
+        client_user_agent: navigator.userAgent,
         ecommerce: {
             currency: "BDT",
             value: Number("<?php echo $subtotal; ?>"),
@@ -463,9 +465,44 @@
 </script>
 <script>
     $(document).ready(function() {
-        if ($('.cart_qty .bg-danger').length > 0) {
-            $('.order_place').prop('disabled', true);
-        }
+        checkStockState();
+
+        // Phone number input cleanup
+        $('#phone').on('input', function() {
+            var val = $(this).val().replace(/[^0-9]/g, '');
+            if (val.startsWith('880')) {
+                val = val.substring(2);
+            }
+            $(this).val(val);
+        });
+
+        // Ensure Place Order button validates and submits reliably with GTM
+        var orderSubmitting = false;
+        $('#checkout_order_form').on('submit', function(e) {
+            if (orderSubmitting) return;
+            orderSubmitting = true;
+
+            var form = this;
+            // Fallback timeout in case GTM "Wait for Tags" or debug agent halts submission
+            setTimeout(function() {
+                try {
+                    HTMLFormElement.prototype.submit.call(form);
+                } catch (err) {
+                    form.submit();
+                }
+            }, 1200);
+        });
+
+        $('#Checkout_orderPlace').on('click', function(e) {
+            var form = document.getElementById('checkout_order_form');
+            if (!form) return;
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                e.preventDefault();
+                return false;
+            }
+        });
     });
 </script>
 @endpush
