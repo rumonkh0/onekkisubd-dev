@@ -15,7 +15,9 @@
     @stack('css')
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -117,6 +119,36 @@
         #content {
             padding-top: 0 !important;
         }
+
+        /* Fixed Header Styles */
+        #claude-header {
+            width: 100%;
+            transition: box-shadow 0.25s ease, background-color 0.25s ease;
+        }
+
+        #claude-header.is-fixed {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 1050 !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            box-shadow: 0 6px 24px -6px rgba(10, 33, 27, 0.2) !important;
+            border-bottom: 1px solid rgba(216, 183, 124, 0.25) !important;
+        }
+
+        #claude-header-spacer {
+            display: none;
+            width: 100%;
+            height: 75px;
+        }
+
+        #claude-header-spacer.active {
+            display: block;
+        }
     </style>
 
 </head>
@@ -186,22 +218,47 @@
             <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-2 sm:px-6">
                 <ul class="flex items-center gap-3 sm:gap-5 overflow-hidden">
                     <li class="flex items-center gap-1.5 whitespace-nowrap">
-                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                        </svg>
                         <span>100% Natural &amp; Organic</span>
                     </li>
-                    <li class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
-                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                    <li
+                        class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                            <path d="M15 18H9" />
+                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                            <circle cx="17" cy="18" r="2" />
+                            <circle cx="7" cy="18" r="2" />
+                        </svg>
                         <span>Nationwide Delivery Available</span>
                     </li>
-                    <li class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
-                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+                    <li
+                        class="hidden md:flex items-center gap-1.5 whitespace-nowrap md:border-l md:border-white/20 md:pl-5">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                            <path d="M12 8v13" />
+                            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
+                            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
+                        </svg>
                         <span>Exclusive Offers for Tea Lovers</span>
                     </li>
                 </ul>
 
                 <div class="flex items-center gap-5">
-                    <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}" class="hidden items-center gap-1.5 hover:text-gold-300 sm:flex text-white">
-                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}"
+                        class="hidden items-center gap-1.5 hover:text-gold-300 sm:flex text-white">
+                        <svg class="h-3.5 w-3.5 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
                         <span>{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}</span>
                     </a>
                     <div class="flex items-center gap-3">
@@ -209,19 +266,31 @@
                         <span class="hidden h-3.5 w-px bg-white/20 lg:inline"></span>
                         @if(isset($socialicons) && $socialicons->count() > 0)
                             @foreach($socialicons as $sicon)
-                                <a href="{{ $sicon->link }}" target="_blank" aria-label="Social Link" class="text-white transition-colors hover:text-gold-300">
+                                <a href="{{ $sicon->link }}" target="_blank" aria-label="Social Link"
+                                    class="text-white transition-colors hover:text-gold-300">
                                     <i class="{{ $sicon->icon }} text-xs"></i>
                                 </a>
                             @endforeach
                         @else
                             <a href="#" aria-label="Facebook" class="text-white transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
                             </a>
                             <a href="#" aria-label="Instagram" class="text-white transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                                    <circle cx="12" cy="12" r="4" />
+                                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                                </svg>
                             </a>
                             <a href="#" aria-label="YouTube" class="text-white transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                </svg>
                             </a>
                         @endif
                     </div>
@@ -230,15 +299,18 @@
         </div>
 
         <!-- Sticky Header Navbar -->
-        <header id="claude-header" class="sticky top-0 z-50 bg-white/95 backdrop-blur transition-shadow shadow-[0_6px_24px_-12px_rgba(18,48,27,0.35)]">
+        <header id="claude-header"
+            class="sticky top-0 z-50 bg-white/95 backdrop-blur transition-shadow shadow-[0_6px_24px_-12px_rgba(18,48,27,0.35)]">
             <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
                 <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 select-none" aria-label="OnekkisuBD home">
+                <a href="{{ route('home') }}" class="flex items-center gap-2.5 select-none"
+                    aria-label="OnekkisuBD home">
                     <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
                         <svg viewBox="0 0 48 48" class="h-12 w-12" fill="none">
                             <circle cx="24" cy="24" r="22" fill="#245a2d" />
                             <circle cx="24" cy="24" r="22" stroke="#cdb06a" stroke-width="1.5" stroke-dasharray="4 3" />
-                            <path d="M14 30c0-9 7-15 18-16-1 11-7 17-16 17 4-5 7-8 11-11" stroke="#e2cf9c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#468a47" />
+                            <path d="M14 30c0-9 7-15 18-16-1 11-7 17-16 17 4-5 7-8 11-11" stroke="#e2cf9c"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#468a47" />
                         </svg>
                     </span>
                     <span class="leading-none">
@@ -254,53 +326,73 @@
                 <!-- Desktop Nav -->
                 <nav class="hidden items-center gap-5 xl:flex 2xl:gap-7">
                     <div class="group relative">
-                        <a href="{{ route('home') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('/') ? 'text-tea-700' : 'text-tea-900' }}">
+                        <a href="{{ route('home') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('/') ? 'text-tea-700' : 'text-tea-900' }}">
                             Home
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('/') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('/') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('shop') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('shop') ? 'text-tea-700' : 'text-tea-900' }}">
+                        <a href="{{ url('shop') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('shop') ? 'text-tea-700' : 'text-tea-900' }}">
                             Shop
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('shop') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('shop') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('shop') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
+                        <a href="{{ url('shop') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
                             Tea Collection
-                            <svg class="h-3.5 w-3.5 transition-transform group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
+                            <svg class="h-3.5 w-3.5 transition-transform group-hover:rotate-180" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
                         </a>
-                        <div class="invisible absolute left-0 top-full z-50 w-56 translate-y-2 rounded-xl border border-tea-100 bg-white p-2 opacity-0 shadow-card-hover transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                        <div
+                            class="invisible absolute left-0 top-full z-50 w-56 translate-y-2 rounded-xl border border-tea-100 bg-white p-2 opacity-0 shadow-card-hover transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                             @foreach($menucategories as $cat)
-                                <a href="{{ route('category', $cat->slug) }}" class="block rounded-lg px-3 py-2 text-sm text-tea-900 transition-colors hover:bg-tea-50 hover:text-tea-700">
+                                <a href="{{ route('category', $cat->slug) }}"
+                                    class="block rounded-lg px-3 py-2 text-sm text-tea-900 transition-colors hover:bg-tea-50 hover:text-tea-700">
                                     {{ $cat->name }}
                                 </a>
                             @endforeach
                         </div>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('/') }}#features" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
+                        <a href="{{ url('/') }}#features"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
                             Health Benefits
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
                         </a>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('page/about-us') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/about-us') ? 'text-tea-700' : 'text-tea-900' }}">
+                        <a href="{{ url('page/about-us') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/about-us') ? 'text-tea-700' : 'text-tea-900' }}">
                             About Us
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/about-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/about-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('blog-list') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('blog*') ? 'text-tea-700' : 'text-tea-900' }}">
+                        <a href="{{ url('blog-list') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('blog*') ? 'text-tea-700' : 'text-tea-900' }}">
                             Blog
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('blog*') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('blog*') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('page/contact-us') }}" class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/contact-us') ? 'text-tea-700' : 'text-tea-900' }}">
+                        <a href="{{ url('page/contact-us') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->is('page/contact-us') ? 'text-tea-700' : 'text-tea-900' }}">
                             Contact
-                            <span class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/contact-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->is('page/contact-us') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                 </nav>
@@ -308,29 +400,49 @@
                 <!-- Right Side Actions -->
                 <div class="flex shrink-0 items-center gap-2 sm:gap-3 2xl:gap-4">
                     <!-- Search input -->
-                    <form action="{{ route('search') }}" method="GET" class="hidden items-center rounded-full border border-tea-200 bg-tea-50/60 pl-4 pr-1.5 py-1 lg:flex focus-within:border-tea-400 focus-within:ring-2 focus-within:ring-tea-100 position-relative">
-                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..." class="search_keyword search_click w-44 bg-transparent text-xs text-tea-900 outline-none placeholder:text-tea-900/50 xl:w-36 2xl:w-48" autocomplete="off" />
-                        <button type="submit" aria-label="Search" class="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-tea-700 hover:bg-white">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <form action="{{ route('search') }}" method="GET"
+                        class="hidden items-center rounded-full border border-tea-200 bg-tea-50/60 pl-4 pr-1.5 py-1 lg:flex focus-within:border-tea-400 focus-within:ring-2 focus-within:ring-tea-100 position-relative">
+                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..."
+                            class="search_keyword search_click w-44 bg-transparent text-xs text-tea-900 outline-none placeholder:text-tea-900/50 xl:w-36 2xl:w-48"
+                            autocomplete="off" />
+                        <button type="submit" aria-label="Search"
+                            class="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-tea-700 hover:bg-white">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
                         </button>
-                        <div class="search_result position-absolute w-100" style="top: 48px; left: 0; z-index: 9999;"></div>
+                        <div class="search_result position-absolute w-100" style="top: 48px; left: 0; z-index: 9999;">
+                        </div>
                     </form>
 
                     <!-- Wishlist -->
-                    <a href="{{ route('wishlist') }}" aria-label="Wishlist" class="relative rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                        <span class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white" id="wishlistCount">{{ Cart::instance('wishlist')->count() }}</span>
+                    <a href="{{ route('wishlist') }}" aria-label="Wishlist"
+                        class="relative rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg>
+                        <span
+                            class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white"
+                            id="wishlistCount">{{ Cart::instance('wishlist')->count() }}</span>
                     </a>
 
                     <!-- Cart with Dropdown -->
                     <div class="relative group cart-dialog" id="cart-qty">
-                        <a href="{{ route('customer.checkout') }}" aria-label="Cart" class="relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="8" cy="21" r="1"/>
-                                <circle cx="19" cy="21" r="1"/>
-                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                        <a href="{{ route('customer.checkout') }}" aria-label="Cart"
+                            class="relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="8" cy="21" r="1" />
+                                <circle cx="19" cy="21" r="1" />
+                                <path
+                                    d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                             </svg>
-                            <span class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">{{ Cart::instance('shopping')->count() }}</span>
+                            <span
+                                class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">{{ Cart::instance('shopping')->count() }}</span>
                         </a>
                         <div class="cshort-summary">
                             <ul>
@@ -342,7 +454,8 @@
                                     <li>Qty: {{ $value->qty }}</li>
                                     <li>
                                         <p>৳{{ $value->price }}</p>
-                                        <button class="remove-cart cart_remove" data-id="{{ $value->rowId }}"><i data-feather="x"></i></button>
+                                        <button class="remove-cart cart_remove" data-id="{{ $value->rowId }}"><i
+                                                data-feather="x"></i></button>
                                     </li>
                                 @endforeach
                             </ul>
@@ -353,21 +466,41 @@
 
                     <!-- Auth button -->
                     @if (Auth::guard('customer')->check())
-                        <a href="{{ route('customer.account') }}" class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <a href="{{ route('customer.account') }}"
+                            class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
                             Account
                         </a>
                     @else
-                        <a href="{{ url('customer/login') }}" class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <a href="{{ url('customer/login') }}"
+                            class="hidden items-center gap-1.5 whitespace-nowrap text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 md:flex">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
                             Login / Register
                         </a>
                     @endif
 
                     <!-- Mobile Menu Hamburger -->
-                    <button type="button" id="claude-mobile-toggle" aria-label="Toggle menu" class="rounded-lg p-2 text-tea-800 hover:bg-tea-50 xl:hidden">
-                        <svg class="h-6 w-6" id="claude-hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-                        <svg class="h-6 w-6 hidden" id="claude-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    <button type="button" id="claude-mobile-toggle" aria-label="Toggle menu"
+                        class="rounded-lg p-2 text-tea-800 hover:bg-tea-50 xl:hidden">
+                        <svg class="h-6 w-6" id="claude-hamburger-icon" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" x2="20" y1="12" y2="12" />
+                            <line x1="4" x2="20" y1="6" y2="6" />
+                            <line x1="4" x2="20" y1="18" y2="18" />
+                        </svg>
+                        <svg class="h-6 w-6 hidden" id="claude-close-icon" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -375,29 +508,57 @@
             <!-- Mobile Drawer Menu -->
             <div id="claude-mobile-menu" class="hidden overflow-hidden border-t border-tea-100 bg-white xl:hidden">
                 <div class="space-y-1 px-4 py-4 sm:px-6">
-                    <form action="{{ route('search') }}" method="GET" class="mb-3 flex items-center rounded-full border border-tea-200 bg-tea-50/60 px-4 py-2 lg:hidden">
-                        <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..." class="ml-2 w-full bg-transparent text-sm outline-none placeholder:text-tea-900/50" autocomplete="off" />
+                    <form action="{{ route('search') }}" method="GET"
+                        class="mb-3 flex items-center rounded-full border border-tea-200 bg-tea-50/60 px-4 py-2 lg:hidden">
+                        <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                        <input type="text" name="keyword" placeholder="Search for tea, herbs, products..."
+                            class="ml-2 w-full bg-transparent text-sm outline-none placeholder:text-tea-900/50"
+                            autocomplete="off" />
                     </form>
-                    <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Home</a>
-                    <a href="{{ url('shop') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Shop</a>
-                    <a href="{{ url('/') }}#categories" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Tea Collection</a>
-                    <a href="{{ url('/') }}#features" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Health Benefits</a>
-                    <a href="{{ url('page/about-us') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">About Us</a>
-                    <a href="{{ url('blog-list') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Blog</a>
-                    <a href="{{ url('page/contact-us') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Contact</a>
+                    <a href="{{ route('home') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Home</a>
+                    <a href="{{ url('shop') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Shop</a>
+                    <a href="{{ url('/') }}#categories"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Tea
+                        Collection</a>
+                    <a href="{{ url('/') }}#features"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Health
+                        Benefits</a>
+                    <a href="{{ url('page/about-us') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">About
+                        Us</a>
+                    <a href="{{ url('blog-list') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Blog</a>
+                    <a href="{{ url('page/contact-us') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Contact</a>
                     @if (Auth::guard('customer')->check())
-                        <a href="{{ route('customer.account') }}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Account
+                        <a href="{{ route('customer.account') }}"
+                            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg> Account
                         </a>
                     @else
-                        <a href="{{ url('customer/login') }}" class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Login / Register
+                        <a href="{{ url('customer/login') }}"
+                            class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50 md:hidden">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg> Login / Register
                         </a>
                     @endif
                 </div>
             </div>
         </header>
+        <div id="claude-header-spacer"></div>
     </div>
     <!-- ==================== END NAVBAR (CLAUDE DESIGN) ==================== -->
 
@@ -476,7 +637,7 @@
     <!--            <div class="row">-->
     <!--                <div class="col-sm-12">-->
     <!--                    <div class="copyright">-->
-    <!--                        <p>Copyright © {{ date('Y') }} {{$generalsetting->name}} | All rights reserved | Developed by <a href="https://danpite.tech/" target="_blank" class="text-light text-decoration-underline">Danpite.tech</a></p>-->
+    <!--                        <p>Copyright © {{ date('Y') }} {{$generalsetting->name}} | All rights reserved | Developed by <a href="https://www.facebook.com/profile.php?id=61574269515844" target="_blank" class="text-light text-decoration-underline">QuadPixel Labs</a></p>-->
     <!--                    </div>-->
     <!--                </div>-->
     <!--            </div>-->
@@ -487,12 +648,16 @@
 
 
     <!-- ==================== LUXURY FOOTER (OPENAI DESIGN) ==================== -->
-    <footer id="contact" class="claude-theme site-footer relative overflow-hidden" style="background-image: linear-gradient(90deg, rgba(9, 31, 25, 0.9) 0%, rgba(9, 31, 25, 0.92) 68%, rgba(9, 31, 25, 0.42) 100%), url('{{ asset('images/footer-bg.jpg') }}'); background-position: right center !important;">
+    <footer id="contact" class="claude-theme site-footer relative overflow-hidden"
+        style="background-image: linear-gradient(90deg, rgba(9, 31, 25, 0.9) 0%, rgba(9, 31, 25, 0.92) 68%, rgba(9, 31, 25, 0.42) 100%), url('{{ asset('images/footer-bg.jpg') }}'); background-position: right center !important;">
         <!-- Decorative leaves (retained as requested) -->
-        <svg viewBox="0 0 64 64" class="pointer-events-none absolute right-[26%] top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 64 64"
+            class="pointer-events-none absolute right-[26%] top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow"
+            fill="none" aria-hidden="true">
             <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot1)" />
             <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1"
+                stroke-linecap="round" opacity=".7" />
             <defs>
                 <linearGradient id="leafGradFoot1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
                     <stop stop-color="#2f6f37" />
@@ -501,10 +666,13 @@
             </defs>
         </svg>
 
-        <svg viewBox="0 0 64 64" class="pointer-events-none absolute right-[18%] top-24 h-14 w-14 rotate-[30deg] opacity-30 animate-float" style="animation-delay: 1.5s;" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 64 64"
+            class="pointer-events-none absolute right-[18%] top-24 h-14 w-14 rotate-[30deg] opacity-30 animate-float"
+            style="animation-delay: 1.5s;" fill="none" aria-hidden="true">
             <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot2)" />
             <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1"
+                stroke-linecap="round" opacity=".7" />
             <defs>
                 <linearGradient id="leafGradFoot2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
                     <stop stop-color="#2f6f37" />
@@ -513,10 +681,13 @@
             </defs>
         </svg>
 
-        <svg viewBox="0 0 64 64" class="pointer-events-none absolute left-[30%] -bottom-6 h-24 w-24 rotate-[200deg] opacity-20 animate-float-slow" style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 64 64"
+            class="pointer-events-none absolute left-[30%] -bottom-6 h-24 w-24 rotate-[200deg] opacity-20 animate-float-slow"
+            style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
             <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot3)" />
             <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" opacity=".7" />
+            <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1"
+                stroke-linecap="round" opacity=".7" />
             <defs>
                 <linearGradient id="leafGradFoot3" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
                     <stop stop-color="#2f6f37" />
@@ -538,10 +709,12 @@
                                     <stop offset="1" stop-color="#0c432e" />
                                 </linearGradient>
                             </defs>
-                            <path d="M57 12A32 32 0 1 0 64 69" fill="none" stroke="url(#brandGreenFooter)" stroke-width="12" stroke-linecap="round" />
+                            <path d="M57 12A32 32 0 1 0 64 69" fill="none" stroke="url(#brandGreenFooter)"
+                                stroke-width="12" stroke-linecap="round" />
                             <path d="M44 17C50 4 62 2 76 3c-6 14-14 21-29 22-3-2-4-5-3-8Z" fill="#5d972b" />
                             <path d="M46 55c-2-13 8-23 22-25-1 13-8 24-21 27Z" fill="#77a83b" />
-                            <path d="M45 57c6-9 12-14 21-21" fill="none" stroke="#e0e9a6" stroke-width="1.8" stroke-linecap="round" />
+                            <path d="M45 57c6-9 12-14 21-21" fill="none" stroke="#e0e9a6" stroke-width="1.8"
+                                stroke-linecap="round" />
                             <circle cx="57" cy="70" r="5" fill="#c9a343" />
                         </svg>
                         <span class="brand-words">
@@ -556,15 +729,24 @@
 
                     <address>
                         <span>
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                            </svg>
                             {{ $contact->address ?? 'Najir Shankorpur, Jashore' }}
                         </span>
                         <a href="mailto:{{ $contact->email ?? 'onnekkisuponno@gmail.com' }}">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
                             {{ $contact->email ?? 'onnekkisuponno@gmail.com' }}
                         </a>
                         <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                            </svg>
                             {{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}
                         </a>
                     </address>
@@ -578,13 +760,24 @@
                             @endforeach
                         @else
                             <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
                             </a>
                             <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                                    <circle cx="12" cy="12" r="4" />
+                                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                                </svg>
                             </a>
                             <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="YouTube">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                </svg>
                             </a>
                         @endif
                     </div>
@@ -596,19 +789,35 @@
                     <div class="gold-line"></div>
                     <nav class="flex flex-col space-y-3">
                         <a href="{{ url('/') }}">
-                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
                             Home
                         </a>
                         <a href="{{ url('page/about-us') }}">
-                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
                             About Us
                         </a>
                         <a href="{{ url('page/contact-us') }}">
-                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
                             Contact Us
                         </a>
                         <a href="{{ url('page/order-procedure') }}">
-                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
                             Order Procedure
                         </a>
                     </nav>
@@ -625,25 +834,45 @@
                         @if($quick_links && $quick_links->count() > 0)
                             @foreach($quick_links as $page)
                                 <a href="{{ route('page', ['slug' => $page->slug]) }}">
-                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </svg>
                                     {{ $page->name }}
                                 </a>
                             @endforeach
                         @else
                             <a href="{{ url('page/delivery-rules') }}">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
                                 Delivery Rules
                             </a>
                             <a href="{{ url('page/return-policy') }}">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
                                 Return Policy
                             </a>
                             <a href="{{ url('page/terms-conditions') }}">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
                                 Terms &amp; Conditions
                             </a>
                             <a href="{{ url('page/privacy-policy') }}">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
                                 Privacy Policy
                             </a>
                         @endif
@@ -655,27 +884,54 @@
                     <h3>Stay Connected</h3>
                     <div class="gold-line"></div>
                     <p>Subscribe to get latest offers, new arrivals<br /> and tea tips.</p>
-                    <form class="newsletter-form" action="#" method="POST" onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');">
-                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    <form class="newsletter-form" action="#" method="POST"
+                        onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="16" x="2" y="4" rx="2" />
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                        </svg>
                         <input type="email" placeholder="Your email address" required aria-label="Email address" />
                         <button type="submit">Subscribe</button>
                     </form>
 
                     <ul class="footer-benefits">
                         <li>
-                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                            </svg>
                             <span>100%<br />Natural</span>
                         </li>
                         <li>
-                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                                <path d="M15 18H9" />
+                                <path
+                                    d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                                <circle cx="17" cy="18" r="2" />
+                                <circle cx="7" cy="18" r="2" />
+                            </svg>
                             <span>Fast<br />Delivery</span>
                         </li>
                         <li>
-                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
                             <span>Secure<br />Payment</span>
                         </li>
                         <li>
-                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                            </svg>
                             <span>Loved by<br />Tea Lovers</span>
                         </li>
                     </ul>
@@ -691,12 +947,20 @@
                 <span>
                     © {{ date('Y') }} {{ $generalsetting->name ?? 'OnekkisuBD' }} | All rights reserved | Developed by
                     <strong>
-                        <a href="https://danpite.tech/" target="_blank">Danpite.Tech</a>
+                        <a href="https://www.facebook.com/profile.php?id=61574269515844" target="_blank">QuadPixel
+                            Labs</a>
                     </strong>
                 </span>
                 <span>
                     Drink Good Tea
-                    <svg class="h-4.5 w-4.5 inline-block text-[#418b50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+                    <svg class="h-4.5 w-4.5 inline-block text-[#418b50]" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 20h10" />
+                        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+                        <path
+                            d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+                        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+                    </svg>
                     Live a Better Life
                 </span>
             </div>
@@ -705,12 +969,16 @@
     <!-- ==================== END LUXURY FOOTER (OPENAI DESIGN) ==================== -->
 
     <!-- Floating ScrollTop button -->
-    <button id="claude-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top" class="fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    <button id="claude-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top"
+        class="fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m18 15-6-6-6 6" />
+        </svg>
     </button>
 
     <script>
-        (function() {
+        (function () {
             const btn = document.getElementById('claude-scroll-top');
             const mobileToggle = document.getElementById('claude-mobile-toggle');
             const mobileMenu = document.getElementById('claude-mobile-menu');
@@ -718,7 +986,7 @@
             const closeIcon = document.getElementById('claude-close-icon');
 
             if (mobileToggle && mobileMenu) {
-                mobileToggle.addEventListener('click', function(e) {
+                mobileToggle.addEventListener('click', function (e) {
                     e.preventDefault();
                     const isHidden = mobileMenu.classList.contains('hidden');
                     if (isHidden) {
@@ -733,7 +1001,25 @@
                 });
             }
 
-            window.addEventListener('scroll', function() {
+            // Sticky / Fixed Header Handler
+            const header = document.getElementById('claude-header');
+            const spacer = document.getElementById('claude-header-spacer');
+            const topbar = document.querySelector('.bg-tea-800');
+
+            function updateFixedHeader() {
+                if (!header) return;
+                const topbarHeight = topbar ? topbar.offsetHeight : 38;
+                if (window.scrollY > topbarHeight) {
+                    header.classList.add('is-fixed');
+                    if (spacer) spacer.classList.add('active');
+                } else {
+                    header.classList.remove('is-fixed');
+                    if (spacer) spacer.classList.remove('active');
+                }
+            }
+
+            window.addEventListener('scroll', function () {
+                updateFixedHeader();
                 if (btn) {
                     if (window.scrollY > 400) {
                         btn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
@@ -744,6 +1030,8 @@
                     }
                 }
             }, { passive: true });
+
+            updateFixedHeader();
         })();
     </script>
 

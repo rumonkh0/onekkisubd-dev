@@ -33,8 +33,8 @@
         @endphp
 
         <!-- ==========================================================================
-             SECTION 1: HERO (Hero.tsx)
-             ========================================================================== -->
+                 SECTION 1: HERO (Hero.tsx)
+                 ========================================================================== -->
         <section id="home" class="relative overflow-hidden bg-tea-900">
             <!-- Background image -->
             <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
@@ -261,8 +261,8 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 2: FLASH SALES (FlashSales.tsx)
-             ========================================================================== -->
+                 SECTION 2: FLASH SALES (FlashSales.tsx)
+                 ========================================================================== -->
         <section id="flash-sales" class="relative bg-cream py-12 lg:py-16">
             <div class="mx-auto max-w-[1400px] px-4 sm:px-6">
                 <!-- Header -->
@@ -462,8 +462,8 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 3: NEW ARRIVALS (NewArrivals.tsx)
-             ========================================================================== -->
+                 SECTION 3: NEW ARRIVALS (NewArrivals.tsx)
+                 ========================================================================== -->
         <section id="new-arrivals" class="relative overflow-hidden bg-white py-12 lg:py-16">
             <!-- Floating decorative leaves -->
             <svg viewBox="0 0 64 64"
@@ -732,8 +732,8 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
-             ========================================================================== -->
+                 SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
+                 ========================================================================== -->
         <section id="features" class="border-y border-tea-100 bg-tea-50">
             <div class="mx-auto grid max-w-[1400px] grid-cols-2 gap-y-6 px-4 py-6 sm:px-6 lg:grid-cols-4">
                 <!-- 100% Natural Ingredients -->
@@ -809,8 +809,8 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 5: TOP CATEGORIES (TopCategories.tsx)
-             ========================================================================== -->
+                 SECTION 5: TOP CATEGORIES (TopCategories.tsx)
+                 ========================================================================== -->
         <section id="categories" class="relative overflow-hidden bg-sand py-16 lg:py-20">
             <!-- Background texture -->
             <div class="pointer-events-none absolute inset-0 opacity-70"
@@ -898,7 +898,7 @@
                     <h2 class="mt-2 font-serif text-5xl font-bold text-tea-950 sm:text-6xl">
                         Top <span class="text-gold-500">Categories</span>
                     </h2>
-                    <p class="mt-3 text-[11px] font-medium tracking-[0.3em] text-tea-900/60 uppercase">
+                    <p class="mt-3 text-[11px] font-medium tracking-[0.3em] text-tea-900/60 text-center uppercase">
                         Premium teas for a healthier, happier you
                     </p>
                     <div class="mt-3 flex items-center justify-center gap-2">
@@ -1073,8 +1073,8 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
-             ========================================================================== -->
+                 SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
+                 ========================================================================== -->
         <section id="blog" class="relative overflow-hidden bg-white py-16 lg:py-20">
             <!-- Floating decorative leaves -->
             <svg viewBox="0 0 64 64"
@@ -1166,22 +1166,42 @@
                 <!-- Carousel -->
                 <div class="relative">
                     <button type="button" onclick="scrollBlog(-1)" aria-label="Previous"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="blog-nav-btn -left-3 lg:-left-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-xl transition-all hover:scale-105 hover:bg-tea-700 hover:text-white md:flex">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m15 18-6-6 6-6" />
                         </svg>
                     </button>
                     <button type="button" onclick="scrollBlog(1)" aria-label="Next"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="blog-nav-btn -right-3 lg:-right-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-xl transition-all hover:scale-105 hover:bg-tea-700 hover:text-white md:flex">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m9 18 6-6-6-6" />
                         </svg>
                     </button>
 
+                    <style>
+                        .blog-nav-btn {
+                            z-index: 50 !important;
+                            position: absolute !important;
+                            box-shadow: 0 4px 14px rgba(10, 33, 27, 0.16) !important;
+                        }
+
+                        .blog-story-card {
+                            border: 1px solid rgba(216, 183, 124, 0.32) !important;
+                            box-shadow: 0 4px 20px rgba(10, 33, 27, 0.05) !important;
+                            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease !important;
+                        }
+
+                        .blog-story-card:hover {
+                            transform: translateY(-5px) !important;
+                            border-color: rgba(216, 183, 124, 0.75) !important;
+                            box-shadow: 0 14px 32px rgba(10, 33, 27, 0.09) !important;
+                        }
+                    </style>
+
                     <div id="blog-track"
-                        class="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth py-2">
+                        class="no-scrollbar relative z-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth py-6 px-1">
                         @php
                             $blogCategoryTags = ['HEALTH', 'LIFESTYLE', 'HISTORY', 'HEALTH', 'GUIDE'];
                             $blogItems = isset($blog) && $blog->count() > 0 ? $blog->take(5) : \App\Models\Blog::where('status', 1)->take(5)->get();
@@ -1203,7 +1223,7 @@
                             @endphp
 
                             <article data-card
-                                class="group flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-tea-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(20%-16px)]">
+                                class="group blog-story-card flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(20%-16px)]">
                                 <div class="relative aspect-[4/3] overflow-hidden">
                                     <a href="{{ $bUrl }}" class="block h-full w-full">
                                         <img src="{{ $blogImg }}" alt="{{ $bTitle }}" loading="lazy"

@@ -605,7 +605,7 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12 text-end">&copy;  Developed By <a href="https://danpite.tech">Danpite Tech</a></div>
+                        <div class="col-md-12 text-end">&copy;  Developed By <a href="https://www.facebook.com/profile.php?id=61574269515844">QuadPixel Labs</a></div>
                     </div>
                 </div>
             </footer>
