@@ -144,7 +144,7 @@
         align-items: center;
         gap: 10px;
         overflow-x: auto;
-        padding-bottom: 4px;
+        padding: 8px 4px 12px;
         scrollbar-width: none;
     }
     .tea-jump-nav::-webkit-scrollbar {
@@ -164,15 +164,19 @@
         font-weight: 500;
         text-decoration: none;
         white-space: nowrap;
-        transition: all 0.2s ease;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     }
-    .tea-jump-chip:hover,
+    .tea-jump-chip:hover {
+        background: rgba(205, 176, 106, 0.3);
+        color: #ffffff;
+        border-color: var(--tea-gold);
+    }
     .tea-jump-chip.active {
         background: var(--tea-gold) !important;
         color: var(--tea-dark) !important;
         border-color: var(--tea-gold) !important;
-        font-weight: 600;
-        transform: translateY(-2px);
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
     }
 
     /* Category Section */

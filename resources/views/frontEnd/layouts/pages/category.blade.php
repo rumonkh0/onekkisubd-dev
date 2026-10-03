@@ -135,8 +135,8 @@
         align-items: center;
         gap: 10px;
         overflow-x: auto;
-        padding-bottom: 6px;
-        margin-top: 20px;
+        padding: 6px 4px 10px;
+        margin-top: 18px;
         scrollbar-width: none;
     }
     .tea-subcat-nav::-webkit-scrollbar {
@@ -155,14 +155,13 @@
         font-weight: 500;
         text-decoration: none;
         white-space: nowrap;
-        transition: all 0.2s ease;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
     .tea-subcat-chip:hover, .tea-subcat-chip.active {
         background: var(--tea-gold);
         color: var(--tea-dark);
         border-color: var(--tea-gold);
         font-weight: 600;
-        transform: translateY(-1px);
     }
 
     /* Toolbar / Sort Bar */
