@@ -1445,6 +1445,10 @@
         </div>
     </div>
 
+    <!-- Quick View & Page Overlay Modals -->
+    <div id="custom-modal"></div>
+    <div id="page-overlay"></div>
+
     <script>
         var btn = document.querySelector('.whats-app-btn');
         if (btn) {
@@ -1580,9 +1584,11 @@
                 });
             }
         });
-        $(".cart_store").on("click", function () {
+        $(document).on("click", ".cart_store", function (e) {
+            e.preventDefault();
             var id = $(this).data("id");
-            var qty = $(this).parent().find("input").val();
+            var form = $(this).closest("form");
+            var qty = form.length ? form.find("input[name='qty']").val() : $(this).parent().find("input").val();
             if (id) {
                 $.ajax({
                     type: "GET",
@@ -1590,7 +1596,9 @@
                     url: "{{route('cart.store')}}",
                     success: function (data) {
                         if (data) {
-                            toastr.success('Success', 'Product add to cart succfully');
+                            toastr.success('পণ্যটি সফলভাবে কার্ট-এ যোগ হয়েছে!', 'সফল!');
+                            $("#custom-modal").hide();
+                            $("#page-overlay").hide();
                             return cart_count() + mobile_cart();
                         }
                     },

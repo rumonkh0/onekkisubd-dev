@@ -192,12 +192,29 @@ class FrontendController extends Controller
         return view('frontEnd.layouts.pages.shop', compact('homeproducts'));
     }
 
-    public function hotdeals()
+    public function hotdeals(Request $request)
     {
-
         $products = Product::where(['status' => 1, 'topsale' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->paginate(36);
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->with(['image', 'prosizes', 'procolors']);
+
+        if ($request->sort == 1) {
+            $products = $products->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 2) {
+            $products = $products->orderBy('created_at', 'asc');
+        } elseif ($request->sort == 3) {
+            $products = $products->orderBy('new_price', 'desc');
+        } elseif ($request->sort == 4) {
+            $products = $products->orderBy('new_price', 'asc');
+        } elseif ($request->sort == 5) {
+            $products = $products->orderBy('name', 'asc');
+        } elseif ($request->sort == 6) {
+            $products = $products->orderBy('name', 'desc');
+        } else {
+            $products = $products->latest();
+        }
+
+        $products = $products->paginate(36);
         return view('frontEnd.layouts.pages.hotdeals', compact('products'));
     }
 
@@ -372,7 +389,10 @@ class FrontendController extends Controller
 
     public function quickview(Request $request)
     {
-        $data['data'] = Product::where(['id' => $request->id, 'status' => 1])->with('images')->withCount('reviews')->first();
+        $data['data'] = Product::where(['id' => $request->id, 'status' => 1])
+            ->with(['image', 'images', 'category', 'brand'])
+            ->withCount('reviews')
+            ->first();
         $data = view('frontEnd.layouts.ajax.quickview', $data)->render();
         if ($data != '') {
             echo $data;
@@ -552,8 +572,33 @@ class FrontendController extends Controller
         }
     }
 
-    public function offers()
+    public function offers(Request $request)
     {
-        return view('frontEnd.layouts.pages.offers');
+        $products = Product::where('status', 1)
+            ->whereNotNull('old_price')
+            ->whereColumn('old_price', '>', 'new_price')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->with(['image', 'prosizes', 'procolors']);
+
+        if ($request->sort == 1) {
+            $products = $products->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 2) {
+            $products = $products->orderBy('created_at', 'asc');
+        } elseif ($request->sort == 3) {
+            $products = $products->orderBy('new_price', 'desc');
+        } elseif ($request->sort == 4) {
+            $products = $products->orderBy('new_price', 'asc');
+        } elseif ($request->sort == 5) {
+            $products = $products->orderBy('name', 'asc');
+        } elseif ($request->sort == 6) {
+            $products = $products->orderBy('name', 'desc');
+        } else {
+            $products = $products->latest();
+        }
+
+        $products = $products->paginate(36);
+        $coupons = \App\Models\Coupon::whereDate('validity', '>=', now()->toDateString())->get();
+
+        return view('frontEnd.layouts.pages.offers', compact('products', 'coupons'));
     }
 }
