@@ -486,9 +486,9 @@
 
 
 
-    <!-- ==================== LUXURY FOOTER (CLAUDE DESIGN) ==================== -->
-    <footer id="contact" class="claude-theme relative overflow-hidden bg-tea-950 text-white">
-        <!-- Decorative leaves -->
+    <!-- ==================== LUXURY FOOTER (OPENAI DESIGN) ==================== -->
+    <footer id="contact" class="claude-theme site-footer relative overflow-hidden" style="background-image: linear-gradient(90deg, rgba(9, 31, 25, 0.9) 0%, rgba(9, 31, 25, 0.92) 68%, rgba(9, 31, 25, 0.42) 100%), url('{{ asset('images/footer-bg.jpg') }}'); background-position: right center !important;">
+        <!-- Decorative leaves (retained as requested) -->
         <svg viewBox="0 0 64 64" class="pointer-events-none absolute right-[26%] top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow" fill="none" aria-hidden="true">
             <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#leafGradFoot1)" />
             <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -525,67 +525,65 @@
             </defs>
         </svg>
 
-        <!-- Corner tea image with radial mask -->
-        <div class="pointer-events-none absolute -bottom-10 -right-10 hidden h-[340px] w-[340px] lg:block xl:h-[420px] xl:w-[420px]">
-            <img src="{{ asset('images/footer-tea.jpg') }}" alt="" class="h-full w-full object-cover opacity-80" style="mask-image: radial-gradient(circle at 70% 70%, black 20%, transparent 68%); -webkit-mask-image: radial-gradient(circle at 70% 70%, black 20%, transparent 68%);" />
-        </div>
-
-        <div class="relative mx-auto max-w-[1400px] px-4 pt-16 pb-8 sm:px-6">
-            <div class="grid gap-12 md:grid-cols-2 xl:grid-cols-[1.25fr_1fr_1fr_1.35fr]">
+        <div class="footer-inner">
+            <div class="footer-columns">
                 <!-- Brand Column -->
-                <div id="about">
-                    <div class="flex items-center gap-3">
-                        <span class="relative flex h-14 w-14 shrink-0 items-center justify-center">
-                            <svg viewBox="0 0 56 56" class="h-14 w-14" fill="none">
-                                <circle cx="28" cy="28" r="26" stroke="#cdb06a" stroke-width="1.5" />
-                                <path d="M16 36c0-11 8-18 22-19-1 13-8 20-20 20 5-6 8-9 13-13" stroke="#e2cf9c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#2f6f37" />
-                            </svg>
+                <div class="footer-brand-column" id="about">
+                    <div class="brand-logo brand-logo-footer">
+                        <svg class="brand-mark" viewBox="0 0 82 82" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="brandGreenFooter" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0" stop-color="#78a729" />
+                                    <stop offset="0.55" stop-color="#235d2e" />
+                                    <stop offset="1" stop-color="#0c432e" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M57 12A32 32 0 1 0 64 69" fill="none" stroke="url(#brandGreenFooter)" stroke-width="12" stroke-linecap="round" />
+                            <path d="M44 17C50 4 62 2 76 3c-6 14-14 21-29 22-3-2-4-5-3-8Z" fill="#5d972b" />
+                            <path d="M46 55c-2-13 8-23 22-25-1 13-8 24-21 27Z" fill="#77a83b" />
+                            <path d="M45 57c6-9 12-14 21-21" fill="none" stroke="#e0e9a6" stroke-width="1.8" stroke-linecap="round" />
+                            <circle cx="57" cy="70" r="5" fill="#c9a343" />
+                        </svg>
+                        <span class="brand-words">
+                            <strong>অনেককিছু</strong>
+                            <small>Purity With Price &amp; Trust</small>
                         </span>
-                        <div class="leading-none">
-                            <p class="font-bengali text-[26px] font-bold text-white">অনেককিছু</p>
-                            <p class="mt-1 text-[10px] tracking-[0.15em] text-gold-300 uppercase">Purity With Price &amp; Trust</p>
-                        </div>
                     </div>
 
-                    <h3 class="mt-6 font-serif text-3xl font-semibold leading-tight text-white">
-                        Good Tea
-                        <br />
-                        <span class="text-gold-400">Better Living</span>
-                    </h3>
-                    <p class="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
-                        Bringing you the finest teas, herbs and natural flavours for a healthier, happier you.
-                    </p>
+                    <h2>Good Tea<br /><em>Better Living</em></h2>
+                    <div class="gold-line"></div>
+                    <p>Bringing you the finest teas, herbs and<br /> natural flavours for a healthier, happier you.</p>
 
-                    <ul class="mt-6 space-y-2.5 text-[13px] text-white/85">
-                        <li class="flex items-center gap-2.5">
-                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                            <span>{{ $contact->address ?? 'Najir Shankorpur, Jashore' }}</span>
-                        </li>
-                        <li class="flex items-center gap-2.5">
-                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                            <a href="mailto:{{ $contact->email ?? 'onekkisuponno@gmail.com' }}" class="text-white/85 hover:text-gold-300">{{ $contact->email ?? 'onekkisuponno@gmail.com' }}</a>
-                        </li>
-                        <li class="flex items-center gap-2.5">
-                            <svg class="h-4 w-4 text-gold-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                            <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}" class="text-white/85 hover:text-gold-300">{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}</a>
-                        </li>
-                    </ul>
+                    <address>
+                        <span>
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                            {{ $contact->address ?? 'Najir Shankorpur, Jashore' }}
+                        </span>
+                        <a href="mailto:{{ $contact->email ?? 'onnekkisuponno@gmail.com' }}">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            {{ $contact->email ?? 'onnekkisuponno@gmail.com' }}
+                        </a>
+                        <a href="tel:{{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            {{ $contact->phone ?? ($contact->hotline ?? '01850945080') }}
+                        </a>
+                    </address>
 
-                    <div class="mt-6 flex items-center gap-3">
+                    <div class="footer-socials">
                         @if(isset($socialicons) && $socialicons->count() > 0)
                             @foreach($socialicons as $value)
-                                <a href="{{ $value->link }}" target="_blank" aria-label="Social Link" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                                <a href="{{ $value->link }}" target="_blank" rel="noreferrer" aria-label="Social Link">
                                     <i class="{{ $value->icon }}"></i>
                                 </a>
                             @endforeach
                         @else
-                            <a href="#" aria-label="Facebook" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook">
                                 <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                             </a>
-                            <a href="#" aria-label="Instagram" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
                                 <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
                             </a>
-                            <a href="#" aria-label="YouTube" class="flex h-11 w-11 items-center justify-center rounded-full border border-gold-500/60 text-gold-300 transition-colors hover:bg-gold-500 hover:text-tea-950">
+                            <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="YouTube">
                                 <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                             </a>
                         @endif
@@ -593,164 +591,118 @@
                 </div>
 
                 <!-- Popular Links -->
-                <div>
-                    <h4 class="font-serif text-2xl font-semibold text-white">Popular Links</h4>
-                    <ul class="mt-6 space-y-3.5">
-                        <li>
-                            <a href="{{ url('/') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('page/about-us') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                About Us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('page/contact-us') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                Contact Us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url('page/order-procedure') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                Order Procedure
-                            </a>
-                        </li>
-                    </ul>
+                <div class="footer-link-column">
+                    <h3>Popular Links</h3>
+                    <div class="gold-line"></div>
+                    <nav class="flex flex-col space-y-3">
+                        <a href="{{ url('/') }}">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            Home
+                        </a>
+                        <a href="{{ url('page/about-us') }}">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            About Us
+                        </a>
+                        <a href="{{ url('page/contact-us') }}">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            Contact Us
+                        </a>
+                        <a href="{{ url('page/order-procedure') }}">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            Order Procedure
+                        </a>
+                    </nav>
                 </div>
 
                 <!-- Quick Links -->
-                <div>
-                    <h4 class="font-serif text-2xl font-semibold text-white">Quick Links</h4>
-                    <ul class="mt-6 space-y-3.5">
+                <div class="footer-link-column">
+                    <h3>Quick Links</h3>
+                    <div class="gold-line"></div>
+                    <nav class="flex flex-col space-y-3">
                         @php
                             $quick_links = App\Models\CreatePage::where('status', 1)->whereNotIn('slug', ['contact-us', 'about-us', 'order-procedure'])->get();
                         @endphp
                         @if($quick_links && $quick_links->count() > 0)
                             @foreach($quick_links as $page)
-                                <li>
-                                    <a href="{{ route('page', ['slug' => $page->slug]) }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                        <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                        {{ $page->name }}
-                                    </a>
-                                </li>
+                                <a href="{{ route('page', ['slug' => $page->slug]) }}">
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    {{ $page->name }}
+                                </a>
                             @endforeach
                         @else
-                            <li>
-                                <a href="{{ url('page/delivery-rules') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                    Delivery Rules
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('page/return-policy') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                    Return Policy
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('page/terms-conditions') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                    Terms &amp; Conditions
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('page/privacy-policy') }}" class="group inline-flex items-center gap-2 text-[13.5px] text-white/80 transition-colors hover:text-gold-300">
-                                    <svg class="h-3.5 w-3.5 text-gold-400 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                    Privacy Policy
-                                </a>
-                            </li>
+                            <a href="{{ url('page/delivery-rules') }}">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Delivery Rules
+                            </a>
+                            <a href="{{ url('page/return-policy') }}">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Return Policy
+                            </a>
+                            <a href="{{ url('page/terms-conditions') }}">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Terms &amp; Conditions
+                            </a>
+                            <a href="{{ url('page/privacy-policy') }}">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                Privacy Policy
+                            </a>
                         @endif
-                    </ul>
+                    </nav>
                 </div>
 
                 <!-- Stay Connected -->
-                <div class="relative">
-                    <h4 class="font-serif text-2xl font-semibold text-white">Stay Connected</h4>
-                    <p class="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
-                        Subscribe to get latest offers, new arrivals and tea tips.
-                    </p>
-
-                    <form action="#" method="POST" onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');" class="mt-5 flex max-w-sm items-center rounded-full bg-white/10 p-1 ring-1 ring-white/15 focus-within:ring-gold-400">
-                        <svg class="ml-3 h-4 w-4 shrink-0 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        <input type="email" placeholder="Your email address" class="w-full bg-transparent px-3 py-2 text-[13px] text-white outline-none placeholder:text-white/50" />
-                        <button type="submit" class="shrink-0 rounded-full bg-gold-400 px-5 py-2 text-[13px] font-semibold text-tea-950 transition-colors hover:bg-gold-300">
-                            Subscribe
-                        </button>
+                <div class="footer-connect-column">
+                    <h3>Stay Connected</h3>
+                    <div class="gold-line"></div>
+                    <p>Subscribe to get latest offers, new arrivals<br /> and tea tips.</p>
+                    <form class="newsletter-form" action="#" method="POST" onsubmit="event.preventDefault(); toastr.success('Thank you for subscribing!');">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <input type="email" placeholder="Your email address" required aria-label="Email address" />
+                        <button type="submit">Subscribe</button>
                     </form>
 
-                    <ul class="mt-8 grid max-w-sm grid-cols-4">
-                        <li class="flex flex-col items-center py-1 text-center">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                            </span>
-                            <span class="mt-2 text-[11px] leading-tight text-white/85">
-                                100%<br />Natural
-                            </span>
+                    <ul class="footer-benefits">
+                        <li>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                            <span>100%<br />Natural</span>
                         </li>
-                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-                            </span>
-                            <span class="mt-2 text-[11px] leading-tight text-white/85">
-                                Fast<br />Delivery
-                            </span>
+                        <li>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                            <span>Fast<br />Delivery</span>
                         </li>
-                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-                            </span>
-                            <span class="mt-2 text-[11px] leading-tight text-white/85">
-                                Secure<br />Payment
-                            </span>
+                        <li>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                            <span>Secure<br />Payment</span>
                         </li>
-                        <li class="flex flex-col items-center py-1 text-center border-l border-white/15">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/60 text-gold-300">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                            </span>
-                            <span class="mt-2 text-[11px] leading-tight text-white/85">
-                                Loved by<br />Tea Lovers
-                            </span>
+                        <li>
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                            <span>Loved by<br />Tea Lovers</span>
                         </li>
                     </ul>
 
-                    <p class="mt-6 -rotate-6 font-script text-3xl leading-tight text-white/60 xl:absolute xl:right-0 xl:top-[68%] xl:mt-0">
-                        A Cup
-                        <br />
-                        A Better
-                        <br />
-                        You <span class="text-gold-300">♡</span>
-                    </p>
+                    <span class="footer-script">
+                        A Cup<br />A Better<br />You
+                    </span>
                 </div>
             </div>
 
             <!-- Bottom bar -->
-            <div class="mt-14 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-[12.5px] text-white/70 sm:flex-row">
-                <p>
+            <div class="footer-bottom" style="background: transparent !important;">
+                <span>
                     © {{ date('Y') }} {{ $generalsetting->name ?? 'OnekkisuBD' }} | All rights reserved | Developed by
-                    <a href="https://danpite.tech/" target="_blank" class="font-semibold text-white hover:text-gold-300">
-                        Danpite.Tech
-                    </a>
-                </p>
-                <p class="flex items-center gap-2">
+                    <strong>
+                        <a href="https://danpite.tech/" target="_blank">Danpite.Tech</a>
+                    </strong>
+                </span>
+                <span>
                     Drink Good Tea
-                    <svg viewBox="0 0 64 64" class="h-5 w-5 rotate-45 pointer-events-none" fill="none">
-                        <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2" stroke-linecap="round" />
-                        <path d="M33 22c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#468a47" />
-                        <path d="M34 36c9-1 15-7 16-16-9 1-15 7-16 16z" fill="#2f6f37" />
-                        <path d="M32 50c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#6ba367" />
-                        <path d="M33 22l-9-9M34 36l9-9M32 50l-9-9" stroke="#e5efe2" stroke-width="1" stroke-linecap="round" />
-                    </svg>
-                    <span class="text-gold-300">Live a Better Life</span>
-                </p>
+                    <svg class="h-4.5 w-4.5 inline-block text-[#418b50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+                    Live a Better Life
+                </span>
             </div>
         </div>
     </footer>
-    <!-- ==================== END LUXURY FOOTER (CLAUDE DESIGN) ==================== -->
+    <!-- ==================== END LUXURY FOOTER (OPENAI DESIGN) ==================== -->
 
     <!-- Floating ScrollTop button -->
     <button id="claude-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top" class="fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
@@ -1171,7 +1123,7 @@
     <button type="button" class="whats-app-btn">
         <i class="fa-brands fa-whatsapp"></i>
         <i class="fa-solid fa-x"></i>
-        <div class="wa__btn_popup_txt "><span>Need <br> Help?</span></div>
+        <!-- <div class="wa__btn_popup_txt "><span>Need <br> Help?</span></div> -->
     </button>
 
     <!-- Modal -->
