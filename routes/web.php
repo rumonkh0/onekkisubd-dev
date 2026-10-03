@@ -40,7 +40,9 @@ use App\Http\Controllers\Admin\MapController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\WishlistController;
 
-Auth::routes();
+Route::group(['prefix' => 'admin'], function () {
+    Auth::routes();
+});
 
 Route::get('/cc', function () {
     Artisan::call('config:clear');
