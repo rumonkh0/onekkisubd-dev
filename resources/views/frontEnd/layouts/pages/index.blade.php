@@ -399,7 +399,7 @@
                                     </a>
                                 </h3>
                                 @if($bnName)
-                                    <p class="font-bengali text-[12px] text-tea-900/70">{{ $bnName }}</p>
+                                    <p class="font-bengali text-center text-[12px] text-tea-900/70">{{ $bnName }}</p>
                                 @endif
 
                                 <div class="mt-2 flex items-center justify-center gap-2">
@@ -665,7 +665,7 @@
                                             </a>
                                         </h3>
                                         @if($bnName)
-                                            <p class="font-bengali text-[12px] text-tea-900/70">{{ $bnName }}</p>
+                                            <p class="font-bengali text-center text-[12px] text-tea-900/70">{{ $bnName }}</p>
                                         @endif
 
                                         <!-- Rating -->
