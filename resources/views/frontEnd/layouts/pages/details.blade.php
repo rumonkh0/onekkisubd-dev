@@ -1163,23 +1163,102 @@
             border-color: var(--tea-dark);
         }
 
-        /* Carousel Navigation Controls */
-        .owl-theme .owl-nav [class*="owl-"] {
+        /* Carousel Navigation Controls & Shadow Clipping Fix */
+        .tea-related-section {
+            position: relative;
+            overflow: visible;
+        }
+        .related_slider {
+            position: relative;
+            padding: 4px 0 16px;
+        }
+        .related_slider .owl-stage-outer {
+            padding-top: 14px;
+            padding-bottom: 28px;
+            margin-top: -14px;
+            margin-bottom: -14px;
+            overflow: hidden;
+        }
+        .related_slider .owl-stage {
+            display: flex;
+        }
+        .related_slider .owl-item {
+            display: flex;
+            height: auto;
+        }
+        .related_slider .tea-product-card {
+            margin: 6px 4px 14px 4px;
+            width: 100%;
+        }
+        .related_slider .owl-nav {
+            display: block !important;
+            margin: 0 !important;
+        }
+        .related_slider .owl-nav button.owl-prev,
+        .related_slider .owl-nav button.owl-next {
+            position: absolute !important;
+            top: 45% !important;
+            transform: translateY(-50%) !important;
+            width: 44px !important;
+            height: 44px !important;
             background: #ffffff !important;
             color: var(--tea-dark) !important;
-            border: 1px solid var(--tea-border) !important;
-            width: 36px;
-            height: 36px;
+            border: 1px solid rgba(23, 63, 44, 0.15) !important;
             border-radius: 50% !important;
-            box-shadow: 0 3px 10px rgba(10, 33, 27, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(10, 33, 27, 0.12) !important;
             display: inline-flex !important;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            z-index: 10 !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
-        .owl-theme .owl-nav [class*="owl-"]:hover {
+        .related_slider .owl-nav button.owl-prev {
+            left: -22px !important;
+        }
+        .related_slider .owl-nav button.owl-next {
+            right: -22px !important;
+        }
+        .related_slider .owl-nav button.owl-prev:hover,
+        .related_slider .owl-nav button.owl-next:hover {
             background: var(--tea-dark) !important;
             color: var(--tea-gold) !important;
+            border-color: var(--tea-dark) !important;
+            transform: translateY(-50%) scale(1.08) !important;
+            box-shadow: 0 8px 24px rgba(10, 33, 27, 0.22) !important;
+        }
+        .related_slider .owl-nav button.owl-prev svg,
+        .related_slider .owl-nav button.owl-next svg {
+            width: 20px;
+            height: 20px;
+        }
+        @media (max-width: 991px) {
+            .related_slider .owl-nav button.owl-prev {
+                left: -10px !important;
+            }
+            .related_slider .owl-nav button.owl-next {
+                right: -10px !important;
+            }
+        }
+        .related_slider .owl-dots {
+            text-align: center;
+            margin-top: 14px;
+        }
+        .related_slider .owl-dot span {
+            width: 8px;
+            height: 8px;
+            margin: 4px;
+            background: rgba(23, 63, 44, 0.2) !important;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.25s ease;
+        }
+        .related_slider .owl-dot.active span {
+            background: var(--tea-dark) !important;
+            width: 22px;
+            border-radius: 10px;
         }
     </style>
 @endpush
@@ -1737,12 +1816,16 @@
                 loop: true,
                 dots: true,
                 nav: true,
+                navText: [
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+                ],
                 autoplay: true,
                 autoplayTimeout: 5000,
                 autoplayHoverPause: true,
                 responsive: {
-                    0: { items: 2, margin: 8 },
-                    600: { items: 3, margin: 12 },
+                    0: { items: 2, margin: 10 },
+                    600: { items: 3, margin: 14 },
                     1024: { items: 5, margin: 16 }
                 }
             });
