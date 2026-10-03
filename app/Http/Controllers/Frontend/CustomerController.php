@@ -625,16 +625,29 @@ class CustomerController extends Controller
         $phone = $request->phone;
         $invoice_id = $request->invoice_id;
 
-        if ($phone != null && $invoice_id == null) {
+        if ($phone && !$invoice_id) {
             $order = DB::table('orders')
                 ->join('shippings', 'orders.id', '=', 'shippings.order_id')
-                ->where(['shippings.phone' => $request->phone])
+                ->where(['shippings.phone' => $phone])
+                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
+                ->orderBy('orders.id', 'desc')
                 ->get();
         } else if ($invoice_id && $phone) {
             $order = DB::table('orders')
                 ->join('shippings', 'orders.id', '=', 'shippings.order_id')
-                ->where(['orders.invoice_id' => $request->invoice_id, 'shippings.phone' => $request->phone])
+                ->where(['orders.invoice_id' => $invoice_id, 'shippings.phone' => $phone])
+                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
+                ->orderBy('orders.id', 'desc')
                 ->get();
+        } else if ($invoice_id && !$phone) {
+            $order = DB::table('orders')
+                ->join('shippings', 'orders.id', '=', 'shippings.order_id')
+                ->where(['orders.invoice_id' => $invoice_id])
+                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
+                ->orderBy('orders.id', 'desc')
+                ->get();
+        } else {
+            $order = collect();
         }
 
         if ($order->count() == 0) {
