@@ -1414,72 +1414,23 @@
             </div>
         </div>
 
-        <!-- Tabs Section: Details, Reviews & Video -->
-        <section class="tea-tabs-section" id="reviews-section">
-            <div class="tea-tabs-nav">
-                <a href="#description-content" class="tea-tab-link active">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    বিস্তারিত ও বৈশিষ্ট্য (Description)
-                </a>
-                <a href="#reviews-content" class="tea-tab-link">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    গ্রাহকদের রিভিউ <span class="tea-tab-badge">{{ $reviews->count() }}</span>
-                </a>
+        <!-- Description & Video Section -->
+        <section class="tea-description-section" id="description-section">
+            <div class="tea-section-header text-start mb-4">
+                <span class="tea-section-subtitle">Craft & Details</span>
+                <h2 class="tea-section-title" style="font-size: 26px;">বিস্তারিত ও বৈশিষ্ট্য (Description)</h2>
+                <div class="tea-divider-leaf" style="justify-content: flex-start;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path></svg>
+                </div>
             </div>
 
             <div class="row">
-                <!-- Description Tab Content -->
+                <!-- Description Body -->
                 <div class="col-lg-{{ isset($details->pro_video) && !empty($details->pro_video) ? '8' : '12' }}">
-                    <div class="tea-tab-content-card tea-tab-pane active" id="description-content">
+                    <div class="tea-tab-content-card">
                         <div class="tea-description-body">
                             {!! $details->description !!}
                         </div>
-                    </div>
-
-                    <!-- Customer Reviews Card -->
-                    <div class="tea-tab-content-card tea-tab-pane" id="reviews-content">
-                        <div class="tea-reviews-header">
-                            <div>
-                                <h3>Verified Customer Reviews</h3>
-                                <p class="text-muted m-0" style="font-size: 13px;">Real experiences from customers who tasted this authentic blend.</p>
-                            </div>
-                            <button type="button" class="tea-btn-write-review" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                                Write a Review
-                            </button>
-                        </div>
-
-                        @if ($reviews->count() > 0)
-                            <div class="tea-reviews-list">
-                                @foreach ($reviews as $review)
-                                    <div class="tea-review-card">
-                                        <div class="tea-review-author">
-                                            <div class="tea-author-avatar">
-                                                @if ($review->image)
-                                                    <img src="{{ asset($review->image) }}" alt="{{ $review->name }}">
-                                                @else
-                                                    {{ strtoupper(substr($review->name, 0, 1)) }}
-                                                @endif
-                                            </div>
-                                            <div class="tea-author-info">
-                                                <strong>{{ $review->name }}</strong>
-                                                <small>{{ $review->created_at->format('d M, Y') }} • Verified Buyer</small>
-                                            </div>
-                                            <div class="tea-stars ms-auto">
-                                                {!! str_repeat('<i class="fa-solid fa-star"></i>', $review->ratting) !!}
-                                            </div>
-                                        </div>
-                                        <p class="tea-review-text">{{ $review->review }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="tea-empty-reviews">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
-                                <p style="font-size: 15px; font-weight: 600; color: var(--tea-dark);">No reviews yet for this tea.</p>
-                                <p style="font-size: 13px;">Be the first tea lover to share your brewing experience and taste notes!</p>
-                            </div>
-                        @endif
                     </div>
                 </div>
 
@@ -1495,6 +1446,57 @@
                                 <iframe src="https://www.youtube.com/embed/{{ $details->pro_video }}" title="Tea Video Showcase" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                             </div>
                         </div>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        <!-- Customer Reviews Section (Directly under Description) -->
+        <section class="tea-reviews-section mt-5" id="reviews-section">
+            <div class="tea-tab-content-card">
+                <div class="tea-reviews-header">
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h3 class="m-0">Customer Reviews (গ্রাহকদের রিভিউ)</h3>
+                            <span class="tea-tab-badge">{{ $reviews->count() }} Reviews</span>
+                        </div>
+                        <p class="text-muted m-0 mt-1" style="font-size: 13px;">Real experiences from customers who tasted this authentic blend.</p>
+                    </div>
+                    <button type="button" class="tea-btn-write-review" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        Write a Review (রিভিউ দিন)
+                    </button>
+                </div>
+
+                @if ($reviews->count() > 0)
+                    <div class="tea-reviews-list">
+                        @foreach ($reviews as $review)
+                            <div class="tea-review-card">
+                                <div class="tea-review-author">
+                                    <div class="tea-author-avatar">
+                                        @if ($review->image)
+                                            <img src="{{ asset($review->image) }}" alt="{{ $review->name }}">
+                                        @else
+                                            {{ strtoupper(substr($review->name, 0, 1)) }}
+                                        @endif
+                                    </div>
+                                    <div class="tea-author-info">
+                                        <strong>{{ $review->name }}</strong>
+                                        <small>{{ $review->created_at->format('d M, Y') }} • Verified Buyer</small>
+                                    </div>
+                                    <div class="tea-stars ms-auto">
+                                        {!! str_repeat('<i class="fa-solid fa-star"></i>', $review->ratting) !!}
+                                    </div>
+                                </div>
+                                <p class="tea-review-text">{{ $review->review }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="tea-empty-reviews">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+                        <p style="font-size: 15px; font-weight: 600; color: var(--tea-dark);">No reviews yet for this tea.</p>
+                        <p style="font-size: 13px;">Be the first tea lover to share your brewing experience and taste notes!</p>
                     </div>
                 @endif
             </div>
@@ -1663,22 +1665,11 @@
                 });
             }
 
-            // Tab Switching (Description vs Reviews)
-            $(".tea-tab-link").on("click", function(e) {
-                e.preventDefault();
-                $(".tea-tab-link").removeClass("active");
-                $(this).addClass("active");
-                var target = $(this).attr("href");
-                $(".tea-tab-pane").removeClass("active");
-                $(target).addClass("active");
-            });
-
-            // Smooth scroll and open reviews tab from top rating summary
+            // Smooth scroll to reviews section from top rating summary
             $(".tea-rating-count").on("click", function(e) {
                 e.preventDefault();
-                $('.tea-tab-link[href="#reviews-content"]').trigger("click");
                 $("html, body").animate({
-                    scrollTop: $("#reviews-section").offset().top - 120
+                    scrollTop: $("#reviews-section").offset().top - 90
                 }, 400);
             });
         });

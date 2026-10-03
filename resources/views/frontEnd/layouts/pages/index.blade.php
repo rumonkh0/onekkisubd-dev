@@ -922,7 +922,7 @@
                                 'name' => 'Fruit & Flower Tea',
                                 'count' => 24,
                                 'image' => asset('images/categories/cat-1.jpg'),
-                                'accent' => 'bg-rose-300',
+                                'tone' => 'pink',
                                 'slug' => 'fruit-&-flower-(চা)',
                                 'icon' => 'flower',
                             ],
@@ -930,7 +930,7 @@
                                 'name' => 'Black Tea',
                                 'count' => 18,
                                 'image' => asset('images/categories/cat-2.jpg'),
-                                'accent' => 'bg-amber-800',
+                                'tone' => 'sand',
                                 'slug' => 'black-tea(দুধ-চালাল-চা)',
                                 'icon' => 'coffee',
                             ],
@@ -938,7 +938,7 @@
                                 'name' => 'Green Tea',
                                 'count' => 20,
                                 'image' => asset('images/categories/cat-3.jpg'),
-                                'accent' => 'bg-tea-400',
+                                'tone' => 'sage',
                                 'slug' => 'green-tea-(গ্রিন-টি-)',
                                 'icon' => 'leaf',
                             ],
@@ -946,50 +946,159 @@
                                 'name' => 'Roselle Tea',
                                 'count' => 16,
                                 'image' => asset('images/categories/cat-4.jpg'),
-                                'accent' => 'bg-red-400',
+                                'tone' => 'rose',
                                 'slug' => 'roselle-tea(চাশরবত)',
-                                'icon' => 'cherry',
+                                'icon' => 'flower',
                             ],
                             [
                                 'name' => 'Masala',
                                 'count' => 12,
                                 'image' => asset('images/categories/cat-5.jpg'),
-                                'accent' => 'bg-gold-500',
+                                'tone' => 'ochre',
                                 'slug' => 'masala(মসলা)',
-                                'icon' => 'sparkles',
+                                'icon' => 'leaf',
                             ],
                             [
                                 'name' => 'Tea Jar & Accessories',
                                 'count' => 10,
                                 'image' => asset('images/categories/cat-6.jpg'),
-                                'accent' => 'bg-stone-500',
+                                'tone' => 'olive',
                                 'slug' => 'tea-jar-500ml-(সেল🔥)',
-                                'icon' => 'sprout',
+                                'icon' => 'coffee',
                             ],
                         ];
                     @endphp
+
+                    <style>
+                        .openai-category-item {
+                            min-height: 255px;
+                            min-width: 0;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            flex-direction: column;
+                            padding: 6px 6px 12px;
+                            border: 0;
+                            border-radius: 110px 110px 42px 42px;
+                            background: rgba(255, 255, 255, 0.76);
+                            box-shadow: 0 9px 22px rgba(42, 45, 34, 0.075);
+                            color: #1c2922;
+                            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+                            text-decoration: none !important;
+                        }
+
+                        .openai-category-item:hover {
+                            transform: translateY(-7px);
+                            box-shadow: 0 15px 28px rgba(42, 64, 39, 0.16);
+                            color: #173f2c;
+                        }
+
+                        .openai-category-photo {
+                            width: 100%;
+                            max-width: 160px;
+                            aspect-ratio: 1 / 1;
+                            border-radius: 50% !important;
+                            padding: 4px;
+                            border: 1px solid #d8d2c4;
+                            background: #ffffff;
+                            overflow: hidden;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto;
+                            flex: none;
+                        }
+
+                        .openai-category-photo img {
+                            width: 100% !important;
+                            height: 100% !important;
+                            border-radius: 50% !important;
+                            object-fit: cover !important;
+                            object-position: center !important;
+                            display: block;
+                            transition: transform 0.5s ease;
+                        }
+
+                        .openai-category-item:hover .openai-category-photo img {
+                            transform: scale(1.08);
+                        }
+
+                        .openai-category-icon {
+                            width: 38px;
+                            height: 38px;
+                            margin-top: -20px;
+                            position: relative;
+                            z-index: 2;
+                            border-radius: 50%;
+                            color: #fff;
+                            display: grid;
+                            place-items: center;
+                            box-shadow: 0 3px 10px rgba(30, 40, 25, 0.18);
+                            border: 2px solid #ffffff;
+                        }
+
+                        .openai-category-icon.pink { background: #edaaa8; }
+                        .openai-category-icon.sand { background: #d9c49e; }
+                        .openai-category-icon.sage { background: #879f7b; }
+                        .openai-category-icon.rose { background: #c97878; }
+                        .openai-category-icon.ochre { background: #d5ad65; }
+                        .openai-category-icon.olive { background: #8c9c67; }
+
+                        .openai-category-item strong {
+                            font-family: var(--serif, "Playfair Display", Georgia, serif);
+                            font-size: 15px;
+                            font-weight: 700;
+                            line-height: 1.15;
+                            margin-top: 7px;
+                            text-align: center;
+                            color: #173528;
+                            padding: 0 4px;
+                        }
+
+                        .openai-category-item small {
+                            font-size: 11px;
+                            color: #8c968c;
+                            margin-top: 3px;
+                            font-weight: 500;
+                        }
+
+                        .openai-category-arrow {
+                            color: #c9c3b6;
+                            margin-top: 6px;
+                            width: 16px;
+                            height: 16px;
+                            transition: transform 0.2s, color 0.2s;
+                        }
+
+                        .openai-category-item:hover .openai-category-arrow {
+                            transform: translateX(3px);
+                            color: #d8b77c;
+                        }
+                    </style>
 
                     @foreach($categoriesList as $cat)
                         @php
                             $dbCategory = isset($frontcategory) ? $frontcategory->firstWhere('slug', $cat['slug']) : null;
                             $catUrl = $dbCategory ? route('category', $dbCategory->slug) : url('category/' . $cat['slug']);
                         @endphp
-                        <a href="{{ $catUrl }}"
-                            class="group relative flex flex-col items-center rounded-t-full rounded-b-3xl border border-white/70 bg-white/60 p-2 pb-6 text-center shadow-card backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover">
-                            <div class="relative w-full overflow-hidden rounded-t-full rounded-b-2xl">
-                                <div class="aspect-[4/5] w-full">
-                                    <img src="{{ $cat['image'] }}" alt="{{ $cat['name'] }}" loading="lazy"
-                                        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                </div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-tea-950/40 via-transparent to-transparent">
-                                </div>
+                        <a href="{{ $catUrl }}" class="group openai-category-item">
+                            <div class="openai-category-photo">
+                                <img src="{{ $cat['image'] }}" alt="{{ $cat['name'] }}" loading="lazy" />
                             </div>
 
-                            <!-- Icon medallion -->
-                            <span
-                                class="relative -mt-6 flex h-12 w-12 items-center justify-center rounded-full border-4 border-white text-white shadow-md {{ $cat['accent'] }}">
-                                @if($cat['icon'] === 'flower')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            <!-- Icon Badge -->
+                            <span class="openai-category-icon {{ $cat['tone'] }}">
+                                @if($cat['icon'] === 'coffee')
+                                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                                        <line x1="6" x2="6" y1="2" y2="4" />
+                                        <line x1="10" x2="10" y1="2" y2="4" />
+                                        <line x1="14" x2="14" y1="2" y2="4" />
+                                    </svg>
+                                @elseif($cat['icon'] === 'flower')
+                                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="3" />
                                         <path
@@ -999,58 +1108,20 @@
                                         <path d="M16.5 12H15" />
                                         <path d="M12 16.5V15" />
                                     </svg>
-                                @elseif($cat['icon'] === 'coffee')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-                                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-                                        <line x1="6" x2="6" y1="2" y2="4" />
-                                        <line x1="10" x2="10" y1="2" y2="4" />
-                                        <line x1="14" x2="14" y1="2" y2="4" />
-                                    </svg>
-                                @elseif($cat['icon'] === 'leaf')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                @else
+                                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path
                                             d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
                                         <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                                     </svg>
-                                @elseif($cat['icon'] === 'cherry')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3-2.5-2-5 .24-5 3Z" />
-                                        <path d="M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3-2.5-2-5 .24-5 3Z" />
-                                        <path d="M7 14c3.22-2.91 4.29-8.75 5-12 1.66 2.38 4.94 9 5 12" />
-                                        <path d="M22 9c-4.29 0-7.14-2.33-10-7 5.71 0 10 4.67 10 7Z" />
-                                    </svg>
-                                @elseif($cat['icon'] === 'sparkles')
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-                                        <path d="M20 3v4" />
-                                        <path d="M22 5h-4" />
-                                        <path d="M4 17v2" />
-                                        <path d="M5 18H3" />
-                                    </svg>
-                                @else
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M7 20h10" />
-                                        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
-                                        <path
-                                            d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
-                                        <path
-                                            d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
-                                    </svg>
                                 @endif
                             </span>
 
-                            <h3 class="mt-3 font-serif text-lg font-semibold text-tea-950">{{ $cat['name'] }}</h3>
-                            <p class="mt-0.5 text-[12px] text-tea-900/60">{{ $cat['count'] }} Products</p>
-                            <svg class="mt-3 h-4 w-4 text-gold-500 transition-transform group-hover:translate-x-1"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
+                            <strong>{{ $cat['name'] }}</strong>
+                            <small>{{ $cat['count'] }} Products</small>
+                            <svg class="openai-category-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 12h14" />
                                 <path d="m12 5 7 7-7 7" />
                             </svg>
