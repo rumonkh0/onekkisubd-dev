@@ -702,11 +702,11 @@
                         </div>
                     </div>
 
-                    <!-- STEP 2: Payment Gateway Selection -->
+                    <!-- STEP 3: Payment Gateway Selection -->
                     <div class="tea-checkout-card">
                         <div class="tea-card-header-styled">
                             <h5>
-                                <span class="step-num">২</span>
+                                <span class="step-num">৩</span>
                                 পেমেন্ট পদ্ধতি (Payment Method)
                             </h5>
                             <span class="badge bg-light text-success border px-2 py-1" style="font-size: 11px;">নিরাপদ পেমেন্ট</span>
@@ -772,7 +772,7 @@
                     <div class="tea-checkout-card">
                         <div class="tea-card-header-styled">
                             <h5>
-                                <span class="step-num">৩</span>
+                                <span class="step-num">২</span>
                                 আপনার অর্ডার (Order Summary)
                             </h5>
                             <span class="checkout-summary-badge" id="order_summary_badge">
