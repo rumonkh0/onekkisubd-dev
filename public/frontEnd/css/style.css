@@ -2397,14 +2397,11 @@ li.recent_pro {
 /*====  CHECKOUT CSS START ====  */
 
 .cartlist img {
-    height: 30px;
-    width: 30px;
+    max-width: 100%;
 }
 
 .cartlist span {
-    height: 20px;
-    width: 20px;
-    border-radius: 50px;
+    display: inline;
 }
 
 .chheckout-section {
