@@ -123,6 +123,8 @@
         /* Fixed Header Styles */
         #claude-header {
             width: 100%;
+            position: relative;
+            z-index: 1000;
             transition: box-shadow 0.25s ease, background-color 0.25s ease;
         }
 
