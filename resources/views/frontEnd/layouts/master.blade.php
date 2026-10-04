@@ -810,11 +810,11 @@
                         </div>
                     </div>
                     <div class="group relative">
-                        <a href="{{ url('/') }}#features"
-                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
-                            Health Benefits
+                        <a href="{{ route('customer.order_track') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium transition-colors hover:text-tea-600 2xl:text-[13.5px] {{ request()->routeIs('customer.order_track*') ? 'text-tea-700' : 'text-tea-900' }}">
+                            Order Track
                             <span
-                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 w-0 group-hover:w-full"></span>
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-gold-500 transition-all duration-300 {{ request()->routeIs('customer.order_track*') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                         </a>
                     </div>
                     <div class="group relative">
@@ -1059,9 +1059,8 @@
                     <a href="{{ url('/') }}#categories"
                         class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Tea
                         Collection</a>
-                    <a href="{{ url('/') }}#features"
-                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Health
-                        Benefits</a>
+                    <a href="{{ route('customer.order_track') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Order Track</a>
                     <a href="{{ url('page/about-us') }}"
                         class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">About
                         Us</a>
@@ -1571,12 +1570,12 @@
 
 
 
+    {{-- Mobile Bottom Footer Menu Commented Out
     <div class="footer_nav">
         <ul>
             <li>
                 <a href="{{ url('/') }}">
                     <span>
-                        {{-- <i class="fa-solid fa-bars"></i> --}}
                         <img src="{{ asset('public/home.png') }}" alt="" width="30">
                     </span>
 
@@ -1586,7 +1585,6 @@
             <li>
                 <a class="toggle">
                     <span>
-                        {{-- <i class="fa-regular fa-heart" style=" width: 20px; height: 20px;"></i> --}}
                         <img src="{{ asset('public/menu.png') }}" alt="" width="30">
 
                     </span>
@@ -1600,15 +1598,12 @@
                         <img src="{{ asset('public/live-chat.png') }}" alt="" width="50">
 
                     </span>
-                    {{-- <span class="text-dark"><i class="fa-solid fa-shop"></i></span> <span
-                        class="text-dark">Shop</span> --}}
                 </a>
             </li>
 
             <li>
                 <a href="{{route('customer.order_track')}}">
                     <span>
-                        {{-- <i class="fa-solid fa-cart-shopping" style=" width: 20px; height: 20px;"></i> --}}
                         <img src="{{ asset('public/truck.png') }}" alt="" width="30">
 
                     </span>
@@ -1618,7 +1613,6 @@
                 <li>
                     <a href="{{url('/')}}">
                         <span>
-                            {{-- <i class="fa-solid fa-user"></i> --}}
                             <img src="{{ asset('public/truck.png') }}" alt="" width="30">
                         </span>
 
@@ -1628,7 +1622,6 @@
                 <li>
                     <a href="{{url('/')}}">
                         <span>
-                            {{-- <i class="fa-solid fa-user" style=" width: 20px; height: 20px;"></i> --}}
                             <img src="{{ asset('public/back.png') }}" alt="" width="30">
                         </span>
 
@@ -1637,6 +1630,7 @@
             @endif
         </ul>
     </div>
+    --}}
     {{-- <div class="footer_nav">
         <ul>
             <li>
@@ -2443,15 +2437,28 @@
             });
         });
     </script>
+    <!-- Mobile Filter Backdrop Overlay -->
+    <div class="tea-filter-backdrop"></div>
+
     <script>
-        $(".filter_btn").click(function () {
+        $(".filter_btn").click(function (e) {
+            e.preventDefault();
             $(".filter_sidebar").addClass('active');
+            $(".tea-filter-backdrop").addClass('active');
             $("body").css("overflow-y", "hidden");
-        })
-        $(".filter_close").click(function () {
+        });
+        $(".filter_close, .tea-filter-backdrop").click(function () {
             $(".filter_sidebar").removeClass('active');
+            $(".tea-filter-backdrop").removeClass('active');
             $("body").css("overflow-y", "auto");
-        })
+        });
+        $(document).keyup(function(e) {
+            if (e.key === "Escape") {
+                $(".filter_sidebar").removeClass('active');
+                $(".tea-filter-backdrop").removeClass('active');
+                $("body").css("overflow-y", "auto");
+            }
+        });
     </script>
 
     <script>

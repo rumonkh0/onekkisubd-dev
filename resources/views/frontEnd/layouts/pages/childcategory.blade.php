@@ -790,9 +790,21 @@
             border-bottom: 1.5px solid var(--tea-border);
             cursor: pointer;
         }
-        .filter_close i {
-            font-size: 18px;
-            color: #ef4444;
+        .filter_close i.fa-xmark {
+            font-size: 16px;
+            color: #4b5563;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f4f8f2;
+            transition: all 0.2s;
+        }
+        .filter_close:hover i.fa-xmark {
+            background: #fee2e2;
+            color: #dc2626;
         }
     }
 

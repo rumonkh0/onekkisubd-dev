@@ -64,52 +64,76 @@
         position: fixed;
         visibility: hidden;
         opacity: 0;
-        top: 30px;
-        transition: 0.35s all;
-        background: #df0c0c;
+        top: 0;
+        left: -340px;
+        width: 310px;
+        max-width: 86vw;
+        height: 100vh;
+        height: 100dvh;
+        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+        background: #ffffff;
+        z-index: 99999;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: 10px 0 35px rgba(10, 33, 27, 0.25);
+        padding: 20px 16px 40px;
     }
     .filter_sidebar.active {
-        background: #da0808;
-        z-index: 9999;
+        background: #ffffff;
+        z-index: 99999;
         height: 100%;
-        width: 97%;
-        top: 2px;
+        height: 100dvh;
+        width: 310px;
+        max-width: 86vw;
+        top: 0;
+        left: 0;
         visibility: visible;
         opacity: 1;
         overflow-y: auto;
     }
     .filter_sidebar.active::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        background-color: #cf1d1d;
+        background-color: #f8faf6;
     }
     .filter_sidebar.active::-webkit-scrollbar {
-        width: 6px;
-        background-color: #d10e0e;
+        width: 5px;
+        background-color: #f1f5f9;
     }
     .filter_sidebar.active::-webkit-scrollbar-thumb {
-        background-color: #fe5200;
+        background-color: #cbd5c5;
+        border-radius: 10px;
     }
     .filter_btn {
-       display: inline-block;
-        background: white;
-        width: 55px;
-        height: 33px;
-        line-height: 33px;
-        font-size: 17px;
-        border: 1px solid #c50d0d;
-        text-align: center;
-        text-transform: capitalize;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #173f2c;
+        color: #ffffff;
+        border: 1px solid #173f2c;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 700;
         cursor: pointer;
+        width: auto;
+        height: auto;
+        line-height: normal;
+        text-transform: none;
+        box-shadow: 0 2px 6px rgba(23, 63, 44, 0.12);
     }
     .filter_close {
-        background:#fff;
-        padding: 10px 15px;
-        font-size: 18px;
-        color: #d81111;
-        border-radius: 5px;
-        margin: 8px 0;
+        background: transparent;
+        padding: 0 0 14px 0;
+        font-size: 15px;
+        color: #173f2c;
+        border-radius: 0;
+        margin: 0 0 16px 0;
         cursor: pointer;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid #eef2eb;
+        font-weight: 700;
     }
     .sidebar-menu {
         display: none;
@@ -188,7 +212,7 @@
         position: fixed;
         top: 0;
         z-index: 99999;
-        background-color: #dd0909;
+        background-color: #ffffff;
         left: -300px;
         width: 300px;
         padding-top: 10px;
@@ -217,15 +241,15 @@
         overflow-y: auto;
     }
     .mobile-menu::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        background-color: #b11010;
+        background-color: #f8faf6;
     }
     .mobile-menu::-webkit-scrollbar {
-        width: 6px;
-        background-color: #ee2828;
+        width: 5px;
+        background-color: #f1f5f9;
     }
     .mobile-menu::-webkit-scrollbar-thumb {
-        background-color: #fe5200;
+        background-color: #cbd5c5;
+        border-radius: 10px;
     }
     .mobile-search {
         background-color: #fff;
