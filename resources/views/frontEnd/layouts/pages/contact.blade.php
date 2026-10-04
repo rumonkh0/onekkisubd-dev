@@ -592,12 +592,30 @@
         .tea-script-left, .tea-script-right { display: none; }
         .tea-promise-banner {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
             gap: 16px;
             padding: 22px 20px;
         }
+        .tea-promise-col {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .tea-promise-banner .tea-promise-col:first-child {
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e2ebe0;
+        }
         .tea-promise-divider { display: none; }
-        .tea-btn-continue-shopping { width: 100%; justify-content: center; }
+        .tea-promise-action {
+            width: 100%;
+            margin-top: 2px;
+        }
+        .tea-btn-continue-shopping {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 20px;
+        }
     }
 
     @media (max-width: 768px) {
@@ -615,6 +633,9 @@
         .tea-contact-grid { grid-template-columns: 1fr; gap: 16px; }
         .tea-form-header { padding: 22px 18px 16px; }
         .tea-form-body { padding: 22px 18px; }
+        .tea-promise-banner { padding: 18px 16px; }
+        .tea-promise-info h4 { font-size: 15px; }
+        .tea-promise-info p { font-size: 12px; line-height: 1.35; }
     }
 </style>
 
@@ -895,7 +916,7 @@
         <div class="tea-promise-banner">
             <!-- Left: Our Promise -->
             <div class="tea-promise-col">
-                <div class="tea-promise-icon">
+                <div class="tea-shield-badge">
                     <i class="fa-solid fa-leaf"></i>
                 </div>
                 <div class="tea-promise-info">

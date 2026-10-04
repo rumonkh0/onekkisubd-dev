@@ -589,6 +589,8 @@
         color: #4b5563;
         margin: 0 0 10px 0;
         font-family: 'Hind Siliguri', sans-serif;
+        text-align: center;
+        width: 100%;
     }
 
     .tea-card-price-row {
@@ -1151,7 +1153,7 @@
                                     </a>
 
                                     @if ($bnName)
-                                        <p class="tea-card-bn-subtitle">{{ $bnName }}</p>
+                                        <p class="tea-card-bn-subtitle text-center">{{ $bnName }}</p>
                                     @endif
 
                                     <!-- Price -->

@@ -694,12 +694,30 @@
         }
         .tea-promise-banner {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
             gap: 16px;
             padding: 22px 20px;
         }
+        .tea-promise-col {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .tea-promise-banner .tea-promise-col:first-child {
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e2ebe0;
+        }
         .tea-promise-divider { display: none; }
-        .tea-btn-continue-shopping { width: 100%; justify-content: center; }
+        .tea-promise-action {
+            width: 100%;
+            margin-top: 2px;
+        }
+        .tea-btn-continue-shopping {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 20px;
+        }
     }
 
     @media (max-width: 768px) {
@@ -718,6 +736,9 @@
         .tea-policy-card { padding: 22px 18px 20px; }
         .tea-custom-page-card { padding: 26px 18px; }
         .tea-subnav-link { padding: 14px 14px; font-size: 13px; }
+        .tea-promise-banner { padding: 18px 16px; }
+        .tea-promise-info h4 { font-size: 15px; }
+        .tea-promise-info p { font-size: 12px; line-height: 1.35; }
     }
 </style>
 
@@ -1862,11 +1883,8 @@
         <div class="tea-promise-banner">
             <!-- Left: Our Promise -->
             <div class="tea-promise-col">
-                <div class="tea-promise-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-                    </svg>
+                <div class="tea-shield-badge">
+                    <i class="fa-solid fa-leaf"></i>
                 </div>
                 <div class="tea-promise-info">
                     <h4>Our Promise</h4>
