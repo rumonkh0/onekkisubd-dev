@@ -58,7 +58,7 @@
     "scripts": {
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd\" \"php artisan serve --port=${PORT:-8001}\" \"npm run dev\" --names=server,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd\" \"php artisan serve --port=${PORT:-8888}\" \"npm run dev\" --names=server,vite"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

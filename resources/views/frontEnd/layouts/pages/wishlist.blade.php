@@ -49,7 +49,7 @@
         gap: 12px;
     }
     .tea-wishlist-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 28px;
         font-weight: 700;
         color: #0a211b;
@@ -245,7 +245,7 @@
         box-shadow: 0 6px 18px rgba(23, 63, 44, 0.08);
     }
     .tea-wish-empty-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 700;
         color: #0a211b;

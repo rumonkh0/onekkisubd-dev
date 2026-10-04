@@ -41,7 +41,7 @@
         min-height: calc(100vh - 200px);
         padding-bottom: 70px;
         color: #2b3831;
-        font-family: 'Poppins', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: 'Poppins', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     /* --------------------------------------------------------

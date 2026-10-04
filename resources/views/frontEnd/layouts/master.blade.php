@@ -18,6 +18,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -44,6 +45,19 @@
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/style.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/responsive.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/theme.css')}}?v={{ time() }}" />
+
+    <style>
+        :root {
+            --font-bengali: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
+            --font-bn: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
+        }
+        body, button, input, select, textarea, optgroup {
+            font-family: "Poppins", "Roboto", "SolaimanLipi", "Solaiman Lipi", sans-serif;
+        }
+        .font-bengali, .font-bn, [lang="bn"], .bangla, .potro_font, .alinur, .solaiman, .solaiman_font {
+            font-family: 'SolaimanLipi', 'Solaiman Lipi', sans-serif !important;
+        }
+    </style>
 
 
     @foreach($pixels as $pixel)
@@ -254,7 +268,7 @@
             border-bottom: 1px solid rgba(205, 176, 106, 0.3);
         }
         .tea-cart-dropdown-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 15.5px;
             font-weight: 700;
             color: #ffffff;
@@ -530,7 +544,7 @@
             margin-bottom: 14px;
         }
         .tea-cart-empty-heading {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 16.5px;
             font-weight: 700;
             color: #0a211b;
@@ -542,24 +556,44 @@
             line-height: 1.55;
             margin: 0 0 18px 0;
         }
+        .claude-theme a.tea-cart-empty-cta,
+        .claude-theme .tea-cart-empty-cta,
+        a.tea-cart-empty-cta,
         .tea-cart-empty-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 9px 22px;
-            border-radius: 20px;
-            background: #173f2c;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            padding: 9px 22px !important;
+            border-radius: 20px !important;
+            background: #173f2c !important;
             color: #e2cf9c !important;
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-            box-shadow: 0 4px 14px rgba(23, 63, 44, 0.15);
-            transition: all 0.2s ease;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+            box-shadow: 0 4px 14px rgba(23, 63, 44, 0.15) !important;
+            transition: all 0.2s ease !important;
         }
+        .claude-theme a.tea-cart-empty-cta *,
+        .claude-theme .tea-cart-empty-cta *,
+        a.tea-cart-empty-cta *,
+        .tea-cart-empty-cta * {
+            color: #e2cf9c !important;
+            fill: currentColor !important;
+        }
+        .claude-theme a.tea-cart-empty-cta:hover,
+        .claude-theme .tea-cart-empty-cta:hover,
+        a.tea-cart-empty-cta:hover,
         .tea-cart-empty-cta:hover {
-            background: #cdb06a;
+            background: #cdb06a !important;
             color: #0a211b !important;
-            transform: translateY(-2px);
+            transform: translateY(-2px) !important;
+        }
+        .claude-theme a.tea-cart-empty-cta:hover *,
+        .claude-theme .tea-cart-empty-cta:hover *,
+        a.tea-cart-empty-cta:hover *,
+        .tea-cart-empty-cta:hover * {
+            color: #0a211b !important;
+            fill: #0a211b !important;
         }
     </style>
 
@@ -955,7 +989,8 @@
                                     <h4 class="tea-cart-empty-heading">আপনার ব্যাগটি এখনো খালি</h4>
                                     <p class="tea-cart-empty-text">আমাদের সতেজ ও খাঁটি পাহাড়ি চা সম্ভার থেকে আপনার পছন্দের চা যোগ করুন।</p>
                                     <a href="{{ route('shop') }}" class="tea-cart-empty-cta">
-                                        <i class="fa-solid fa-leaf"></i> চা কালেকশন দেখুন
+                                        <i class="fa-solid fa-leaf"></i>
+                                        <span>চা কালেকশন দেখুন</span>
                                     </a>
                                 </div>
                             @endif

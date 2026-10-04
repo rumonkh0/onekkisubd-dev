@@ -102,7 +102,7 @@
         }
 
         body, input, button, select, textarea, p, h1, h2, h3, h4, h5, h6, a, label, span:not(.fa):not(.fas):not(.fab):not(.far):not([class*="fa-"]) {
-            font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+            font-family: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
         }
 
         .fa, .fas, .fa-solid, [class*="fa-"] {
@@ -239,7 +239,7 @@
         }
 
         .camp-main-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 32px;
             font-weight: 800;
             color: var(--tea-dark);
@@ -386,7 +386,7 @@
             margin-bottom: 8px;
         }
         .camp-section-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 26px;
             font-weight: 800;
             color: var(--tea-dark);
@@ -623,7 +623,7 @@
             border: 1px solid rgba(205, 176, 106, 0.35);
         }
         .camp-recipe-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 26px;
             font-weight: 800;
             color: #ffffff;
@@ -759,7 +759,7 @@
             margin-bottom: 28px;
         }
         .camp-form-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 26px;
             font-weight: 800;
             color: var(--tea-dark);
@@ -919,7 +919,7 @@
             top: 90px;
         }
         .camp-summary-title {
-            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+            font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
             font-size: 18px;
             font-weight: 700;
             color: var(--tea-dark);

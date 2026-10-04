@@ -27,8 +27,8 @@
         --tea-cream: #faf8f5;
         --tea-surface: #ffffff;
         --tea-border: #e8e4dc;
-        --font-serif: 'Playfair Display', 'Hind Siliguri', Georgia, serif;
-        --font-sans: 'Poppins', 'Hind Siliguri', sans-serif;
+        --font-serif: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', Georgia, serif;
+        --font-sans: 'Poppins', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
     }
 
     html {
@@ -377,7 +377,7 @@
         font-size: 12px;
         color: #4b5563;
         margin: 0 0 10px 0;
-        font-family: 'Hind Siliguri', sans-serif;
+        font-family: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
         text-align: center;
         width: 100%;
     }
@@ -414,13 +414,14 @@
         border: none;
         border-radius: 10px;
         padding: 9px 10px;
-        font-size: 12.5px;
+        font-size: 13px;
         font-weight: 700;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
+        white-space: nowrap;
         transition: background 0.2s, transform 0.15s;
     }
     .tea-btn-addcart:hover {
@@ -699,7 +700,7 @@
                                     <div class="tea-card-actions">
                                         <button type="button" class="cart_store tea-btn-addcart" data-id="{{ $value->id }}" {{ $isOutOfStock ? 'disabled' : '' }}>
                                             <i class="fa-solid fa-cart-plus"></i>
-                                            <span>কার্ট</span>
+                                            <span>কার্টে যোগ করুন</span>
                                         </button>
 
                                         <button type="button" class="tea-btn-wishlist" onclick="addTowishlist('{{ $value->id }}')" title="Add to Wishlist">

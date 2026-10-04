@@ -58,7 +58,7 @@
         transform: scale(1.06) rotate(-3deg);
     }
     .tea-track-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 25px;
         font-weight: 700;
         color: #0a211b;

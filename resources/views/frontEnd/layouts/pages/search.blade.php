@@ -59,7 +59,7 @@
         gap: 4px;
     }
     .tea-search-heading {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 700;
         color: #0a211b;
@@ -289,7 +289,7 @@
         box-shadow: 0 6px 18px rgba(23, 63, 44, 0.08);
     }
     .tea-search-empty-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 700;
         color: #0a211b;
@@ -502,21 +502,21 @@
                             <div class="tea-prod-actions-row">
                                 @if ($hasVariants)
                                     <a href="{{ route('product', $value->slug) }}" class="tea-btn-card-cart">
-                                        <i class="fa-solid fa-cart-shopping"></i> কার্ট
+                                        <i class="fa-solid fa-cart-shopping"></i> কার্টে যোগ
                                     </a>
                                     <a href="{{ route('product', $value->slug) }}" class="tea-btn-card-buy">
-                                        <i class="fa-solid fa-bolt"></i> অর্ডার
+                                        <i class="fa-solid fa-bolt"></i> অর্ডার করুন
                                     </a>
                                 @else
                                     <button type="button" data-id="{{ $value->id }}" class="tea-btn-card-cart addcartbutton">
-                                        <i class="fa-solid fa-cart-shopping"></i> কার্ট
+                                        <i class="fa-solid fa-cart-shopping"></i> কার্টে যোগ
                                     </button>
                                     <form action="{{ route('cart.store') }}" method="POST" class="m-0 p-0">
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $value->id }}" />
                                         <input type="hidden" name="qty" value="1" />
                                         <button type="submit" class="tea-btn-card-buy w-100">
-                                            <i class="fa-solid fa-bolt"></i> অর্ডার
+                                            <i class="fa-solid fa-bolt"></i> অর্ডার করুন
                                         </button>
                                     </form>
                                 @endif

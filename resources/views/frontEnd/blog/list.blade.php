@@ -101,7 +101,7 @@
     }
 
     .tea-hero-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 36px;
         font-weight: 800;
         color: #ffffff;
@@ -232,7 +232,7 @@
         gap: 5px;
     }
     .tea-feat-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 26px;
         font-weight: 800;
         color: var(--tea-dark);
@@ -289,7 +289,7 @@
         padding-bottom: 14px;
     }
     .tea-grid-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 800;
         color: var(--tea-dark);
@@ -388,7 +388,7 @@
     }
 
     .tea-card-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 18px;
         font-weight: 700;
         color: var(--tea-dark);
@@ -491,7 +491,7 @@
         border: 1px solid rgba(205, 176, 106, 0.3);
     }
     .tea-discovery-info h3 {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 800;
         margin: 0 0 6px 0;

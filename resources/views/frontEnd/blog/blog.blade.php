@@ -88,7 +88,7 @@
 
     /* Article Title */
     .tea-article-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 30px;
         font-weight: 800;
         color: #0a211b;
@@ -140,7 +140,7 @@
     .tea-article-body h2,
     .tea-article-body h3,
     .tea-article-body h4 {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         color: #0a211b;
         margin: 32px 0 16px;
         font-weight: 700;
@@ -281,7 +281,7 @@
         padding: 24px;
     }
     .tea-widget-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 18px;
         font-weight: 700;
         color: #0a211b;
@@ -383,7 +383,7 @@
         margin-bottom: 16px;
     }
     .tea-promo-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 20px;
         font-weight: 700;
         color: #ffffff;

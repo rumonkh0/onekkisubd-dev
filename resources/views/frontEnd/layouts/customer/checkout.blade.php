@@ -17,7 +17,7 @@
         --tea-border: rgba(23, 63, 44, 0.1);
         --tea-muted: #6b7280;
         --font-serif: "Playfair Display", Georgia, serif;
-        --font-bn: "Hind Siliguri", "Poppins", sans-serif;
+        --font-bn: "SolaimanLipi", "Solaiman Lipi", "Hind Siliguri", "Poppins", sans-serif;
     }
 
     .tea-checkout-section {

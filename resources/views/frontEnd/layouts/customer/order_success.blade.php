@@ -12,8 +12,8 @@
         --tea-light-gold: #e2cf9c;
         --tea-cream: #faf8f5;
         --tea-border: #e8e4dc;
-        --font-serif: 'Playfair Display', 'Hind Siliguri', Georgia, serif;
-        --font-sans: 'Poppins', 'Hind Siliguri', sans-serif;
+        --font-serif: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', Georgia, serif;
+        --font-sans: 'Poppins', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
     }
 
     .success-page-wrapper {

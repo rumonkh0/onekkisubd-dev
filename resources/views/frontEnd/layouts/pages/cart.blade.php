@@ -49,7 +49,7 @@
         gap: 12px;
     }
     .tea-cart-page-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 28px;
         font-weight: 700;
         color: #0a211b;
@@ -97,7 +97,7 @@
         box-shadow: 0 6px 18px rgba(23, 63, 44, 0.08);
     }
     .tea-empty-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 700;
         color: #0a211b;
@@ -442,7 +442,7 @@
         background: linear-gradient(180deg, #fafbf9 0%, #ffffff 100%);
     }
     .tea-summary-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 20px;
         font-weight: 700;
         color: #0a211b;

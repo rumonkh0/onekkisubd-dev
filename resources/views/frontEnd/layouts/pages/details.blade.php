@@ -48,7 +48,7 @@
             --tea-muted: #5e6d66;
             --font-serif: 'Playfair Display', Georgia, serif;
             --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-            --font-bn: 'Hind Siliguri', sans-serif;
+            --font-bn: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', sans-serif;
         }
 
         .tea-product-page {

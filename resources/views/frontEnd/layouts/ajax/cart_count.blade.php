@@ -108,7 +108,8 @@
             <h4 class="tea-cart-empty-heading">আপনার ব্যাগটি এখনো খালি</h4>
             <p class="tea-cart-empty-text">আমাদের সতেজ ও খাঁটি পাহাড়ি চা সম্ভার থেকে আপনার পছন্দের চা যোগ করুন।</p>
             <a href="{{ route('shop') }}" class="tea-cart-empty-cta">
-                <i class="fa-solid fa-leaf"></i> চা কালেকশন দেখুন
+                <i class="fa-solid fa-leaf"></i>
+                <span>চা কালেকশন দেখুন</span>
             </a>
         </div>
     @endif

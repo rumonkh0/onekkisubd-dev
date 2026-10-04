@@ -57,7 +57,7 @@
         margin-bottom: 2px;
     }
     .tea-cust-name {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 18px;
         font-weight: 700;
         color: #0a211b;

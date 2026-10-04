@@ -64,7 +64,7 @@
         gap: 12px;
     }
     .tea-orders-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 24px;
         font-weight: 700;
         color: #0a211b;
@@ -227,7 +227,7 @@
         margin-bottom: 16px;
     }
     .tea-no-orders-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 20px;
         font-weight: 700;
         color: #0a211b;

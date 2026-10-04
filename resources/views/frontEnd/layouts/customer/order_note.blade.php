@@ -64,7 +64,7 @@
         gap: 12px;
     }
     .tea-note-title {
-        font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        font-family: 'Playfair Display', 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', serif;
         font-size: 22px;
         font-weight: 700;
         color: #0a211b;
