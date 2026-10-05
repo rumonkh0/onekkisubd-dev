@@ -459,10 +459,16 @@ class FrontendController extends Controller
     public function campaign($slug)
     {
         $campaign_data = Campaign::where('slug', $slug)->with('images')->first();
+        if (!$campaign_data) {
+            abort(404);
+        }
         $product = Product::where('id', $campaign_data->product_id)
             ->where('status', 1)
             ->with('image')
             ->first();
+        if (!$product) {
+            abort(404);
+        }
         Cart::instance('shopping')->destroy();
         $cart_count = Cart::instance('shopping')->count();
         if ($cart_count == 0) {
@@ -473,7 +479,7 @@ class FrontendController extends Controller
                 'price' => $product->new_price,
                 'options' => [
                     'slug' => $product->slug,
-                    'image' => $product->image->image,
+                    'image' => $product->image ? $product->image->image : '',
                     'old_price' => $product->old_price,
                     'purchase_price' => $product->purchase_price,
                 ],
@@ -481,7 +487,7 @@ class FrontendController extends Controller
         }
         $shippingcharge = ShippingCharge::where('status', 1)->get();
         $select_charge = ShippingCharge::where('status', 1)->first();
-        Session::put('shipping', $select_charge->amount);
+        Session::put('shipping', $select_charge ? $select_charge->amount : 0);
 
          $productcolors = Productcolor::where('product_id', $campaign_data->product_id)
             ->with('color')

@@ -59,21 +59,21 @@
 
     <meta name="app-url" content="{{ route('campaign', $campaign_data->slug) }}" />
     <meta name="robots" content="index, follow" />
-    <meta name="description" content="{{ $campaign_data->description ?: 'পার্বত্য চট্টগ্রামের ১০০% খাঁটি পাহাড়ি রোজেলা চা। প্রাকৃতিক সতেজতা ও সুস্বাস্থ্য নিশ্চিত করুন। ক্যাশ অন ডেলিভারি!' }}" />
-    <meta name="keywords" content="{{ $campaign_data->slug }}, পাহাড়ি রোজেলা, roselle tea bangladesh" />
+    <meta name="description" content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
+    <meta name="keywords" content="{{ $campaign_data->slug }}, {{ $campaign_data->name }}, {{ $product->name }}" />
 
     <!-- Open Graph data for Facebook Ads & Social Sharing -->
-    <meta property="og:title" content="{{ $campaign_data->name }}" />
+    <meta property="og:title" content="{{ $campaign_data->name }} | {{ $generalsetting->name }}" />
     <meta property="og:type" content="product" />
     <meta property="og:url" content="{{ route('campaign', $campaign_data->slug) }}" />
-    <meta property="og:image" content="{{ asset($campaign_data->image_one) }}" />
-    <meta property="og:description" content="{{ $campaign_data->description ?: 'পার্বত্য চট্টগ্রামের ১০০% খাঁটি পাহাড়ি রোজেলা চা। প্রাকৃতিক সতেজতা ও সুস্বাস্থ্য নিশ্চিত করুন।' }}" />
+    <meta property="og:image" content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
+    <meta property="og:description" content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
     <meta property="og:site_name" content="{{ $generalsetting->name }}" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ $campaign_data->name }}" />
-    <meta name="twitter:image" content="{{ asset($campaign_data->image_one) }}" />
+    <meta name="twitter:title" content="{{ $campaign_data->name }} | {{ $generalsetting->name }}" />
+    <meta name="twitter:image" content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
 
     <style>
         /* ========================================================
@@ -1160,6 +1160,78 @@
             }
         }
 
+        /* Product Details / Benefits Card */
+        .camp-details-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #e8e4dc;
+            box-shadow: 0 12px 36px -8px rgba(10, 33, 27, 0.06);
+            padding: 36px 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .camp-details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #173f2c, #cdb06a, #c53030);
+        }
+        .camp-details-body {
+            color: #2d3748;
+            font-size: 15.5px;
+            line-height: 1.8;
+        }
+        .camp-html-content h1, .camp-html-content h2, .camp-html-content h3, 
+        .camp-html-content h4, .camp-html-content h5, .camp-html-content h6 {
+            color: #173f2c;
+            font-weight: 700;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+        .camp-html-content ul, .camp-html-content ol {
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+        .camp-html-content li {
+            margin-bottom: 8px;
+        }
+        .camp-html-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 12px 0;
+        }
+        .camp-html-content iframe {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+        .camp-color-tile {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .camp-color-tile:hover {
+            border-color: #cbd5e1;
+            background: #f1f5f9;
+        }
+        .camp-color-tile.selected {
+            border-color: #173f2c;
+            background: #f4f8f2;
+            color: #173f2c;
+        }
+
         @media (max-width: 767px) {
             .camp-main-title {
                 font-size: 24px;
@@ -1168,6 +1240,10 @@
                 font-size: 14px;
             }
             .camp-hero-card {
+                padding: 22px 16px;
+                border-radius: 18px;
+            }
+            .camp-details-card {
                 padding: 22px 16px;
                 border-radius: 18px;
             }
@@ -1206,9 +1282,14 @@
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCB3SXKF" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
 
+    @php
+        $isRoselle = str_contains(strtolower($campaign_data->slug . ' ' . $campaign_data->name), 'roselle') || str_contains($campaign_data->name, 'রোজেলা');
+        $isTea = $isRoselle || str_contains(strtolower($campaign_data->slug . ' ' . $campaign_data->name), 'tea') || str_contains($campaign_data->name, 'চা');
+    @endphp
+
     <!-- Top Announcement Bar -->
     <div class="camp-topbar">
-        <span>🌿 ১০০% প্রাকৃতিক ও অর্গানিক পাহাড়ি রোজেলা</span> | 🚚 সারা দেশে দ্রুত ক্যাশ অন ডেলিভারি | 📞 সরাসরি কল: <strong>{{ $contact->phone ?? '01850945080' }}</strong>
+        <span>🌿 ১০০% খাঁটি ও গুণগত মানের {{ $campaign_data->name }}</span> | 🚚 সারা দেশে দ্রুত ক্যাশ অন ডেলিভারি | 📞 সরাসরি কল: <strong>{{ $contact->phone ?? '01850945080' }}</strong>
     </div>
 
     <!-- Header -->
@@ -1228,16 +1309,30 @@
         <section class="camp-hero-card">
             <div class="camp-badge-pill">
                 <i class="fas fa-fire"></i>
-                <span>বিশেষ অফার - ১০০% খাঁটি পাহাড়ি রোজেলা</span>
+                <span>{{ $campaign_data->banner_title ?: 'বিশেষ অফার - ১০০% প্রিমিয়াম ও অরিজিনাল কোয়ালিটি' }}</span>
             </div>
 
             <h1 class="camp-main-title">
-                পার্বত্য চট্টগ্রামের খাঁটি পাহাড়ি লাল রোজেলা চা
+                {{ $campaign_data->name }}
             </h1>
 
-            <p class="camp-subtitle">
-                বান্দরবান ও রাঙামাটির পাহাড়ি বিষমুক্ত পরিবেশে উৎপন্ন প্রাকৃতিক রোজেলা (Roselle)। আকর্ষণীয় লালচে লিকার, টক-মিষ্টি মন জুড়ানো স্বাদ আর উচ্চ রক্তচাপ ও ওজন নিয়ন্ত্রণে অত্যন্ত কার্যকরী।
-            </p>
+            @if(!empty($campaign_data->short_description))
+                <div class="camp-subtitle">
+                    {!! $campaign_data->short_description !!}
+                </div>
+            @elseif(!empty($campaign_data->description))
+                <p class="camp-subtitle">
+                    {{ Str::limit(strip_tags($campaign_data->description), 220) }}
+                </p>
+            @elseif(!empty($product->description))
+                <p class="camp-subtitle">
+                    {{ Str::limit(strip_tags($product->description), 220) }}
+                </p>
+            @else
+                <p class="camp-subtitle">
+                    সরাসরি সেরা বাগান ও বিশ্বস্ত সোর্স থেকে সংগৃহীত প্রিমিয়াম মানের {{ $campaign_data->name }}। ক্যাশ অন ডেলিভারিতে আজই অর্ডার করুন।
+                </p>
+            @endif
 
             <!-- 16:9 Banner Slider Container (Facebook Ads Widescreen Standard) -->
             @php
@@ -1249,45 +1344,78 @@
                     <div class="owl-carousel camp-hero-slider">
                         @foreach($landingBanners as $banner)
                             <div class="slider-item">
-                                <img src="{{ asset($banner->image) }}" alt="Pahari Roselle Tea Banner" loading="eager" />
+                                <img src="{{ asset($banner->image) }}" alt="{{ $campaign_data->name }} Banner" loading="eager" />
                             </div>
                         @endforeach
                     </div>
-                @else
-                    <img src="{{ asset($campaign_data->image_one) }}" alt="Pahari Roselle Tea" loading="eager" />
+                @elseif($campaign_data->image_one)
+                    <img src="{{ asset($campaign_data->image_one) }}" alt="{{ $campaign_data->name }}" loading="eager" />
+                @elseif($product->image)
+                    <img src="{{ asset($product->image->image) }}" alt="{{ $campaign_data->name }}" loading="eager" />
                 @endif
             </div>
 
             <!-- Value Props Grid -->
             <div class="camp-props-grid">
-                <div class="camp-prop-box">
-                    <div class="camp-prop-icon"><i class="fas fa-heartbeat"></i></div>
-                    <div class="camp-prop-text">
-                        <h4>ব্লাড প্রেশার নিয়ন্ত্রণ</h4>
-                        <p>প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।</p>
+                @if($isRoselle)
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>ব্লাড প্রেশার নিয়ন্ত্রণ</h4>
+                            <p>প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।</p>
+                        </div>
                     </div>
-                </div>
-                <div class="camp-prop-box">
-                    <div class="camp-prop-icon"><i class="fas fa-fire-alt"></i></div>
-                    <div class="camp-prop-text">
-                        <h4>মেদ ও ওজন নিয়ন্ত্রণ</h4>
-                        <p>প্রচুর অ্যান্টিঅক্সিডেন্ট মেটাবলিজম বাড়িয়ে মেদ ঝরাতে সহায়ক।</p>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-fire-alt"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>মেদ ও ওজন নিয়ন্ত্রণ</h4>
+                            <p>প্রচুর অ্যান্টিঅক্সিডেন্ট মেটাবলিজম বাড়িয়ে মেদ ঝরাতে সহায়ক।</p>
+                        </div>
                     </div>
-                </div>
-                <div class="camp-prop-box">
-                    <div class="camp-prop-icon"><i class="fas fa-leaf"></i></div>
-                    <div class="camp-prop-text">
-                        <h4>১০০% আস্ত পাহাড়ি পাপড়ি</h4>
-                        <p>পাহাড়ে রোদে শুকানো বিষমুক্ত ও রাসায়নিকবিহীন অক্ষত ফুল।</p>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>১০০% আস্ত পাহাড়ি পাপড়ি</h4>
+                            <p>পাহাড়ে রোদে শুকানো বিষমুক্ত ও রাসায়নিকবিহীন অক্ষত ফুল।</p>
+                        </div>
                     </div>
-                </div>
-                <div class="camp-prop-box">
-                    <div class="camp-prop-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="camp-prop-text">
-                        <h4>ভিটামিন সি ও রোগ প্রতিরোধ</h4>
-                        <p>ত্বক সতেজ রাখে এবং শরীরের ইমিউনিটি বহুগুণ বাড়িয়ে তোলে।</p>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>ভিটামিন সি ও রোগ প্রতিরোধ</h4>
+                            <p>ত্বক সতেজ রাখে এবং শরীরের ইমিউনিটি বহুগুণ বাড়িয়ে তোলে।</p>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>১০০% বিশুদ্ধ ও প্রাকৃতিক</h4>
+                            <p>কোনো প্রকার ক্ষতিকর কেমিক্যাল, কৃত্রিম রঙ বা ভেজাল নেই।</p>
+                        </div>
+                    </div>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-coffee"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>কড়া লিকার ও চমৎকার স্বাদ</h4>
+                            <p>প্রতিটি কাপে অসাধারণ সতেজতা, মন মাতানো ঘ্রাণ ও আসল তৃপ্তি।</p>
+                        </div>
+                    </div>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-award"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>বাছাইকৃত সেরা গ্রেড</h4>
+                            <p>সেরা বাগান ও বিশ্বস্ত সোর্স থেকে নির্বাচিত শতভাগ তাজা কালেকশন।</p>
+                        </div>
+                    </div>
+                    <div class="camp-prop-box">
+                        <div class="camp-prop-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="camp-prop-text">
+                            <h4>স্বাস্থ্যকর ও সতেজতাদায়ক</h4>
+                            <p>প্রাকৃতিক অ্যান্টিঅক্সিডেন্টে ভরপুর যা শরীর ও মনে তাৎক্ষণিক চনমনে ভাব আনে।</p>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <!-- Hero CTA -->
@@ -1296,169 +1424,288 @@
             </a>
         </section>
 
-        <!-- ==================== FACEBOOK AD IMAGE RATIO SHOWCASE ==================== -->
-        <!-- Preserving 1:1, 9:16, and 4:5 ratios so images are never cropped or distorted -->
-        <section class="camp-media-showcase">
-            <div class="camp-section-header">
-                <span class="camp-section-tag">রিয়েল প্রোডাক্ট গ্যালারি</span>
-                <h2 class="camp-section-title">আমাদের আসল পাহাড়ি রোজেলার ছবি</h2>
-                <p class="camp-section-desc">কোনো এডিটিং ছাড়াই পাহাড়ি রোদে শুকানো খাঁটি পাপড়ি ও লালচে লিকারের বাস্তব রূপ</p>
-            </div>
+        <!-- ==================== MEDIA SHOWCASE ==================== -->
+        @if($campaign_data->image_one || $campaign_data->image_two || $campaign_data->image_three)
+            <section class="camp-media-showcase">
+                <div class="camp-section-header">
+                    <span class="camp-section-tag">প্রোডাক্ট গ্যালারি</span>
+                    <h2 class="camp-section-title">আমাদের আসল {{ $campaign_data->name }} এর ছবি</h2>
+                    <p class="camp-section-desc">কোনো এডিটিং ছাড়াই আসল পণ্যের প্যাকেজিং ও বাস্তব রূপ দেখে নিন</p>
+                </div>
 
-            <div class="camp-media-grid">
-                <!-- 1:1 Square Ratio Card (Facebook Feed / Carousel Standard) -->
-                @if($campaign_data->image_one)
-                    <div class="camp-media-card">
-                        <div>
-                            <span class="camp-media-badge"><i class="fas fa-camera"></i> 1:1 রিয়েল শট</span>
-                            <div class="aspect-box-1-1">
-                                <img src="{{ asset($campaign_data->image_one) }}" alt="Pahari Roselle Flower" loading="lazy" />
+                <div class="camp-media-grid">
+                    @if($campaign_data->image_one)
+                        <div class="camp-media-card">
+                            <div>
+                                <span class="camp-media-badge"><i class="fas fa-camera"></i> রিয়েল ভিউ ১</span>
+                                <div class="aspect-box-1-1">
+                                    <img src="{{ asset($campaign_data->image_one) }}" alt="{{ $campaign_data->name }}" loading="lazy" />
+                                </div>
+                            </div>
+                            <div class="camp-media-info">
+                                <h4>{{ $isRoselle ? '১০০% আস্ত পাপড়ির ফুল' : 'বাছাইকৃত প্রিমিয়াম কোয়ালিটি' }}</h4>
+                                <p>{{ $isRoselle ? 'পাপড়িগুলো ভাঙা বা গুঁড়া নয়, একদম আস্ত ও নিখুঁতভাবে রোদে শুকানো।' : '১০০% খাঁটি ও সেরা মান নিশ্চিত করে সরাসরি সংগ্রহ করা হয়।' }}</p>
                             </div>
                         </div>
-                        <div class="camp-media-info">
-                            <h4>১০০% আস্ত পাপড়ির ফুল</h4>
-                            <p>পাপড়িগুলো ভাঙা বা গুঁড়া নয়, একদম আস্ত ও নিখুঁতভাবে রোদে শুকানো।</p>
-                        </div>
-                    </div>
-                @endif
+                    @endif
 
-                <!-- 9:16 Story/Reels Portrait Ratio Card (Facebook Mobile Story Standard) -->
-                @if($campaign_data->image_two)
-                    <div class="camp-media-card">
-                        <div>
-                            <span class="camp-media-badge"><i class="fas fa-mobile-alt"></i> ৯:১৬ স্টোরি লুক</span>
-                            <div class="aspect-box-9-16">
-                                <img src="{{ asset($campaign_data->image_two) }}" alt="Pahari Roselle Tea Cup" loading="lazy" />
+                    @if($campaign_data->image_two)
+                        <div class="camp-media-card">
+                            <div>
+                                <span class="camp-media-badge"><i class="fas fa-mobile-alt"></i> রিয়েল ভিউ ২</span>
+                                <div class="aspect-box-9-16">
+                                    <img src="{{ asset($campaign_data->image_two) }}" alt="{{ $campaign_data->name }}" loading="lazy" />
+                                </div>
+                            </div>
+                            <div class="camp-media-info">
+                                <h4>{{ $isRoselle ? 'আকর্ষণীয় লাল টকটকে লিকার' : 'প্রাকৃতিক স্বাদ ও সতেজতা' }}</h4>
+                                <p>{{ $isRoselle ? '৪-৫টি পাপড়ি গরম পানিতে দিলেই পাবেন চমৎকার টক-মিষ্টি লাল লিকার।' : 'অতুলনীয় স্বাদ ও মন মাতানো ফ্লেভার যা প্রতিটি কাপে আনবে দারুণ সতেজতা।' }}</p>
                             </div>
                         </div>
-                        <div class="camp-media-info">
-                            <h4>আকর্ষণীয় লাল টকটকে লিকার</h4>
-                            <p>৪-৫টি পাপড়ি গরম পানিতে দিলেই পাবেন চমৎকার টক-মিষ্টি লাল লিকার।</p>
-                        </div>
-                    </div>
-                @endif
+                    @endif
 
-                <!-- 4:5 Portrait Ratio Card (Facebook Feed Portrait Standard) -->
-                @if($campaign_data->image_three)
-                    <div class="camp-media-card">
-                        <div>
-                            <span class="camp-media-badge"><i class="fas fa-image"></i> ৪:৫ পোর্ট্রেট লুক</span>
-                            <div class="aspect-box-4-5">
-                                <img src="{{ asset($campaign_data->image_three) }}" alt="Pahari Roselle Packaging" loading="lazy" />
+                    @if($campaign_data->image_three)
+                        <div class="camp-media-card">
+                            <div>
+                                <span class="camp-media-badge"><i class="fas fa-image"></i> রিয়েল ভিউ ৩</span>
+                                <div class="aspect-box-4-5">
+                                    <img src="{{ asset($campaign_data->image_three) }}" alt="{{ $campaign_data->name }}" loading="lazy" />
+                                </div>
+                            </div>
+                            <div class="camp-media-info">
+                                <h4>{{ $isRoselle ? 'নিরাপদ ও হাইজিনিক প্যাক' : 'নিরাপদ ও অক্ষত প্যাকেজিং' }}</h4>
+                                <p>{{ $isRoselle ? 'সরাসরি পাহাড় থেকে সংগ্রহ করে স্বাস্থ্যসম্মত জিপলক ও পলি প্যাকে সরবরাহ।' : 'পণ্যের সতেজতা ও প্রাকৃতিক গুণাগুণ দীর্ঘস্থায়ী রাখতে হাইজিনিক প্যাকেজিং।' }}</p>
                             </div>
                         </div>
-                        <div class="camp-media-info">
-                            <h4>নিরাপদ ও হাইজিনিক প্যাক</h4>
-                            <p>সরাসরি পাহাড় থেকে সংগ্রহ করে স্বাস্থ্যসম্মত জিপলক ও পলি প্যাকে সরবরাহ।</p>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </section>
+                    @endif
+                </div>
+            </section>
+        @endif
 
         <!-- ==================== VIDEO DEMO SHOWCASE ==================== -->
         @if($campaign_data->video)
             <section class="camp-video-wrapper">
                 <div class="camp-section-header">
                     <span class="camp-section-tag">ভিডিও ডেমো</span>
-                    <h2 class="camp-section-title">পাহাড়ি রোজেলা চা তৈরির নিয়ম ও উপকারিতা</h2>
-                    <p class="camp-section-desc">ভিডিওতে সরাসরি দেখে নিন কিভাবে তৈরি করবেন এই অপূর্ব স্বাস্থ্যকর লাল চা</p>
+                    <h2 class="camp-section-title">{{ $campaign_data->name }} এর ভিডিও রিভিউ</h2>
+                    <p class="camp-section-desc">ভিডিওতে সরাসরি দেখে নিন পণ্যের মান ও আকর্ষণীয় উপস্থাপনা</p>
                 </div>
 
                 <div class="camp-video-aspect-16-9">
                     <iframe src="https://www.youtube.com/embed/{{ $campaign_data->video }}?rel=0&modestbranding=1"
-                            title="Pahari Red Roselle Tea"
+                            title="{{ $campaign_data->name }}"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowfullscreen></iframe>
                 </div>
             </section>
         @endif
 
-        <!-- ==================== COMPARISON: PAHARI VS OTHERS ==================== -->
+        <!-- ==================== PRODUCT DETAILS & BENEFITS ==================== -->
+        @if(!empty($campaign_data->description) || !empty($product->description))
+            <section class="camp-details-card">
+                <div class="camp-section-header">
+                    <span class="camp-section-tag">বিস্তারিত তথ্য ও উপকারিতা</span>
+                    <h2 class="camp-section-title">কেন আমাদের {{ $campaign_data->name }} সেরা?</h2>
+                    <p class="camp-section-desc">পণ্যটির বিশেষ বৈশিষ্ট্য, পুষ্টিগুণ ও উপকারিতা সম্পর্কে জেনে নিন</p>
+                </div>
+
+                <div class="camp-details-body">
+                    @if(!empty($campaign_data->description))
+                        <div class="camp-html-content mb-4">
+                            {!! $campaign_data->description !!}
+                        </div>
+                    @endif
+
+                    @if(!empty($product->description))
+                        <div class="camp-html-content">
+                            {!! $product->description !!}
+                        </div>
+                    @endif
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="#order_form" class="camp-jump-btn">
+                        <i class="fas fa-shopping-cart"></i> এখনই অর্ডার করুন (ক্যাশ অন ডেলিভারি)
+                    </a>
+                </div>
+            </section>
+        @endif
+
+        <!-- ==================== COMPARISON SECTION ==================== -->
         <section class="camp-compare-card">
             <div class="camp-section-header">
                 <span class="camp-section-tag">সঠিক পণ্য চিনুন</span>
-                <h2 class="camp-section-title">পাহাড়ি রোজেলা বনাম সাধারণ / ইন্ডিয়ান রোজেলা</h2>
-                <p class="camp-section-desc">কেন আমাদের পার্বত্য চট্টগ্রামের রোজেলা বাজারে সেরা ও অনন্য</p>
+                <h2 class="camp-section-title">
+                    {{ $isRoselle ? 'পাহাড়ি রোজেলা বনাম সাধারণ / ইন্ডিয়ান রোজেলা' : 'আমাদের ' . $campaign_data->name . ' বনাম সাধারণ বাজারজাত পণ্য' }}
+                </h2>
+                <p class="camp-section-desc">
+                    {{ $isRoselle ? 'কেন আমাদের পার্বত্য চট্টগ্রামের রোজেলা বাজারে সেরা ও অনন্য' : 'কেন আমাদের পণ্যটি বাজারের সাধারণ পণ্যের চেয়ে সেরা ও সম্পূর্ণ আলাদা' }}
+                </p>
             </div>
 
             <div class="camp-compare-grid">
-                <!-- Good: Pahari Roselle -->
+                <!-- Good -->
                 <div class="camp-compare-col camp-compare-good">
                     <div class="camp-compare-header">
-                        <i class="fas fa-check-circle"></i> আমাদের পাহাড়ি রোজেলা
+                        <i class="fas fa-check-circle"></i> {{ $isRoselle ? 'আমাদের পাহাড়ি রোজেলা' : 'আমাদের ' . $campaign_data->name }}
                     </div>
                     <ul class="camp-compare-list">
-                        <li>
-                            <i class="fas fa-check"></i>
-                            <span><strong>১০০% আস্ত পাপড়ি:</strong> ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            <span><strong>টাটকা নতুন হার্ভেস্ট:</strong> এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            <span><strong>লাল টকটকে লিকার:</strong> প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            <span><strong>বিষমুক্ত পাহাড়ি চাষ:</strong> বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।</span>
-                        </li>
+                        @if($isRoselle)
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>১০০% আস্ত পাপড়ি:</strong> ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>টাটকা নতুন হার্ভেস্ট:</strong> এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>লাল টকটকে লিকার:</strong> প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>বিষমুক্ত পাহাড়ি চাষ:</strong> বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।</span>
+                            </li>
+                        @else
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>১০০% খাঁটি ও নির্ভেজাল:</strong> কৃত্রিম রঙ বা কেমিক্যাল ছাড়া সম্পূর্ণ প্রাকৃতিক ও নিরাপদ।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>বাছাইকৃত সেরা গ্রেড:</strong> সেরা বাগান ও উৎস থেকে সংগৃহীত শতভাগ তাজা পণ্য।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>কড়া লিকার ও মন মাতানো সুবাস:</strong> প্রতিটি কাপে দারুণ স্বাদ ও পরিপূর্ণ তৃপ্তি।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span><strong>ফুড-গ্রেড প্যাকেজিং:</strong> সতেজতা ও গুণাগুণ অটুট রাখতে উন্নত হাইজিনিক প্যাক।</span>
+                            </li>
+                        @endif
                     </ul>
                 </div>
 
-                <!-- Bad: Others -->
+                <!-- Bad -->
                 <div class="camp-compare-col camp-compare-bad">
                     <div class="camp-compare-header">
-                        <i class="fas fa-times-circle"></i> সাধারণ / ইন্ডিয়ান রোজেলা
+                        <i class="fas fa-times-circle"></i> {{ $isRoselle ? 'সাধারণ / ইন্ডিয়ান রোজেলা' : 'সাধারণ বা নিম্নমানের খোলা পণ্য' }}
                     </div>
                     <ul class="camp-compare-list">
-                        <li>
-                            <i class="fas fa-times"></i>
-                            <span><strong>কাটা ও ভাঙা পাপড়ি:</strong> বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-times"></i>
-                            <span><strong>কালচে লালচে লিকার:</strong> ফুটানোর পর লিকার কালচে হয়ে যায়।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-times"></i>
-                            <span><strong>কম ফ্লেভার ও কম স্বাদ:</strong> প্রাকৃতিক সতেজতার অভাব থাকে।</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-times"></i>
-                            <span><strong>পুরানো স্টকের ঝুঁকি:</strong> কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।</span>
-                        </li>
+                        @if($isRoselle)
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>কাটা ও ভাঙা পাপড়ি:</strong> বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>কালচে লালচে লিকার:</strong> ফুটানোর পর লিকার কালচে হয়ে যায়।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>কম ফ্লেভার ও কম স্বাদ:</strong> প্রাকৃতিক সতেজতার অভাব থাকে।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>পুরানো স্টকের ঝুঁকি:</strong> কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।</span>
+                            </li>
+                        @else
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>ভেজাল ও ডাস্ট মিশ্রিত:</strong> নিম্নমানের উপাদান ও ধুলোবালি মেশানো থাকে।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>পুরানো ও বাসি স্টক:</strong> গুদামে দীর্ঘদিন পড়ে থেকে স্বাভাবিক স্বাদ নষ্ট হয়ে যায়।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>কৃত্রিম রঙ ও ফ্লেভার:</strong> কেমিক্যাল দিয়ে কৃত্রিম রঙ ও গন্ধ তৈরির চেষ্টা করা হয়।</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-times"></i>
+                                <span><strong>খোলা ও অস্বাস্থ্যকর প্যাক:</strong> ধুলাবালি এবং ক্ষতিকর জীবাণুর ঝুঁকি থাকে।</span>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== HOW TO PREPARE RECIPE ==================== -->
+        <!-- ==================== HOW TO PREPARE / STEPS ==================== -->
         <section class="camp-recipe-section">
-            <h2 class="camp-recipe-title">
-                <i class="fas fa-mug-hot text-warning"></i> রোজেলা চা তৈরির সহজ ৪টি ধাপ
-            </h2>
+            @if($isRoselle)
+                <h2 class="camp-recipe-title">
+                    <i class="fas fa-mug-hot text-warning"></i> রোজেলা চা তৈরির সহজ ৪টি ধাপ
+                </h2>
 
-            <div class="camp-recipe-grid">
-                <div class="camp-recipe-step">
-                    <div class="camp-step-num">১</div>
-                    <p class="camp-step-desc">এক কাপ ফুটন্ত গরম পানিতে ৪ থেকে ৫টি শুকনো রোজেলা পাপড়ি দিন।</p>
+                <div class="camp-recipe-grid">
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">১</div>
+                        <p class="camp-step-desc">এক কাপ ফুটন্ত গরম পানিতে ৪ থেকে ৫টি শুকনো রোজেলা পাপড়ি দিন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">২</div>
+                        <p class="camp-step-desc">৫-১০ মিনিট ঢেকে রাখুন যাতে সম্পূর্ণ লাল লিকার ও পুষ্টিগুণ পানিতে মিশে যায়।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৩</div>
+                        <p class="camp-step-desc">স্বাদ বাড়াতে এক চামচ খাঁটি মধু, সামান্য লেবুর রস বা বিট লবণ মেশাতে পারেন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৪</div>
+                        <p class="camp-step-desc">গরম গরম অথবা বরফ কুচি দিয়ে রিফ্রেশিং আইসড চা হিসেবে উপভোগ করুন!</p>
+                    </div>
                 </div>
-                <div class="camp-recipe-step">
-                    <div class="camp-step-num">২</div>
-                    <p class="camp-step-desc">৫-১০ মিনিট ঢেকে রাখুন যাতে সম্পূর্ণ লাল লিকার ও পুষ্টিগুণ পানিতে মিশে যায়।</p>
+            @elseif($isTea)
+                <h2 class="camp-recipe-title">
+                    <i class="fas fa-mug-hot text-warning"></i> সেরা স্বাদের চা তৈরির সহজ ৪টি ধাপ
+                </h2>
+
+                <div class="camp-recipe-grid">
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">১</div>
+                        <p class="camp-step-desc">প্রথমে পরিচ্ছন্ন পাত্রে প্রয়োজনীয় পরিমাণ পানি ভালো করে ফুটিয়ে নিন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">২</div>
+                        <p class="camp-step-desc">ফুটন্ত পানিতে পরিমাণমতো চা পাতা দিন এবং ২-৩ মিনিট ফুটান কড়া লিকারের জন্য।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৩</div>
+                        <p class="camp-step-desc">দুধ চা করতে ঘন দুধ ও পরিমাণমতো চিনি মেশান, অথবা লাল চা হিসেবে উপভোগ করুন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৪</div>
+                        <p class="camp-step-desc">ছাঁকনি দিয়ে কাপে ঢেলে পরিবেশন করুন ধোঁয়া ওঠা অতুলনীয় স্বাদের চা!</p>
+                    </div>
                 </div>
-                <div class="camp-recipe-step">
-                    <div class="camp-step-num">৩</div>
-                    <p class="camp-step-desc">স্বাদ বাড়াতে এক চামচ খাঁটি মধু, সামান্য লেবুর রস বা বিট লবণ মেশাতে পারেন।</p>
+            @else
+                <h2 class="camp-recipe-title">
+                    <i class="fas fa-shield-alt text-warning"></i> ঘরে বসে অর্ডার করার সহজ ৪টি ধাপ
+                </h2>
+
+                <div class="camp-recipe-grid">
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">১</div>
+                        <p class="camp-step-desc">নিচের ফর্ম থেকে আপনার পছন্দসই প্যাকেজটি নির্বাচন করুন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">২</div>
+                        <p class="camp-step-desc">আপনার নাম, মোবাইল নাম্বার এবং পূর্ণ ডেলিভারি ঠিকানা দিন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৩</div>
+                        <p class="camp-step-desc">'অর্ডার সম্পন্ন করুন' বাটনে ক্লিক করে অর্ডারটি কনফার্ম করুন।</p>
+                    </div>
+                    <div class="camp-recipe-step">
+                        <div class="camp-step-num">৪</div>
+                        <p class="camp-step-desc">পণ্য হাতে পেয়ে চেক করে সম্পূর্ণ নিশ্চিত হয়ে মূল্য পরিশোধ করুন।</p>
+                    </div>
                 </div>
-                <div class="camp-recipe-step">
-                    <div class="camp-step-num">৪</div>
-                    <p class="camp-step-desc">গরম গরম অথবা বরফ কুচি দিয়ে রিফ্রেশিং আইসড চা হিসেবে উপভোগ করুন!</p>
-                </div>
-            </div>
+            @endif
         </section>
 
         <!-- ==================== CUSTOMER REVIEWS ==================== -->
@@ -1470,13 +1717,13 @@
                 <div class="camp-section-header">
                     <span class="camp-section-tag">গ্রাহকদের মতামত</span>
                     <h2 class="camp-section-title">সন্তুষ্ট গ্রাহকদের রিয়েল রিভিউ</h2>
-                    <p class="camp-section-desc">আমাদের পাহাড়ি রোজেলা চা ব্যবহার করে গ্রাহকরা কী বলছেন দেখে নিন</p>
+                    <p class="camp-section-desc">আমাদের {{ $campaign_data->name }} ব্যবহার করে সম্মানিত গ্রাহকরা কী বলছেন দেখে নিন</p>
                 </div>
 
                 <div class="owl-carousel camp-reviews-slider">
                     @foreach($campaignReviews as $review)
                         <div class="camp-review-aspect-1-1">
-                            <img src="{{ asset($review->image) }}" alt="Customer Review" loading="lazy" />
+                            <img src="{{ asset($review->image) }}" alt="{{ $campaign_data->name }} Customer Review" loading="lazy" />
                         </div>
                     @endforeach
                 </div>
@@ -1484,85 +1731,87 @@
         @endif
 
         <!-- ==================== FAQ ACCORDION ==================== -->
-        <section class="camp-faq-section">
-            <div class="camp-section-header">
-                <span class="camp-section-tag">সাধারণ জিজ্ঞাসা</span>
-                <h2 class="camp-section-title">পাহাড়ি রোজেলা সম্পর্কিত প্রশ্নোত্তর</h2>
-                <p class="camp-section-desc">আপনার মনের সব প্রশ্নের নির্ভরযোগ্য ও পরিষ্কার উত্তর</p>
-            </div>
+        @if($campaign_data->faq_question_one || $campaign_data->faq_question_two || $campaign_data->faq_question_three || $campaign_data->faq_question_four || $campaign_data->faq_question_five)
+            <section class="camp-faq-section">
+                <div class="camp-section-header">
+                    <span class="camp-section-tag">সাধারণ জিজ্ঞাসা</span>
+                    <h2 class="camp-section-title">{{ $campaign_data->name }} সম্পর্কিত প্রশ্নোত্তর</h2>
+                    <p class="camp-section-desc">আপনার মনের সব প্রশ্নের নির্ভরযোগ্য ও পরিষ্কার উত্তর</p>
+                </div>
 
-            <div class="accordion" id="campFaqAccordion">
-                @if($campaign_data->faq_question_one)
-                    <div class="camp-faq-item">
-                        <button class="camp-faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqColOne" aria-expanded="true">
-                            <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_one }}</span>
-                            <i class="fas fa-angle-right"></i>
-                        </button>
-                        <div id="faqColOne" class="collapse show" data-bs-parent="#campFaqAccordion">
-                            <div class="camp-faq-body">
-                                {!! $campaign_data->faq_answar_one !!}
+                <div class="accordion" id="campFaqAccordion">
+                    @if($campaign_data->faq_question_one)
+                        <div class="camp-faq-item">
+                            <button class="camp-faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqColOne" aria-expanded="true">
+                                <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_one }}</span>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <div id="faqColOne" class="collapse show" data-bs-parent="#campFaqAccordion">
+                                <div class="camp-faq-body">
+                                    {!! $campaign_data->faq_answar_one !!}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if($campaign_data->faq_question_two)
-                    <div class="camp-faq-item">
-                        <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColTwo" aria-expanded="false">
-                            <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_two }}</span>
-                            <i class="fas fa-angle-right"></i>
-                        </button>
-                        <div id="faqColTwo" class="collapse" data-bs-parent="#campFaqAccordion">
-                            <div class="camp-faq-body">
-                                {!! $campaign_data->faq_answar_two !!}
+                    @if($campaign_data->faq_question_two)
+                        <div class="camp-faq-item">
+                            <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColTwo" aria-expanded="false">
+                                <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_two }}</span>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <div id="faqColTwo" class="collapse" data-bs-parent="#campFaqAccordion">
+                                <div class="camp-faq-body">
+                                    {!! $campaign_data->faq_answar_two !!}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if($campaign_data->faq_question_three)
-                    <div class="camp-faq-item">
-                        <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColThree" aria-expanded="false">
-                            <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_three }}</span>
-                            <i class="fas fa-angle-right"></i>
-                        </button>
-                        <div id="faqColThree" class="collapse" data-bs-parent="#campFaqAccordion">
-                            <div class="camp-faq-body">
-                                {!! $campaign_data->faq_answar_three !!}
+                    @if($campaign_data->faq_question_three)
+                        <div class="camp-faq-item">
+                            <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColThree" aria-expanded="false">
+                                <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_three }}</span>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <div id="faqColThree" class="collapse" data-bs-parent="#campFaqAccordion">
+                                <div class="camp-faq-body">
+                                    {!! $campaign_data->faq_answar_three !!}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if($campaign_data->faq_question_four)
-                    <div class="camp-faq-item">
-                        <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColFour" aria-expanded="false">
-                            <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_four }}</span>
-                            <i class="fas fa-angle-right"></i>
-                        </button>
-                        <div id="faqColFour" class="collapse" data-bs-parent="#campFaqAccordion">
-                            <div class="camp-faq-body">
-                                {!! $campaign_data->faq_answar_four !!}
+                    @if($campaign_data->faq_question_four)
+                        <div class="camp-faq-item">
+                            <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColFour" aria-expanded="false">
+                                <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_four }}</span>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <div id="faqColFour" class="collapse" data-bs-parent="#campFaqAccordion">
+                                <div class="camp-faq-body">
+                                    {!! $campaign_data->faq_answar_four !!}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if($campaign_data->faq_question_five)
-                    <div class="camp-faq-item">
-                        <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColFive" aria-expanded="false">
-                            <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_five }}</span>
-                            <i class="fas fa-angle-right"></i>
-                        </button>
-                        <div id="faqColFive" class="collapse" data-bs-parent="#campFaqAccordion">
-                            <div class="camp-faq-body">
-                                {!! $campaign_data->faq_answar_five !!}
+                    @if($campaign_data->faq_question_five)
+                        <div class="camp-faq-item">
+                            <button class="camp-faq-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqColFive" aria-expanded="false">
+                                <span><i class="fas fa-chevron-right me-2"></i> {{ $campaign_data->faq_question_five }}</span>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <div id="faqColFive" class="collapse" data-bs-parent="#campFaqAccordion">
+                                <div class="camp-faq-body">
+                                    {!! $campaign_data->faq_answar_five !!}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
-            </div>
-        </section>
+                    @endif
+                </div>
+            </section>
+        @endif
 
         <!-- ==================== HIGH-CONVERTING ORDER FORM ==================== -->
         <section class="camp-checkout-card" id="order_form">
@@ -1632,6 +1881,25 @@
                             </div>
                         </div>
 
+                        <!-- Color Selection if multiple colors available -->
+                        @if($productcolors->count() > 1)
+                            <div class="camp-field-group mb-3">
+                                <label class="camp-label">
+                                    <i class="fas fa-palette text-muted"></i> কালার / ভ্যারিয়েন্ট পছন্দ করুন <span class="text-danger">*</span>
+                                </label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach($productcolors as $key => $color)
+                                        <label class="camp-color-tile {{ $loop->first ? 'selected' : '' }}">
+                                            <input type="radio" name="color" value="{{ $color->color }}" {{ $loop->first ? 'checked' : '' }} class="d-none" />
+                                            <span>{{ $color->color }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <input type="hidden" name="color" value="{{ $productcolors->first()->color ?? 'General' }}" />
+                        @endif
+
                         <!-- Package Selection -->
                         <div class="camp-packages-section">
                             <label class="camp-label">
@@ -1696,7 +1964,6 @@
                         <input type="hidden" name="product_price" id="inputProductPrice" value="{{ $defaultPackage->SalePrice }}" />
                         <input type="hidden" name="subtotal" id="inputSubtotal" value="{{ $defaultPackage->SalePrice }}" />
                         <input type="hidden" name="total" id="inputTotal" value="{{ $initialTotal }}" />
-                        <input type="hidden" name="color" value="{{ $productcolors->first()->color ?? 'General' }}" />
                     </div>
 
                     <!-- Right: Sticky Order Summary & Submit -->
@@ -1780,7 +2047,7 @@
                 © {{ date('Y') }} <strong>{{ $generalsetting->name }}</strong> | সর্বস্বত্ব সংরক্ষিত।
             </p>
             <p class="small text-muted mb-0">
-                পার্বত্য চট্টগ্রামের অর্গানিক চা ও বিশুদ্ধ খাদ্যপণ্যের বিশ্বস্ত অনলাইন শপ।
+                বিশুদ্ধ ও প্রিমিয়াম কোয়ালিটি খাদ্যপণ্যের বিশ্বস্ত অনলাইন শপ।
             </p>
         </div>
     </footer>
@@ -1793,7 +2060,7 @@
         <a href="#order_form" class="camp-floating-order-btn">
             <i class="fas fa-shopping-bag"></i> অর্ডার করুন
         </a>
-        <a href="https://wa.me/+88{{ $contact->phone ?? '01850945080' }}?text=পাহাড়ি%20রোজেলা%20চা%20অর্ডার%20করতে%20চাই" target="_blank" class="camp-floating-wa" title="হোয়াটসঅ্যাপে চ্যাট">
+        <a href="https://wa.me/+88{{ $contact->phone ?? '01850945080' }}?text={{ rawurlencode($campaign_data->name . ' অর্ডার করতে চাই') }}" target="_blank" class="camp-floating-wa" title="হোয়াটসঅ্যাপে চ্যাট">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
@@ -1848,6 +2115,13 @@
                 $('.camp-package-tile').removeClass('selected');
                 $(this).closest('.camp-package-tile').addClass('selected');
                 recalculateTotals();
+            });
+
+            // Color Tile Visual Selection
+            $('.camp-color-tile').on('click', function() {
+                $('.camp-color-tile').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).find('input[name="color"]').prop('checked', true);
             });
 
             // Quantity Stepper
