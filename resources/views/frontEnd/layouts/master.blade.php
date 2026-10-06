@@ -750,23 +750,29 @@
             <div class="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 select-none"
-                    aria-label="OnekkisuBD home">
-                    <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
-                        <svg viewBox="0 0 48 48" class="h-12 w-12" fill="none">
-                            <circle cx="24" cy="24" r="22" fill="#245a2d" />
-                            <circle cx="24" cy="24" r="22" stroke="#cdb06a" stroke-width="1.5" stroke-dasharray="4 3" />
-                            <path d="M14 30c0-9 7-15 18-16-1 11-7 17-16 17 4-5 7-8 11-11" stroke="#e2cf9c"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#468a47" />
-                        </svg>
-                    </span>
-                    <span class="leading-none">
-                        <span class="block font-serif text-[22px] font-bold tracking-tight text-tea-800">
-                            Onekkisu<span class="text-gold-500">BD</span>
+                    aria-label="{{ $generalsetting->name ?? 'OnekkisuBD' }} home">
+                    @if(!empty($generalsetting->white_logo))
+                        <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="h-10 sm:h-12 w-auto max-w-[200px] object-contain" />
+                    @elseif(!empty($generalsetting->dark_logo))
+                        <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="h-10 sm:h-12 w-auto max-w-[200px] object-contain" />
+                    @else
+                        <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
+                            <svg viewBox="0 0 48 48" class="h-12 w-12" fill="none">
+                                <circle cx="24" cy="24" r="22" fill="#245a2d" />
+                                <circle cx="24" cy="24" r="22" stroke="#cdb06a" stroke-width="1.5" stroke-dasharray="4 3" />
+                                <path d="M14 30c0-9 7-15 18-16-1 11-7 17-16 17 4-5 7-8 11-11" stroke="#e2cf9c"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#468a47" />
+                            </svg>
                         </span>
-                        <span class="mt-1 block text-[10px] font-medium tracking-[0.12em] uppercase text-tea-600">
-                            Pure Taste, Better Life
+                        <span class="leading-none">
+                            <span class="block font-serif text-[22px] font-bold tracking-tight text-tea-800">
+                                Onekkisu<span class="text-gold-500">BD</span>
+                            </span>
+                            <span class="mt-1 block text-[10px] font-medium tracking-[0.12em] uppercase text-tea-600">
+                                Pure Taste, Better Life
+                            </span>
                         </span>
-                    </span>
+                    @endif
                 </a>
 
                 <!-- Desktop Nav -->
@@ -1233,26 +1239,36 @@
                 <!-- Brand Column -->
                 <div class="footer-brand-column" id="about">
                     <div class="brand-logo brand-logo-footer">
-                        <svg class="brand-mark" viewBox="0 0 82 82" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="brandGreenFooter" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0" stop-color="#78a729" />
-                                    <stop offset="0.55" stop-color="#235d2e" />
-                                    <stop offset="1" stop-color="#0c432e" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M57 12A32 32 0 1 0 64 69" fill="none" stroke="url(#brandGreenFooter)"
-                                stroke-width="12" stroke-linecap="round" />
-                            <path d="M44 17C50 4 62 2 76 3c-6 14-14 21-29 22-3-2-4-5-3-8Z" fill="#5d972b" />
-                            <path d="M46 55c-2-13 8-23 22-25-1 13-8 24-21 27Z" fill="#77a83b" />
-                            <path d="M45 57c6-9 12-14 21-21" fill="none" stroke="#e0e9a6" stroke-width="1.8"
-                                stroke-linecap="round" />
-                            <circle cx="57" cy="70" r="5" fill="#c9a343" />
-                        </svg>
-                        <span class="brand-words">
-                            <strong>অনেককিছু</strong>
-                            <small>Purity With Price &amp; Trust</small>
-                        </span>
+                        @if(!empty($generalsetting->dark_logo))
+                            <a href="{{ route('home') }}">
+                                <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" style="max-height: 52px; width: auto; object-fit: contain;" />
+                            </a>
+                        @elseif(!empty($generalsetting->white_logo))
+                            <a href="{{ route('home') }}">
+                                <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" style="max-height: 52px; width: auto; object-fit: contain;" />
+                            </a>
+                        @else
+                            <svg class="brand-mark" viewBox="0 0 82 82" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="brandGreenFooter" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0" stop-color="#78a729" />
+                                        <stop offset="0.55" stop-color="#235d2e" />
+                                        <stop offset="1" stop-color="#0c432e" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M57 12A32 32 0 1 0 64 69" fill="none" stroke="url(#brandGreenFooter)"
+                                    stroke-width="12" stroke-linecap="round" />
+                                <path d="M44 17C50 4 62 2 76 3c-6 14-14 21-29 22-3-2-4-5-3-8Z" fill="#5d972b" />
+                                <path d="M46 55c-2-13 8-23 22-25-1 13-8 24-21 27Z" fill="#77a83b" />
+                                <path d="M45 57c6-9 12-14 21-21" fill="none" stroke="#e0e9a6" stroke-width="1.8"
+                                    stroke-linecap="round" />
+                                <circle cx="57" cy="70" r="5" fill="#c9a343" />
+                            </svg>
+                            <span class="brand-words">
+                                <strong>অনেককিছু</strong>
+                                <small>Purity With Price &amp; Trust</small>
+                            </span>
+                        @endif
                     </div>
 
                     <h2>Good Tea<br /><em>Better Living</em></h2>

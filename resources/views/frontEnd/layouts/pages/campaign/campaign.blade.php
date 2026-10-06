@@ -8,7 +8,9 @@
     <link rel="shortcut icon" href="{{ asset($generalsetting->favicon) }}" type="image/x-icon" />
 
     <!-- Font Awesome 6 & Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/all.css" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/campaign/css') }}/animate.css" />
@@ -19,7 +21,9 @@
     <!-- Google Fonts for Editorial Luxury Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
 
     <!-- Facebook Pixel Code -->
     <script>
@@ -43,42 +47,52 @@
         fbq("track", "PageView");
     </script>
     <noscript>
-        <img height="1" width="1" style="display: none;" src="https://www.facebook.com/tr?id=620464097560166&ev=PageView&noscript=1" />
+        <img height="1" width="1" style="display: none;"
+            src="https://www.facebook.com/tr?id=620464097560166&ev=PageView&noscript=1" />
     </noscript>
     <!-- End Facebook Pixel Code -->
 
     <!-- Google Tag Manager -->
     <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-KCB3SXKF');
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-KCB3SXKF');
     </script>
     <!-- End Google Tag Manager -->
 
     <meta name="app-url" content="{{ route('campaign', $campaign_data->slug) }}" />
     <meta name="robots" content="index, follow" />
-    <meta name="description" content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
+    <meta name="description"
+        content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
     <meta name="keywords" content="{{ $campaign_data->slug }}, {{ $campaign_data->name }}, {{ $product->name }}" />
 
     <!-- Open Graph data for Facebook Ads & Social Sharing -->
     <meta property="og:title" content="{{ $campaign_data->name }} | {{ $generalsetting->name }}" />
     <meta property="og:type" content="product" />
     <meta property="og:url" content="{{ route('campaign', $campaign_data->slug) }}" />
-    <meta property="og:image" content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
-    <meta property="og:description" content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
+    <meta property="og:image"
+        content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
+    <meta property="og:description"
+        content="{{ Str::limit(strip_tags($campaign_data->short_description ?: $campaign_data->description ?: $product->description ?: $campaign_data->name), 160) }}" />
     <meta property="og:site_name" content="{{ $generalsetting->name }}" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{{ $campaign_data->name }} | {{ $generalsetting->name }}" />
-    <meta name="twitter:image" content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
+    <meta name="twitter:image"
+        content="{{ asset($campaign_data->image_one ?: ($product->image ? $product->image->image : '')) }}" />
 
     <style>
+        @import url('https://fonts.maateen.me/solaiman-lipi/font.css');
+
         /* ========================================================
            HIGH-CONVERTING LUXURY CAMPAIGN LANDING PAGE STYLES
-           Optimized for Facebook Ads (Exact Aspect Ratios, Fast UX)
+           Aligned with Main Site Tea Theme (Forest Green & Gold)
            ======================================================== */
         :root {
             --tea-dark: #0a211b;
@@ -1232,6 +1246,25 @@
             color: #173f2c;
         }
 
+        .camp-pkg-sub .badge {
+            background: #173f2c !important;
+            color: #e2cf9c !important;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(205, 176, 106, 0.4);
+            margin-right: 4px;
+        }
+
+        .owl-theme .owl-dots .owl-dot.active span,
+        .owl-theme .owl-dots .owl-dot:hover span {
+            background: #173f2c !important;
+        }
+        .owl-theme .owl-dots .owl-dot span {
+            background: #c9dec4 !important;
+        }
+
         @media (max-width: 767px) {
             .camp-main-title {
                 font-size: 24px;
@@ -1296,7 +1329,7 @@
     <header class="camp-header">
         <div class="camp-header-inner">
             <a href="{{ url('/') }}" class="camp-logo">
-                <img src="{{ asset($generalsetting->white_logo ?? $generalsetting->logo) }}" alt="{{ $generalsetting->name }}" />
+                <img src="{{ asset($generalsetting->white_logo ?? ($generalsetting->dark_logo ?? $generalsetting->logo)) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" />
             </a>
             <a href="#order_form" class="camp-header-cta">
                 <i class="fas fa-shopping-bag"></i> এখনই অর্ডার করুন

@@ -134,7 +134,7 @@
                         <div class="mb-5 flex items-center gap-3">
                             <span class="h-px w-8 bg-gold-500"></span>
                             <span class="text-[11px] font-semibold tracking-[0.28em] text-tea-800 uppercase">
-                                Bangladesh's Trusted Tea Brand
+                                Bangladesh's Trusted Brand
                             </span>
                             <span class="h-px w-8 bg-gold-500"></span>
                         </div>
