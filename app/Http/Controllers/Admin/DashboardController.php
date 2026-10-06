@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $today_order = Order::where('created_at', '>=', Carbon::today())->count();
         $total_product = Product::count();
         $total_customer = Customer::count();
-        $latest_order = Order::latest()->limit(5)->with('customer','product','product.image')->get();
+        $latest_order = Order::latest()->limit(5)->with('customer','product','product.image','status')->get();
         $latest_customer = Customer::latest()->limit(5)->get();
         $today_delivery = Order::whereIn('order_status', ['5', '6'])->where('created_at', '>=', Carbon::today())->count();
         $total_delivery = Order::whereIn('order_status', ['5', '6'])->count();

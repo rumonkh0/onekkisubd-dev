@@ -171,15 +171,13 @@
                                             <td>{{ $value->shipping ? $value->shipping->address : '' }}</td>
                                             <td>{{ $total_amount = $value->qty * $value->sale_price }}</td>
                                             @php
-                                                $shipping_charge = App\Models\Order::where(
-                                                    'id',
-                                                    $value->order_id,
-                                                )->first()->shipping_charge;
-                                                $order = App\Models\Order::where('id', $value->order_id)->first();
+                                                $order = $value->order;
+                                                $shipping_charge = $order ? ($order->shipping_charge ?? 0) : 0;
+                                                $discount_amount = $order ? ($order->discount ?? 0) : 0;
                                             @endphp
-                                            <td>{{ $order->discount }}</td>
-                                            <td>{{ $order->shipping_charge }}</td>
-                                            <td>{{ $total_amount + $shipping_charge - $order->discount }}</td>
+                                            <td>৳{{ number_format($discount_amount, 0) }}</td>
+                                            <td>৳{{ number_format($shipping_charge, 0) }}</td>
+                                            <td>৳{{ number_format($total_amount + $shipping_charge - $discount_amount, 0) }}</td>
                                             <td>{{ $value->shipping ? $value->shipping->name : '' }}</td>
                                             <td>{{ $value->shipping ? $value->shipping->phone : '' }}</td>
                                             <td>{{ $value->shipping ? $value->shipping->email : '' }}</td>

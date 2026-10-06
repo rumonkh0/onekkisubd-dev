@@ -106,11 +106,27 @@
                             @foreach($order->orderdetails as $key=>$value)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                @if($value->product_color == null)
-                                <td><img src="{{asset(App\Models\Productimage::where('product_id',$value->product_id)->first()->image)}}" style="width:60px">&nbsp;&nbsp;{{$value->product_name}}</td>
-                                @else
-                                <td><img src="{{asset(App\Models\Productcolor::where('product_id',$value->product_id)->where('color', $value->product_color)->first()->Image)}}" style="width:60px">&nbsp;&nbsp;{{$value->product_name}}</td>
-                                @endif
+                                <td>
+                                    @php
+                                        $prodImg = null;
+                                        if ($value->product_color) {
+                                            $colorModel = App\Models\Productcolor::where('product_id', $value->product_id)->where('color', $value->product_color)->first();
+                                            if ($colorModel && !empty($colorModel->Image)) {
+                                                $prodImg = $colorModel->Image;
+                                            }
+                                        }
+                                        if (!$prodImg) {
+                                            $imgModel = App\Models\Productimage::where('product_id', $value->product_id)->first();
+                                            if ($imgModel && !empty($imgModel->image)) {
+                                                $prodImg = $imgModel->image;
+                                            }
+                                        }
+                                    @endphp
+                                    @if($prodImg)
+                                        <img src="{{ asset($prodImg) }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin-right: 8px;">
+                                    @endif
+                                    {{ $value->product_name }}
+                                </td>
                                 <td>৳{{$value->sale_price}}</td>
                                 <td>{{$value->qty}}</td>
                                 <td>৳{{$value->sale_price*$value->qty}}</td>
@@ -124,7 +140,7 @@
                             <tbody style="background:#f1f9f8">
                                 <tr>
                                     <td><strong>SubTotal</strong></td>
-                                    <td><strong>৳{{$order->orderdetails->sum('sale_price')}}</strong></td>
+                                    <td><strong>৳{{ $order->orderdetails->sum(function($d) { return $d->sale_price * $d->qty; }) }}</strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Shipping(+)</strong></td>

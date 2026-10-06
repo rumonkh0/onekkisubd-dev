@@ -453,6 +453,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     Route::get('order-status', [OrderController::class, 'order_status'])->name('admin.order.status');
     Route::get('order-bulk-destroy', [OrderController::class, 'bulk_destroy'])->name('admin.order.bulk_destroy');
     Route::get('order-print', [OrderController::class, 'order_print'])->name('admin.order.order_print');
+    Route::match(['get', 'post'], 'order-export', [OrderController::class, 'order_export'])->name('admin.order.export');
     Route::get('bulk-courier/{slug}', [OrderController::class, 'bulk_courier'])->name('admin.bulk_courier');
     Route::get('stock-report', [OrderController::class, 'stock_report'])->name('admin.stock_report');
     Route::get('order-report', [OrderController::class, 'order_report'])->name('admin.order_report');

@@ -109,8 +109,8 @@
                         <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light"
                             data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
                             aria-expanded="false">
-                            <img src="{{ asset(Auth::user()->image) }}" alt="user-image" class="rounded-circle" />
-                            <span class="pro-user-name ms-1"> {{ Auth::user()->name }} <i
+                            <img src="{{ Auth::user() && Auth::user()->image ? asset(Auth::user()->image) : asset('public/backEnd/assets/images/users/user-1.jpg') }}" alt="user-image" class="rounded-circle" />
+                            <span class="pro-user-name ms-1"> {{ Auth::user()->name ?? 'Admin' }} <i
                                     class="mdi mdi-chevron-down"></i> </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end profile-dropdown">
@@ -223,7 +223,7 @@
                         title="Mat Helme" class="rounded-circle avatar-md" />
                     <div class="dropdown">
                         <a href="javascript: void(0);" class="text-dark dropdown-toggle h5 mt-2 mb-1 d-block"
-                            data-bs-toggle="dropdown">{{ Auth::user()->name }}</a>
+                            data-bs-toggle="dropdown">{{ Auth::user()->name ?? 'Admin' }}</a>
                         <div class="dropdown-menu user-pro-dropdown">
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
@@ -264,7 +264,7 @@
                 <div id="sidebar-menu">
                     <ul id="side-menu">
                         <li>
-                            <a href="{{ url('admin/dashboard') }}" data-bs-toggle="collapse">
+                            <a href="{{ route('dashboard') }}">
                                 <i data-feather="airplay"></i>
                                 <span> Dashboard </span>
                             </a>
@@ -379,7 +379,7 @@
                                             Pending Reviews ({{ $pending_reviews }})</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('reviews.pending') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('reviews.create') }}"><i data-feather="file-plus"></i>
                                             Create</a>
                                     </li>
                                     <li>
