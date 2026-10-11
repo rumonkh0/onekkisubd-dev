@@ -323,9 +323,9 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ url('shop') }}"
+                        <a href="{{ route('hotdeals') }}"
                             class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
-                            View All
+                            View All Deals
                             <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -360,19 +360,28 @@
                                 $bnName = '(' . trim($matches[2]) . ')';
                             } else {
                                 $engName = $rawName;
-                                $bnName = '';
                             }
                         @endphp
 
                         <article
                             class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-tea-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
-                            <!-- Discount Badge -->
-                            @if($discountPct > 0)
-                                <span
-                                    class="absolute left-3 top-3 z-10 rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
-                                    {{ $discountPct }}% OFF
-                                </span>
-                            @endif
+                            <!-- Discount & Promotion Badges -->
+                            <div class="absolute left-3 top-3 z-10 flex flex-col items-start gap-1">
+                                @if($discountPct > 0)
+                                    <span class="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                                        {{ $discountPct }}% OFF
+                                    </span>
+                                @endif
+                                @if(!empty($prod->deal_of_theday) && $prod->deal_of_theday == 1)
+                                    <span class="rounded-md bg-gradient-to-r from-amber-500 to-yellow-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow flex items-center gap-1">
+                                        ⭐ Deal
+                                    </span>
+                                @elseif(!empty($prod->feature_product) && $prod->feature_product == 1)
+                                    <span class="rounded-md bg-emerald-700 px-1.5 py-0.5 text-[9px] font-bold text-white shadow flex items-center gap-1">
+                                        🔥 Trending
+                                    </span>
+                                @endif
+                            </div>
 
                             <!-- Brand Badge -->
                             <span
@@ -496,11 +505,10 @@
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">Discover our
-                            latest</span>
+                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">Trending & Top Picks</span>
                         <h2
                             class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            NEW <span class="text-tea-700">ARRIVALS</span>
+                            TOP <span class="text-tea-700">TRENDING</span>
                             <!-- Sprig Leaf SVG -->
                             <svg viewBox="0 0 64 64" class="h-8 w-8 rotate-45" fill="none" aria-hidden="true">
                                 <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2"
@@ -512,7 +520,7 @@
                                     stroke-linecap="round" />
                             </svg>
                         </h2>
-                        <p class="mt-1 text-sm text-tea-900/70">Fresh Teas. New Flavours. A Healthier You.</p>
+                        <p class="mt-1 text-sm text-tea-900/70">Handpicked Customer Favorites & Trending Blends</p>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-6 lg:gap-8">
@@ -595,11 +603,9 @@
                     <div id="new-arrivals-track"
                         class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
                         @php
-                            $arrivalProducts = \App\Models\Product::where('status', 1)
-                                ->orderByRaw("FIELD(id, 38, 36, 29, 11, 10, 9, 6, 43, 41)")
-                                ->with('image', 'prosizes', 'procolors')
-                                ->take(8)
-                                ->get();
+                            $arrivalProducts = isset($feature_products) && $feature_products->count() > 0
+                                ? $feature_products
+                                : \App\Models\Product::where('status', 1)->with('image', 'prosizes', 'procolors')->latest()->take(8)->get();
                         @endphp
 
                         @foreach($arrivalProducts as $nprod)
@@ -628,13 +634,23 @@
                                 class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
                                 <article
                                     class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-tea-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
-                                    <!-- Discount Badge -->
-                                    @if($discountPct > 0)
-                                        <span
-                                            class="absolute left-3 top-3 z-10 rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
-                                            {{ $discountPct }}% OFF
-                                        </span>
-                                    @endif
+                                    <!-- Discount & Promotion Badges -->
+                                    <div class="absolute left-3 top-3 z-10 flex flex-col items-start gap-1">
+                                        @if($discountPct > 0)
+                                            <span class="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                                                {{ $discountPct }}% OFF
+                                            </span>
+                                        @endif
+                                        @if(!empty($nprod->deal_of_theday) && $nprod->deal_of_theday == 1)
+                                            <span class="rounded-md bg-gradient-to-r from-amber-500 to-yellow-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow flex items-center gap-1">
+                                                ⭐ Deal
+                                            </span>
+                                        @elseif(!empty($nprod->feature_product) && $nprod->feature_product == 1)
+                                            <span class="rounded-md bg-emerald-700 px-1.5 py-0.5 text-[9px] font-bold text-white shadow flex items-center gap-1">
+                                                🔥 Trending
+                                            </span>
+                                        @endif
+                                    </div>
 
                                     <!-- Wishlist Button -->
                                     <button type="button" onclick="addTowishlist('{{ $nprod->id }}')"
@@ -730,6 +746,97 @@
                 </div>
             </div>
         </section>
+
+        <!-- ==========================================================================
+                 SECTION: DEAL OF THE DAY SPOTLIGHT
+                 ========================================================================== -->
+        @if(isset($dealofthe_products) && $dealofthe_products->count() > 0)
+        <section id="deal-of-the-day" class="relative overflow-hidden bg-gradient-to-br from-[#102419] via-[#0c1c13] to-[#07130d] py-14 text-white lg:py-20">
+            <!-- Decorative Glows -->
+            <div class="pointer-events-none absolute -right-10 -top-10 h-72 w-72 rounded-full bg-gold-500/10 blur-3xl"></div>
+            <div class="pointer-events-none absolute -left-10 -bottom-10 h-72 w-72 rounded-full bg-tea-500/15 blur-3xl"></div>
+
+            <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
+                <!-- Section Header -->
+                <div class="mb-10 flex flex-col items-center text-center">
+                    <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-gold-400/40 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold tracking-wider text-gold-300 uppercase shadow-sm">
+                        <svg class="h-4 w-4 fill-gold-400 text-gold-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Exclusive Daily Selection
+                    </div>
+                    <h2 class="font-serif text-3xl font-bold tracking-wide sm:text-4xl lg:text-5xl">
+                        DEAL OF THE <span class="bg-gradient-to-r from-gold-300 via-gold-400 to-amber-300 bg-clip-text text-transparent">DAY</span>
+                    </h2>
+                    <p class="mt-2 max-w-xl text-sm text-tea-100/70 sm:text-base">
+                        Specially handpicked deals available at exclusive prices for a limited time only!
+                    </p>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    @foreach($dealofthe_products as $dprod)
+                        @php
+                            $dHasOldPrice = !empty($dprod->old_price) && $dprod->old_price > $dprod->new_price;
+                            $dDiscountPct = $dHasOldPrice ? round((($dprod->old_price - $dprod->new_price) / $dprod->old_price) * 100) : 0;
+                            $dCardImg = isset($productImages[$dprod->id]) && file_exists(public_path($productImages[$dprod->id]))
+                                ? asset($productImages[$dprod->id])
+                                : ($dprod->image ? asset($dprod->image->image) : asset('images/products/black-tea.jpg'));
+                        @endphp
+                        <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-gold-500/30 bg-[#162e21]/90 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold-400 hover:shadow-gold-500/10">
+                            <!-- Star Badge -->
+                            <div class="absolute left-3 top-3 z-10 flex flex-col gap-1">
+                                <span class="flex items-center gap-1 rounded-md bg-gradient-to-r from-gold-500 to-amber-600 px-2.5 py-1 text-[11px] font-extrabold text-tea-950 shadow">
+                                    ⭐ Deal of the Day
+                                </span>
+                                @if($dDiscountPct > 0)
+                                    <span class="w-fit rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                                        {{ $dDiscountPct }}% OFF
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Image Container -->
+                            <div class="relative aspect-square overflow-hidden bg-white/5 p-4">
+                                <a href="{{ route('product', $dprod->slug) }}" class="block h-full w-full">
+                                    <img src="{{ $dCardImg }}" alt="{{ $dprod->name }}" loading="lazy"
+                                        class="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </a>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex flex-1 flex-col p-4">
+                                <h3 class="font-serif text-lg font-bold text-white transition-colors group-hover:text-gold-300">
+                                    <a href="{{ route('product', $dprod->slug) }}">
+                                        {{ $dprod->name }}
+                                    </a>
+                                </h3>
+
+                                <div class="mt-2 flex items-baseline gap-2">
+                                    <span class="font-serif text-xl font-bold text-gold-400">৳{{ number_format($dprod->new_price, 0) }}</span>
+                                    @if($dHasOldPrice)
+                                        <span class="text-xs text-tea-300/60 line-through">৳{{ number_format($dprod->old_price, 0) }}</span>
+                                        <span class="rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-red-300">
+                                            Save ৳{{ number_format($dprod->old_price - $dprod->new_price, 0) }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-white/10 flex gap-2">
+                                    <a href="{{ route('product', $dprod->slug) }}"
+                                        class="flex-1 text-center rounded-xl bg-gold-500 px-4 py-2 text-xs font-bold text-tea-950 transition-colors hover:bg-gold-400 shadow-md">
+                                        Order Now
+                                    </a>
+                                    <a href="{{ route('product', $dprod->slug) }}"
+                                        class="rounded-xl border border-white/20 px-3 py-2 text-xs font-medium text-tea-100 transition-colors hover:bg-white/10" title="View Details">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
 
         <!-- ==========================================================================
                  SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)

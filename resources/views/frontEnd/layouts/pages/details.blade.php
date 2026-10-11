@@ -1380,6 +1380,21 @@
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 In Stock
                             </span>
+                            @if(!empty($details->deal_of_theday) && $details->deal_of_theday == 1)
+                                <span class="badge" style="background: linear-gradient(135deg, #d97706, #b45309); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-star"></i> Deal of the Day
+                                </span>
+                            @endif
+                            @if(!empty($details->topsale) && $details->topsale == 1)
+                                <span class="badge" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-bolt"></i> Flash Sale
+                                </span>
+                            @endif
+                            @if(!empty($details->feature_product) && $details->feature_product == 1)
+                                <span class="badge" style="background: linear-gradient(135deg, #059669, #047857); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-fire"></i> Top Trending
+                                </span>
+                            @endif
                         </div>
 
                         <!-- Product Title -->

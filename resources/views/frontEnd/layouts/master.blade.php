@@ -794,6 +794,14 @@
                         </a>
                     </div>
                     <div class="group relative">
+                        <a href="{{ route('hotdeals') }}"
+                            class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-semibold transition-colors hover:text-amber-600 2xl:text-[13.5px] {{ request()->is('hot-deals') ? 'text-amber-600' : 'text-amber-700' }}">
+                            ⚡ Flash Sales
+                            <span
+                                class="absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-amber-500 transition-all duration-300 {{ request()->is('hot-deals') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                        </a>
+                    </div>
+                    <div class="group relative">
                         <a href="{{ url('shop') }}"
                             class="relative flex items-center gap-1 whitespace-nowrap py-2 text-[13px] font-medium text-tea-900 transition-colors hover:text-tea-600 2xl:text-[13.5px]">
                             Collection
@@ -1062,6 +1070,8 @@
                         class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Home</a>
                     <a href="{{ url('shop') }}"
                         class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Shop</a>
+                    <a href="{{ route('hotdeals') }}"
+                        class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50">⚡ Flash Sales</a>
                     <a href="{{ url('/') }}#categories"
                         class="block rounded-lg px-3 py-2.5 text-sm font-medium text-tea-900 hover:bg-tea-50">Tea
                         Collection</a>

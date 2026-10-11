@@ -132,37 +132,62 @@ class FrontendController extends Controller
             ->limit(2)
             ->get();
 
-        $hotdeal_top = Product::where(['status' => 1])
-            ->orderByRaw("FIELD(id, 29, 11, 10, 9, 6, 43, 38, 36, 41)")
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
+        // 1. Flash Sales (topsale = 1)
+        $hotdeal_top = Product::where(['status' => 1, 'topsale' => 1])
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with('prosizes', 'procolors', 'image')
+            ->latest()
             ->limit(6)
             ->get();
 
+        if ($hotdeal_top->count() < 6) {
+            $extra = Product::where('status', 1)
+                ->whereNotIn('id', $hotdeal_top->pluck('id'))
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
+                ->with('prosizes', 'procolors', 'image')
+                ->latest()
+                ->limit(6 - $hotdeal_top->count())
+                ->get();
+            $hotdeal_top = $hotdeal_top->concat($extra);
+        }
+
+        // 2. Top Trending (feature_product = 1)
         $feature_products = Product::where(['status' => 1, 'feature_product' => 1])
-            ->orderBy('id', 'DESC')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with('prosizes', 'procolors', 'image')
-            ->limit(12)
+            ->latest()
+            ->limit(10)
             ->get();
 
+        if ($feature_products->count() < 8) {
+            $extra = Product::where('status', 1)
+                ->whereNotIn('id', $feature_products->pluck('id'))
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
+                ->with('prosizes', 'procolors', 'image')
+                ->latest()
+                ->limit(8 - $feature_products->count())
+                ->get();
+            $feature_products = $feature_products->concat($extra);
+        }
+
+        // 3. Deal Of The Day (deal_of_theday = 1)
         $dealofthe_products = Product::where(['status' => 1, 'deal_of_theday' => 1])
-            ->orderBy('id', 'DESC')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with('prosizes', 'procolors', 'image')
-            ->limit(12)
+            ->latest()
+            ->limit(6)
             ->get();
 
         $new_products = Product::where(['status' => 1])
-            ->orderByRaw("FIELD(id, 38, 36, 29, 11, 10, 9, 6, 43, 41)")
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with('prosizes', 'procolors', 'image')
-            ->limit(6)
+            ->latest()
+            ->limit(8)
             ->get();
 
         $hotdeal_bottom = Product::where(['status' => 1, 'topsale' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
-            ->skip(12)
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
+            ->skip(6)
             ->limit(12)
             ->get();
 
@@ -195,7 +220,7 @@ class FrontendController extends Controller
     public function hotdeals(Request $request)
     {
         $products = Product::where(['status' => 1, 'topsale' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with(['image', 'prosizes', 'procolors']);
 
         if ($request->sort == 1) {
@@ -363,7 +388,7 @@ class FrontendController extends Controller
             ->firstOrFail();
         $products = Product::where(['category_id' => $details->category_id, 'status' => 1])
             ->with('image')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->get();
         $shippingcharge = ShippingCharge::where('status', 1)->get();
         $reviews = Review::where(['product_id'=> $details->id, 'status' => 'active'])->get();
@@ -583,7 +608,7 @@ class FrontendController extends Controller
         $products = Product::where('status', 1)
             ->whereNotNull('old_price')
             ->whereColumn('old_price', '>', 'new_price')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
             ->with(['image', 'prosizes', 'procolors']);
 
         if ($request->sort == 1) {

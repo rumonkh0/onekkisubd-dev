@@ -93,10 +93,10 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->short_des = $request->short_des;
         $product->prebooking = $request->prebooking;
-        $product->status = $request->status;
-        $product->topsale = $request->topsale;
-        $product->feature_product = $request->feature_product;
-        $product->deal_of_theday = $request->deal_of_theday;
+        $product->status = $request->status ? 1 : 0;
+        $product->topsale = $request->topsale ? 1 : 0;
+        $product->feature_product = $request->feature_product ? 1 : 0;
+        $product->deal_of_theday = $request->deal_of_theday ? 1 : 0;
         $product->type = $request->type;
 
         if ($request->hasFile('PostImage')) {
@@ -383,10 +383,10 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->short_des = $request->short_des;
         $product->prebooking = $request->prebooking;
-        $product->status = $request->status ;
-        $product->topsale = $request->topsale ? 1:0;
-        $product->feature_product = $request->feature_product ? 1:0;
-        $product->deal_of_theday = $request->deal_of_theday ? 1:0;
+        $product->status = $request->status ? 1 : 0;
+        $product->topsale = $request->topsale ? 1 : 0;
+        $product->feature_product = $request->feature_product ? 1 : 0;
+        $product->deal_of_theday = $request->deal_of_theday ? 1 : 0;
         $product->type = $request->type;
         $product->updated_at = Carbon::now();
 

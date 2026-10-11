@@ -616,6 +616,11 @@
                                     {{ number_format($discount, 0) }}% ছাড়
                                 </span>
                             @endif
+                            @if(!empty($value->deal_of_theday) && $value->deal_of_theday == 1)
+                                <span style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">⭐ Deal</span>
+                            @elseif(!empty($value->feature_product) && $value->feature_product == 1)
+                                <span style="background: #2f6f37; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🔥 Trending</span>
+                            @endif
                             @if(isset($value->stock) && $value->stock <= 0)
                                 <span class="tea-stockout-badge">স্টক শেষ</span>
                             @endif
