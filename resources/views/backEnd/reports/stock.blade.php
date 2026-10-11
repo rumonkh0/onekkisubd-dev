@@ -275,8 +275,8 @@
                                     $pageTotal = 0;
                                 @endphp
                                 @forelse ($products as $product)
-                                    @if ($product->sizes && $product->sizes->count() > 0)
-                                        @foreach ($product->sizes as $size)
+                                    @if ($product->prosizes && $product->prosizes->count() > 0)
+                                        @foreach ($product->prosizes as $size)
                                             @php
                                                 $rowNum++;
                                                 $subtotal = $size->quantity * $size->SalePrice;

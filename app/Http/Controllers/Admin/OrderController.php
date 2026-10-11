@@ -666,7 +666,7 @@ class OrderController extends Controller
     
     
     public function stock_report(Request $request){
-        $query = Product::with(['category', 'sizes'])->where('status', 1);
+        $query = Product::with(['category', 'prosizes'])->where('status', 1);
 
         if ($request->keyword) {
             $query->where('name', 'LIKE', '%' . $request->keyword . "%");
@@ -689,11 +689,11 @@ class OrderController extends Controller
         $total_purchase = 0;
 
         foreach ($all_products as $prod) {
-            if ($prod->sizes && $prod->sizes->count() > 0) {
-                foreach ($prod->sizes as $sz) {
+            if ($prod->prosizes && $prod->prosizes->count() > 0) {
+                foreach ($prod->prosizes as $sz) {
                     $total_stock += $sz->quantity;
                     $total_price += ($sz->quantity * $sz->SalePrice);
-                    $total_purchase += ($sz->quantity * ($sz->PurchasePrice ?: 0));
+                    $total_purchase += ($sz->quantity * ($prod->purchase_price ?: 0));
                 }
             } else {
                 $total_stock += $prod->stock;
