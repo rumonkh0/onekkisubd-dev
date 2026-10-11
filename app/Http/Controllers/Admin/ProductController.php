@@ -217,29 +217,101 @@ class ProductController extends Controller
     }
 
 
-    public function price_edit()
+    public function price_edit(Request $request)
     {
-        $products = DB::table('products')->select('id', 'name', 'status', 'old_price', 'new_price', 'stock')->where('status', 1)->get();;
-        return view('backEnd.product.price_edit', compact('products'));
+        $query = Product::where('status', 1)->with('prosizes');
+
+        if ($request->filled('keyword')) {
+            $keyword = trim($request->keyword);
+            $query->where(function($q) use ($keyword) {
+                $q->where('name', 'LIKE', "%{$keyword}%")
+                  ->orWhere('pro_unit', 'LIKE', "%{$keyword}%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $products = $query->orderBy('id', 'desc')->paginate(30)->withQueryString();
+        $categories = Category::where('status', 1)->select('id', 'name')->get();
+
+        return view('backEnd.product.price_edit', compact('products', 'categories'));
     }
+
     public function price_update(Request $request)
     {
-        $ids = $request->ids;
-        $oldPrices = $request->old_price;
-        $newPrices = $request->new_price;
-        $stocks = $request->stock;
-        foreach ($ids as $key => $id) {
-            $product = Product::select('id', 'name', 'status', 'old_price', 'new_price', 'stock')->find($id);
+        // 1. Update simple product prices & stock
+        if ($request->has('ids') && is_array($request->ids)) {
+            $oldPrices = $request->old_price ?? [];
+            $newPrices = $request->new_price ?? [];
+            $stocks = $request->stock ?? [];
 
-            if ($product) {
-                $product->update([
-                    'old_price' => $oldPrices[$key],
-                    'new_price' => $newPrices[$key],
-                    'stock' => $stocks[$key],
-                ]);
+            foreach ($request->ids as $key => $id) {
+                $product = Product::find($id);
+                if ($product) {
+                    $updateData = [];
+                    if (isset($oldPrices[$key])) {
+                        $updateData['old_price'] = (float) $oldPrices[$key];
+                    }
+                    if (isset($newPrices[$key])) {
+                        $updateData['new_price'] = (float) $newPrices[$key];
+                    }
+                    if (isset($stocks[$key])) {
+                        $updateData['stock'] = (int) $stocks[$key];
+                    }
+                    if (!empty($updateData)) {
+                        $product->update($updateData);
+                    }
+                }
             }
         }
-        Toastr::success('Success', 'Price update successfully');
+
+        // 2. Update variant / size prices & stock
+        if ($request->has('size_ids') && is_array($request->size_ids)) {
+            $sizeRegularPrices = $request->size_regular_price ?? [];
+            $sizeSalePrices = $request->size_sale_price ?? [];
+            $sizeQuantities = $request->size_quantity ?? [];
+
+            foreach ($request->size_ids as $key => $sizeId) {
+                $size = Productsize::find($sizeId);
+                if ($size) {
+                    $size->update([
+                        'RegularPrice' => isset($sizeRegularPrices[$key]) ? (float) $sizeRegularPrices[$key] : $size->RegularPrice,
+                        'SalePrice' => isset($sizeSalePrices[$key]) ? (float) $sizeSalePrices[$key] : $size->SalePrice,
+                        'quantity' => isset($sizeQuantities[$key]) ? (int) $sizeQuantities[$key] : $size->quantity,
+                    ]);
+                }
+            }
+
+            // Sync lowest prices and total stock from sizes back to parent products
+            $parentProductIds = Productsize::whereIn('id', $request->size_ids)->pluck('product_id')->unique();
+            foreach ($parentProductIds as $parentId) {
+                $parent = Product::find($parentId);
+                if ($parent) {
+                    $minSalePrice = Productsize::where('product_id', $parentId)->min('SalePrice');
+                    $minRegularPrice = Productsize::where('product_id', $parentId)->min('RegularPrice');
+                    $totalStock = Productsize::where('product_id', $parentId)->sum('quantity');
+
+                    $syncData = [];
+                    if ($minSalePrice !== null) {
+                        $syncData['new_price'] = $minSalePrice;
+                    }
+                    if ($minRegularPrice !== null) {
+                        $syncData['old_price'] = $minRegularPrice;
+                    }
+                    if ($totalStock !== null && $totalStock > 0) {
+                        $syncData['stock'] = $totalStock;
+                    }
+
+                    if (!empty($syncData)) {
+                        $parent->update($syncData);
+                    }
+                }
+            }
+        }
+
+        Toastr::success('Product prices & stock updated successfully!', 'Success');
         return redirect()->back();
     }
 

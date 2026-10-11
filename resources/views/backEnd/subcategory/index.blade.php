@@ -44,7 +44,7 @@
                                 <span>{{$loop->iteration}}</span>                               
                             </td>                            
                             <td>
-                                <span>{{$value->category->name}}</span>
+                                <span>{{$value->category->name ?? 'N/A'}}</span>
                             </td>
 
                             <td>
@@ -74,7 +74,11 @@
 
                                     <a href="{{route('subcategories.edit',$value->id)}}" class="btn btn-xs btn-primary waves-effect waves-light"><i class="fe-edit-1"></i></a>
 
-                                   
+                                    <form method="post" action="{{route('subcategories.destroy')}}" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" value="{{$value->id}}" name="hidden_id">
+                                        <button type="submit" class="btn btn-xs btn-danger waves-effect waves-light delete-confirm"><i class="mdi mdi-close"></i></button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

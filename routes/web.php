@@ -344,7 +344,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     Route::post('deposit/store', [DepositController::class, 'store'])->name('deposit.store');
     Route::get('deposit/edit/{id}', [DepositController::class, 'edit'])->name('deposit.edit');
     Route::post('deposit/update/{id}', [DepositController::class, 'update'])->name('deposit.update');
-    Route::get('deposit/destroy/{id}', [DepositController::class, 'destroy'])->name('deposit.destroy');
+    Route::match(['get', 'post'], 'deposit/destroy/{id}', [DepositController::class, 'destroy'])->name('deposit.destroy');
 
     // desposit expense date filtering
     Route::get('deposit-expense/filtering', [DashboardController::class, 'dashboard'])->name('deposit.filtering');
@@ -354,7 +354,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     Route::post('expense/store', [ExpenseController::class, 'store'])->name('expense.store');
     Route::get('expense/edit/{id}', [ExpenseController::class, 'edit'])->name('expense.edit');
     Route::post('expense/update/{id}', [ExpenseController::class, 'update'])->name('expense.update');
-    Route::get('expense/destroy/{id}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
+    Route::match(['get', 'post'], 'expense/destroy/{id}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
 
 
     // campaign

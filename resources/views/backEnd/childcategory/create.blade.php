@@ -30,17 +30,15 @@
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
                             <label for="subcategory_id" class="form-label">Sub Category *</label>
-                             <select class="form-control select2-multiple @error('subcategory_id') is-invalid @enderror" id="subcategory_id" name="subcategory_id" value="{{ old('subcategory_id') }}" data-toggle="select2"  data-placeholder="Choose ..."required>
-                                <optgroup >
-                                    <option value="">Choose..</option>
-                                    @foreach ($menucategories as $category)
-                                    <option value="">== == == {{ $category->name }} == == ==</option>
-                                        @foreach ($category->subcategories as $subcat)
-                                            <option value="{{ $subcat->id }}"  >{{ $subcat->subcategoryName }}</option>
-                                            
+                             <select class="form-control select2 @error('subcategory_id') is-invalid @enderror" id="subcategory_id" name="subcategory_id" data-toggle="select2" data-placeholder="Choose ..." required>
+                                <option value="">Choose Sub Category...</option>
+                                @foreach ($categories as $category)
+                                    <optgroup label="{{ $category->name }}">
+                                        @foreach ($category->allsubcategories as $subcat)
+                                            <option value="{{ $subcat->id }}" {{ old('subcategory_id') == $subcat->id ? 'selected' : '' }}>{{ $subcat->subcategoryName }}</option>
                                         @endforeach
-                                    @endforeach
-                                </optgroup>
+                                    </optgroup>
+                                @endforeach
                             </select>
                             @error('subcategory_id')
                                 <span class="invalid-feedback" role="alert">

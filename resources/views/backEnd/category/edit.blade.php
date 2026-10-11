@@ -40,7 +40,7 @@
                     
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
-                            <label for="image" class="form-label">Image *</label>
+                            <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" value="{{ $edit_data->image }}"  id="image" >
                             <img src="{{asset($edit_data->image)}}" alt="" class="edit-image">
                             @error('image')

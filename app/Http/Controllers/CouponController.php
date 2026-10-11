@@ -6,78 +6,136 @@ use App\Models\Coupon;
 use App\Models\CouponUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Toastr;
 
 class CouponController extends Controller
 {
-    public function index(){
-        $coupons = Coupon::all();
-        return view('backEnd.coupon.coupon' , [
-            'coupons' => $coupons,
-        ]);
+    public function index()
+    {
+        $coupons = Coupon::latest()->get();
+        return view('backEnd.coupon.coupon', compact('coupons'));
     }
 
-    public function store(Request $request){
-        Coupon::insert([
-            'coupon_name' => $request->coupon_name,
+    public function store(Request $request)
+    {
+        $request->validate([
+            'coupon_name' => 'required|string|max:100|unique:coupons,coupon_name',
+            'coupon_type' => 'required|in:1,2',
+            'amount' => 'required|numeric|min:1',
+            'quantity' => 'required|integer|min:1',
+            'validity' => 'required|date',
+        ]);
+
+        Coupon::create([
+            'coupon_name' => strtoupper(trim($request->coupon_name)),
             'coupon_type' => $request->coupon_type,
             'amount' => $request->amount,
             'count' => $request->quantity,
             'validity' => $request->validity,
             'unique_id' => $request->coupon_type . uniqid() . $request->amount . $request->validity,
-            'created_at' => Carbon::now(),
         ]);
-        return back()->with('success' , 'Coupon added successfully');
-    }
-    function delete($id){
-        Coupon::find($id)->delete();
-        CouponUser::where('coupon_id' , $id)->delete();
-        return back()->with('cpn_dlt' , 'Coupon deleted successfully');
+
+        Toastr::success('Coupon added successfully', 'Success');
+        return back()->with('success', 'Coupon added successfully');
     }
 
-    public function apply(Request $request){
+    public function delete($id)
+    {
+        $coupon = Coupon::find($id);
+        if ($coupon) {
+            CouponUser::where('coupon_id', $id)->delete();
+            $coupon->delete();
+            Toastr::success('Coupon deleted successfully', 'Success');
+            return back()->with('cpn_dlt', 'Coupon deleted successfully');
+        }
+        Toastr::error('Coupon not found', 'Error');
+        return back();
+    }
 
-        $coupon = $request->coupon;
-        $pack = Coupon::where('coupon_name' , $coupon)->first();
-        
-        // $exists = CouponUser::where('customer_id', $request->customer)
-        //     ->where('coupon_id', $pack->id)
-        //     ->exists();
+    public function apply(Request $request)
+    {
+        $couponCode = strtoupper(trim((string) $request->coupon));
+        if (empty($couponCode)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please enter a coupon code.',
+            ]);
+        }
 
-        // if ($exists) {
-        //     return response()->json([ 'success' => false, 'message' => 'You Have Already Use This Coupon' ]);
-        //     die();
-        // }
+        $pack = Coupon::where('coupon_name', $couponCode)->first();
+        if (!$pack) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Coupon Code.',
+            ]);
+        }
 
-        if($coupon == Coupon::where('coupon_name' , $coupon)->exists()){
-            if ($pack->count > 0) {
-                if ($pack->validity < Carbon::now()) {
-                    return response()->json([ 'success' => false, 'message' => 'Expired Coupon' ]);
-                }
-                else{
-                    if ($pack->coupon_type == 2) {
-                        $total = $request->amount - (($request->amount / 100) * $pack->amount);
-                        $discount =  ($request->amount / 100) * $pack->amount;      
-                    }
-                    else{
-                        $total = $request->amount - $pack->amount;
-                        $discount = $pack->amount;      
-                    }
-                    return response()->json([ 
-                        'success' => true,
-                        'message' => 'Coupon Added Successfully.',
-                        'amount' => $total,
-                        'discount' => round($discount),
-                        'id' => $pack->id,
-                    ]);
-                }
-            }
-            else{
-                return response()->json([ 'success' => false, 'message' => 'Coupon Usage Limit Reached!' ]);
+        if ($pack->count <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Coupon usage limit reached!',
+            ]);
+        }
+
+        if (Carbon::parse($pack->validity)->endOfDay()->isPast()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Coupon has expired!',
+            ]);
+        }
+
+        // Check customer specific usage if customer is authenticated or customer ID provided
+        $customerId = Auth::guard('customer')->id() ?? $request->customer;
+        if ($customerId) {
+            $alreadyUsed = CouponUser::where('customer_id', $customerId)
+                ->where('coupon_id', $pack->id)
+                ->exists();
+
+            if ($alreadyUsed) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already used this coupon.',
+                ]);
             }
         }
-        else{
-            return response()->json([ 'success' => false, 'message' => 'Invalid Coupon' ]);
-        }
-    }
 
+        $cartAmount = (float) $request->amount;
+        if ($cartAmount <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart amount is invalid.',
+            ]);
+        }
+
+        if ($pack->coupon_type == 2) {
+            // Percentage discount
+            $discount = round(($cartAmount / 100) * $pack->amount);
+        } else {
+            // Flat amount discount
+            $discount = round($pack->amount);
+        }
+
+        // Prevent discount exceeding cart amount
+        if ($discount > $cartAmount) {
+            $discount = $cartAmount;
+        }
+
+        $total = $cartAmount - $discount;
+
+        // Store in Session so order placement always remembers it!
+        Session::put('coupon_id', $pack->id);
+        Session::put('coupon_code', $pack->coupon_name);
+        Session::put('discount', $discount);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon applied successfully!',
+            'amount' => $total,
+            'discount' => $discount,
+            'id' => $pack->id,
+            'code' => $pack->coupon_name,
+        ]);
+    }
 }

@@ -51,6 +51,18 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
+                            <label for="date" class="form-label">Date *</label>
+                            <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" value="{{ old('date', date('Y-m-d')) }}" id="date">
+                            @error('date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
                             <label for="deposit_type" class="form-label">Deposit Type *</label>
                             <select name="deposit_type" id="" class="form-select">
                                 <option value="">Select</option>

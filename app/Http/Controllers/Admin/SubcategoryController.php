@@ -43,7 +43,6 @@ class SubcategoryController extends Controller
         $this->validate($request, [
             'category_id' => 'required',
             'subcategoryName' => 'required',
-            'status' => 'required',
         ]);
         // image with intervention 
         $image = $request->file('image');
@@ -72,6 +71,7 @@ class SubcategoryController extends Controller
         $input['slug'] = strtolower(preg_replace('/\s+/', '-', $request->subcategoryName));
         $input['slug'] = str_replace('/', '', $input['slug']);
 
+        $input['status'] = $request->status ? 1 : 0;
         $input['image'] = $imageUrl;
         Subcategory::create($input);
         Toastr::success('Success','Data insert successfully');
@@ -90,7 +90,6 @@ class SubcategoryController extends Controller
         $this->validate($request, [
             'category_id' => 'required',
             'subcategoryName' => 'required',
-            'status' => 'required',
         ]);
         $update_data = Subcategory::find($request->id);
         $input = $request->all();
@@ -113,7 +112,9 @@ class SubcategoryController extends Controller
             });
             $img->save($imageUrl);
             $input['image'] = $imageUrl;
-            File::delete($update_data->image);
+            if($update_data->image && File::exists($update_data->image)) {
+                File::delete($update_data->image);
+            }
         }else{
             $input['image'] = $update_data->image;
         }
@@ -149,8 +150,21 @@ class SubcategoryController extends Controller
     public function destroy(Request $request)
     {
         $delete_data = Subcategory::find($request->hidden_id);
-        $delete_data->delete();
-        Toastr::success('Success','Data delete successfully');
+        if ($delete_data) {
+            if (\App\Models\Childcategory::where('subcategory_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete subcategory because childcategories are associated with it.');
+                return redirect()->back();
+            }
+            if (\App\Models\Product::where('subcategory_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete subcategory because products are associated with it.');
+                return redirect()->back();
+            }
+            if ($delete_data->image && File::exists($delete_data->image)) {
+                File::delete($delete_data->image);
+            }
+            $delete_data->delete();
+            Toastr::success('Success','Data delete successfully');
+        }
         return redirect()->back();
     }
 }

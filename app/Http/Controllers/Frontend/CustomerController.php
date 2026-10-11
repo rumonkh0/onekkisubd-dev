@@ -301,8 +301,21 @@ class CustomerController extends Controller
 
         $subtotal = Cart::instance('shopping')->subtotal();
         $subtotal = str_replace(',', '', $subtotal);
-        $subtotal = str_replace('.00', '', $subtotal);
-        $discount = Session::get('discount');
+        $discount = (float) (Session::get('discount') ?? $request->discount ?? 0);
+        $couponId = $request->couponId ?? Session::get('coupon_id');
+        if ($couponId && $discount <= 0) {
+            $appliedCoupon = Coupon::find($couponId);
+            if ($appliedCoupon && $appliedCoupon->count > 0 && \Carbon\Carbon::parse($appliedCoupon->validity)->endOfDay()->isFuture()) {
+                if ($appliedCoupon->coupon_type == 2) {
+                    $discount = round(($subtotal / 100) * $appliedCoupon->amount);
+                } else {
+                    $discount = round(min($appliedCoupon->amount, $subtotal));
+                }
+            }
+        }
+        if ($discount > $subtotal) {
+            $discount = $subtotal;
+        }
         $shipping_area  = ShippingCharge::where('id', $request->area)->first();
         $shippingfee  = $shipping_area ? $shipping_area->amount : (Session::get('shipping') ? Session::get('shipping') : 0);
         if (Auth::guard('customer')->user()) {
@@ -386,20 +399,21 @@ class CustomerController extends Controller
 
         // Cart::instance('shopping')->destroy();
 
-        if ($request->couponId) {
-            $coupon = Coupon::find($request->couponId);
-
-            CouponUser::insert([
-                'customer_id' => $customer_id,
-                'coupon_id' => $request->couponId,
-                'created_at' => Carbon::now(),
-            ]);
-
+        if ($couponId) {
+            $coupon = Coupon::find($couponId);
             if ($coupon) {
-                $coupon->count -= 1;
-                $coupon->save();
+                CouponUser::create([
+                    'customer_id' => $customer_id,
+                    'coupon_id' => $coupon->id,
+                    'created_at' => Carbon::now(),
+                ]);
+
+                if ($coupon->count > 0) {
+                    $coupon->decrement('count', 1);
+                }
             }
         }
+        Session::forget(['discount', 'coupon_id', 'coupon_code']);
         Toastr::success('Thanks, Your order place successfully', 'Success!');
         $site_setting = GeneralSetting::where('status', 1)->first();
         $sms_gateway = SmsGateway::where(['status' => 1, 'order' => '1'])->first();

@@ -51,7 +51,7 @@ class DepositController extends Controller
         $deposit->amount = $request->amount;
         $deposit->deposit_type = $request->deposit_type;
         $deposit->payment_type = $request->payment_type;
-        $deposit->date = Carbon::now();
+        $deposit->date = $request->date ? $request->date : Carbon::now()->toDateString();
         $deposit->status = $request->status ? 1 : 0;
 
         if ($request->file('file')) {
@@ -88,6 +88,10 @@ class DepositController extends Controller
     public function edit($id)
     {
         $deposit = Deposit::find($id);
+        if (!$deposit) {
+            Toastr::error('Error', 'Deposit not found');
+            return redirect()->route('deposit.index');
+        }
         return view('backEnd.deposit.edit', compact('deposit'));
     }
 
@@ -100,12 +104,24 @@ class DepositController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => 'required',
+            'amount' => 'required|numeric',
+            'deposit_type' => 'required',
+            'payment_type' => 'required',
+        ]);
+
         $deposit = Deposit::find($id);
+        if (!$deposit) {
+            Toastr::error('Error', 'Deposit not found');
+            return redirect()->route('deposit.index');
+        }
+
         $deposit->title = $request->title;
         $deposit->amount = $request->amount;
         $deposit->deposit_type = $request->deposit_type;
         $deposit->payment_type = $request->payment_type;
-        $deposit->date = Carbon::now();
+        $deposit->date = $request->date ? $request->date : ($deposit->date ?? Carbon::now()->toDateString());
         $deposit->status = $request->status ? 1 : 0;
 
         if ($request->file('file')) {
@@ -135,13 +151,16 @@ class DepositController extends Controller
     public function destroy($id)
     {
         $deposit = Deposit::find($id);
+        if ($deposit) {
+            if (!is_null($deposit->file) && file_exists($deposit->file)) {
+                unlink($deposit->file);
+            }
 
-        if (!is_null($deposit->file) && file_exists($deposit->file)) {
-            unlink($deposit->file);
+            $deposit->delete();
+            Toastr::success('Success', 'Data delete successfully');
+        } else {
+            Toastr::error('Error', 'Deposit not found');
         }
-
-        $deposit->delete();
-        Toastr::success('Success', 'Data delete successfully');
         return redirect()->route('deposit.index');
     }
 }

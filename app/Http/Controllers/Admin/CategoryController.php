@@ -34,7 +34,6 @@ class CategoryController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'status' => 'required',
         ]);
         // image with intervention
         $image = $request->file('image');
@@ -63,6 +62,7 @@ class CategoryController extends Controller
 
         $input['parent_id'] = $request->parent_id?$request->parent_id:0;
         $input['front_view'] = $request->front_view ? 1 : 0;
+        $input['status'] = $request->status ? 1 : 0;
         $input['image'] = $imageUrl;
         Category::create($input);
         Toastr::success('Success','Data insert successfully');
@@ -137,8 +137,21 @@ class CategoryController extends Controller
     public function destroy(Request $request)
     {
         $delete_data = Category::find($request->hidden_id);
-        $delete_data->delete();
-        Toastr::success('Success','Data delete successfully');
+        if ($delete_data) {
+            if (\App\Models\Product::where('category_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete category because products are associated with it.');
+                return redirect()->back();
+            }
+            if (\App\Models\Subcategory::where('category_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete category because subcategories are associated with it.');
+                return redirect()->back();
+            }
+            if ($delete_data->image && File::exists($delete_data->image)) {
+                File::delete($delete_data->image);
+            }
+            $delete_data->delete();
+            Toastr::success('Success','Data delete successfully');
+        }
         return redirect()->back();
     }
 }

@@ -41,7 +41,13 @@
                         @foreach($show_data as $key=>$value)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td><span class="btn" style="background-color: {{ $value->color }}; color: #fff">{{$value->colorName}}</span></td>
+                            <td>
+                                <div class="d-inline-flex align-items-center">
+                                    <span style="display:inline-block; width:22px; height:22px; border-radius:50%; background-color: {{ $value->color }}; border: 1px solid #ced4da; margin-right: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.15);"></span>
+                                    <span class="fw-semibold text-dark">{{ $value->colorName }}</span>
+                                    <span class="badge bg-light text-muted ms-2 border">{{ $value->color }}</span>
+                                </div>
+                            </td>
                             
                             <td>@if($value->status==1)<span class="badge bg-soft-success text-success">Active</span> @else <span class="badge bg-soft-danger text-danger">Inactive</span> @endif</td>
                             <td>

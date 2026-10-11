@@ -51,7 +51,7 @@ class ExpenseController extends Controller
         $expense->amount = $request->amount;
         $expense->expense_type = $request->expense_type;
         $expense->payment_type = $request->payment_type;
-        $expense->date = Carbon::now();
+        $expense->date = $request->date ? $request->date : Carbon::now()->toDateString();
         $expense->status = $request->status ? 1 : 0;
 
         if ($request->file('file')) {
@@ -88,6 +88,10 @@ class ExpenseController extends Controller
     public function edit($id)
     {
         $expense = Expense::find($id);
+        if (!$expense) {
+            Toastr::error('Error', 'Expense not found');
+            return redirect()->route('expense.index');
+        }
         return view('backEnd.expense.edit',compact('expense'));
     }
 
@@ -100,12 +104,24 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => 'required',
+            'amount' => 'required|numeric',
+            'expense_type' => 'required',
+            'payment_type' => 'required',
+        ]);
+
         $expense = Expense::find($id);
+        if (!$expense) {
+            Toastr::error('Error', 'Expense not found');
+            return redirect()->route('expense.index');
+        }
+
         $expense->title = $request->title;
         $expense->amount = $request->amount;
         $expense->expense_type = $request->expense_type;
         $expense->payment_type = $request->payment_type;
-        $expense->date = Carbon::now();
+        $expense->date = $request->date ? $request->date : ($expense->date ?? Carbon::now()->toDateString());
         $expense->status = $request->status ? 1 : 0;
 
         if ($request->file('file')) {
@@ -135,13 +151,16 @@ class ExpenseController extends Controller
     public function destroy($id)
     {
         $expense = Expense::find($id);
+        if ($expense) {
+            if (!is_null($expense->file) && file_exists($expense->file)) {
+                unlink($expense->file);
+            }
 
-        if (!is_null($expense->file) && file_exists($expense->file)) {
-            unlink($expense->file);
+            $expense->delete();
+            Toastr::success('Success', 'Data delete successfully');
+        } else {
+            Toastr::error('Error', 'Expense not found');
         }
-
-        $expense->delete();
-        Toastr::success('Success', 'Data delete successfully');
         return redirect()->route('expense.index');
     }
 }

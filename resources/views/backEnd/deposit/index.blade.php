@@ -26,6 +26,67 @@
             </div>
         </div>
         <!-- end page title -->
+        <!-- summary widgets -->
+        <div class="row">
+            <div class="col-md-4 col-xl-4">
+                <div class="card widget-rounded-circle">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle bg-soft-success border-success border">
+                                    <i class="fe-arrow-down-left font-22 avatar-title text-success"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <h3 class="text-dark mt-1">৳ {{ number_format($data->sum('amount'), 2) }}</h3>
+                                    <p class="text-muted mb-1 text-truncate">Total Deposits</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <div class="card widget-rounded-circle">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle bg-soft-primary border-primary border">
+                                    <i class="fe-check-circle font-22 avatar-title text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <h3 class="text-dark mt-1">৳ {{ number_format($data->where('status', 1)->sum('amount'), 2) }}</h3>
+                                    <p class="text-muted mb-1 text-truncate">Active Deposits ({{ $data->where('status', 1)->count() }})</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <div class="card widget-rounded-circle">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="avatar-lg rounded-circle bg-soft-info border-info border">
+                                    <i class="fe-database font-22 avatar-title text-info"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="text-end">
+                                    <h3 class="text-dark mt-1">{{ $data->count() }}</h3>
+                                    <p class="text-muted mb-1 text-truncate">Total Transactions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -34,6 +95,7 @@
                             <thead>
                                 <tr>
                                     <th>SL</th>
+                                    <th>Date</th>
                                     <th>Title</th>
                                     <th>Amount</th>
                                     <th>Deposit Type</th>
@@ -49,27 +111,48 @@
                                 @foreach ($data as $key => $value)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $value->title }}</td>
-                                        <td>৳ {{ $value->amount }}</td>
+                                        <td>{{ $value->date ? date('d M, Y', strtotime($value->date)) : date('d M, Y', strtotime($value->created_at)) }}</td>
+                                        <td><span class="fw-semibold text-dark">{{ $value->title }}</span></td>
+                                        <td><span class="fw-bold text-success">৳ {{ number_format($value->amount, 2) }}</span></td>
 
-                                        @if ($value->deposit_type == 1)
-                                            <td>Courier</td>
-                                        @elseif ($value->deposit_type == 2)
-                                            <td>Office </td>
-                                        @elseif ($value->deposit_type == 3)
-                                            <td>Others</td>
-                                        @endif
+                                        <td>
+                                            @if ($value->deposit_type == 1)
+                                                <span class="badge bg-soft-info text-info">Courier</span>
+                                            @elseif ($value->deposit_type == 2)
+                                                <span class="badge bg-soft-primary text-primary">Office</span>
+                                            @elseif ($value->deposit_type == 3)
+                                                <span class="badge bg-soft-secondary text-secondary">Others</span>
+                                            @else
+                                                <span class="badge bg-soft-secondary text-secondary">N/A</span>
+                                            @endif
+                                        </td>
 
-                                        @if ($value->payment_type == 1)
-                                            <td>Cash</td>
-                                        @elseif ($value->payment_type == 2)
-                                            <td>Bkash</td>
-                                        @elseif ($value->payment_type == 3)
-                                            <td>Nagad</td>
-                                        @elseif ($value->payment_type == 4)
-                                            <td>Rocket</td>
-                                        @endif
-                                        <td><img src="{{ asset($value->file) }}" class="backend-image" alt=""></td>
+                                        <td>
+                                            @if ($value->payment_type == 1)
+                                                <span class="badge bg-soft-success text-success">Cash</span>
+                                            @elseif ($value->payment_type == 2)
+                                                <span class="badge bg-soft-danger text-danger">Bkash</span>
+                                            @elseif ($value->payment_type == 3)
+                                                <span class="badge bg-soft-warning text-warning">Nagad</span>
+                                            @elseif ($value->payment_type == 4)
+                                                <span class="badge bg-soft-info text-info">Rocket</span>
+                                            @else
+                                                <span class="badge bg-soft-secondary text-secondary">N/A</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($value->file && file_exists(public_path(str_replace('public/', '', $value->file))))
+                                                <a href="{{ asset($value->file) }}" target="_blank" title="View Voucher">
+                                                    <img src="{{ asset($value->file) }}" class="backend-image" alt="Receipt" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
+                                                </a>
+                                            @elseif($value->file)
+                                                <a href="{{ asset($value->file) }}" target="_blank" title="View Voucher">
+                                                    <img src="{{ asset($value->file) }}" class="backend-image" alt="Receipt" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
+                                                </a>
+                                            @else
+                                                <span class="text-muted small">No file</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($value->status == 1)
                                                 <span class="badge bg-soft-success text-success">Active</span>
@@ -79,14 +162,15 @@
                                         </td>
                                         <td>
                                             <div class="button-list">
-
                                                 <a href="{{ route('deposit.edit', $value->id) }}"
-                                                    class="btn btn-xs btn-primary waves-effect waves-light"><i
+                                                    class="btn btn-xs btn-primary waves-effect waves-light" title="Edit"><i
                                                         class="fe-edit-1"></i></a>
-                                                <a href="{{ route('deposit.destroy', $value->id) }}"
-                                                    class="btn btn-xs btn-danger waves-effect waves-light"><i
-                                                        class="mdi mdi-close"></i></a>
-
+                                                <form method="post" action="{{ route('deposit.destroy', $value->id) }}" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-xs btn-danger waves-effect waves-light delete-confirm" title="Delete">
+                                                        <i class="mdi mdi-close"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>

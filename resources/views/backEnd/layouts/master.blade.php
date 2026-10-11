@@ -27,7 +27,7 @@
 
 <!-- body start -->
 
-<body data-layout-mode="default" data-theme="light" data-layout-width="fluid" data-topbar-color="dark"
+<body data-layout-mode="default" data-theme="light" data-layout-width="fluid" data-topbar-color="light"
     data-menu-position="fixed" data-leftbar-color="light" data-leftbar-size="default" data-sidebar-user="false">
     <!-- Begin page -->
     <div id="wrapper">
@@ -305,40 +305,40 @@
                             <div class="collapse" id="siebar-product">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{{ route('products.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('products.index') }}"><i data-feather="box"></i>
                                             Product Manage</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('categories.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('categories.index') }}"><i data-feather="grid"></i>
                                             Categories</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('subcategories.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('subcategories.index') }}"><i data-feather="layers"></i>
                                             Subcategories</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('childcategories.index') }}"><i
-                                                data-feather="file-plus"></i> Childcategories</a>
+                                                data-feather="git-commit"></i> Childcategories</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('brands.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('brands.index') }}"><i data-feather="award"></i>
                                             Brands</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('colors.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('colors.index') }}"><i data-feather="droplet"></i>
                                             Colors</a>
                                     </li>
                                     {{-- Pre-created sizes menu (commented out for manual entry)
                                     <li>
-                                        <a href="{{ route('sizes.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('sizes.index') }}"><i data-feather="maximize"></i>
                                             Sizes</a>
                                     </li>
                                     --}}
                                     <li>
-                                        <a href="{{ route('coupon') }}"><i data-feather="file-plus"></i>Coupon</a>
+                                        <a href="{{ route('coupon') }}"><i data-feather="percent"></i>Coupon</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('products.price_edit') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('products.price_edit') }}"><i data-feather="dollar-sign"></i>
                                             Price Edit</a>
                                     </li>
 
@@ -354,11 +354,11 @@
                             <div class="collapse" id="siebar-accounts">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{{ route('deposit.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('deposit.index') }}"><i data-feather="arrow-down-left"></i>
                                             Deposit Manage</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('expense.index') }}"><i data-feather="file-plus"></i>
+                                        <a href="{{ route('expense.index') }}"><i data-feather="arrow-up-right"></i>
                                             Expense Manage</a>
                                     </li>
                                 </ul>

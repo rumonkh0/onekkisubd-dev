@@ -24,7 +24,6 @@ class BrandController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'status' => 'required',
         ]);
         // image with intervention 
         $image = $request->file('image');
@@ -50,6 +49,8 @@ class BrandController extends Controller
 
         $input = $request->all();
         $input['slug'] = strtolower(preg_replace('/\s+/u', '-', trim($request->name)));
+        $input['slug'] = str_replace('/', '', $input['slug']);
+        $input['status'] = $request->status ? 1 : 0;
         $input['image'] = $imageUrl;
         Brand::create($input);
         Toastr::success('Success','Data insert successfully');
@@ -87,10 +88,14 @@ class BrandController extends Controller
             });
             $img->save($imageUrl);
             $input['image'] = $imageUrl;
-            File::delete($update_data->image);
+            if ($update_data->image && File::exists($update_data->image)) {
+                File::delete($update_data->image);
+            }
         }else{
             $input['image'] = $update_data->image;
         }
+        $input['slug'] = strtolower(preg_replace('/\s+/u', '-', trim($request->name)));
+        $input['slug'] = str_replace('/', '', $input['slug']);
         $input['status'] = $request->status?1:0;
         $update_data->update($input);
 
@@ -117,8 +122,17 @@ class BrandController extends Controller
     public function destroy(Request $request)
     {
         $delete_data = Brand::find($request->hidden_id);
-        $delete_data->delete();
-        Toastr::success('Success','Data delete successfully');
+        if ($delete_data) {
+            if (\App\Models\Product::where('brand_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete brand because products are associated with it.');
+                return redirect()->back();
+            }
+            if ($delete_data->image && File::exists($delete_data->image)) {
+                File::delete($delete_data->image);
+            }
+            $delete_data->delete();
+            Toastr::success('Success','Data delete successfully');
+        }
         return redirect()->back();
     }
 }

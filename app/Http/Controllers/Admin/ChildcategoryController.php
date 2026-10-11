@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\Childcategory;
 use App\Models\Subcategory;
 use Toastr;
@@ -36,22 +37,21 @@ class ChildcategoryController extends Controller
     }
     public function create()
     {
-        return view('backEnd.childcategory.create');
+        $categories = Category::with('allsubcategories')->get();
+        return view('backEnd.childcategory.create', compact('categories'));
     }
     public function store(Request $request)
     {
         $this->validate($request, [
             'subcategory_id' => 'required',
             'childcategoryName' => 'required',
-            'status' => 'required',
         ]);
-        // image with intervention 
-        
         
         $input = $request->all();
 
         $input['slug'] = strtolower(preg_replace('/\s+/', '-', $request->childcategoryName));
         $input['slug'] = str_replace('/', '', $input['slug']);
+        $input['status'] = $request->status ? 1 : 0;
         
         Childcategory::create($input);
         Toastr::success('Success','Data insert successfully');
@@ -61,7 +61,7 @@ class ChildcategoryController extends Controller
     public function edit($id)
     {
         $edit_data = Childcategory::find($id);
-        $categories = Subcategory::select('id','subcategoryName')->get();
+        $categories = Category::with('allsubcategories')->get();
         return view('backEnd.childcategory.edit',compact('edit_data','categories'));
     }
     
@@ -70,12 +70,10 @@ class ChildcategoryController extends Controller
         $this->validate($request, [
             'subcategory_id' => 'required',
             'childcategoryName' => 'required',
-            'status' => 'required',
         ]);
         $update_data = Childcategory::find($request->id);
         $input = $request->all();
         
-       
         $input['slug'] = strtolower(preg_replace('/\s+/', '-', $request->childcategoryName));
         $input['slug'] = str_replace('/', '', $input['slug']);
         $input['status'] = $request->status?1:0;
@@ -105,8 +103,14 @@ class ChildcategoryController extends Controller
     public function destroy(Request $request)
     {
         $delete_data = Childcategory::find($request->hidden_id);
-        $delete_data->delete();
-        Toastr::success('Success','Data delete successfully');
+        if ($delete_data) {
+            if (\App\Models\Product::where('childcategory_id', $delete_data->id)->exists()) {
+                Toastr::error('Fail', 'Cannot delete childcategory because products are associated with it.');
+                return redirect()->back();
+            }
+            $delete_data->delete();
+            Toastr::success('Success','Data delete successfully');
+        }
         return redirect()->back();
     }
 }

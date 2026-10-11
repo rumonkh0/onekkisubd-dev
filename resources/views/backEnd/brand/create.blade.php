@@ -40,7 +40,7 @@
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
                             <label for="image" class="form-label">Image </label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror " name="image"  value="{{ old('image') }}"  id="image" 
+                            <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" value="{{ old('image') }}" id="image">
                             @error('image')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

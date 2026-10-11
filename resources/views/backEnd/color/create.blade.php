@@ -38,8 +38,8 @@
                     <!-- col-end -->
                     <div class="col-sm-6">
                         <div class="form-group mb-3">
-                            <label for="color" class="form-label">Color  *</label>
-                            <input type="color" class="form-control @error('color') is-invalid @enderror" name="color" value="{{ old('color') }}"  id="color" required="">
+                            <label for="color" class="form-label">Color *</label>
+                            <input type="color" class="form-control form-control-color @error('color') is-invalid @enderror" name="color" value="{{ old('color', '#000000') }}" id="color" required="" style="height: 38px; width: 100%;">
                             @error('color')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

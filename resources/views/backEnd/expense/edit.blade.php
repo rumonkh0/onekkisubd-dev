@@ -51,8 +51,20 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="amount" class="form-label">Expense Type *</label>
-                            <select name="expense_type" id="" class="form-select">
+                            <label for="date" class="form-label">Date *</label>
+                            <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" value="{{ old('date', $expense->date ? date('Y-m-d', strtotime($expense->date)) : '') }}" id="date">
+                            @error('date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="expense_type" class="form-label">Expense Type *</label>
+                            <select name="expense_type" id="expense_type" class="form-select">
                                 <option value="">Select</option>
                                 <option @if($expense->expense_type == 1) selected @endif value="1">Boost Cost</option>
                                 <option @if($expense->expense_type == 2) selected @endif value="2">Office Cost</option>
@@ -61,7 +73,7 @@
                                 <option @if($expense->expense_type == 5) selected @endif value="5"> Transport Cost</option>
                                 <option @if($expense->expense_type == 6) selected @endif value="6"> Others</option>
                             </select>
-                            @error('amount')
+                            @error('expense_type')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

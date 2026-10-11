@@ -30,18 +30,16 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="subcategory_id" class="form-label">Category *</label>
-                             <select class="form-select form-control select2-multiple @error('subcategory_id') is-invalid @enderror" id="subcategory_id" name="subcategory_id" value="{{ old('subcategory_id') }}" data-toggle="select2" data-placeholder="Choose ..."required>
-                                <optgroup >
-                                    <option value="">Choose..</option>
-                                    @foreach ($menucategories as $category)
-                                    <option value="">== == == {{ $category->name }} == == ==</option>
-                                        @foreach ($category->subcategories as $subcat)
-                                            <option value="{{ $subcat->id }}" @if($subcat->id == $edit_data->subcategory_id) selected @endif >{{ $subcat->subcategoryName }}</option>
-                                            
+                            <label for="subcategory_id" class="form-label">Sub Category *</label>
+                             <select class="form-select form-control select2 @error('subcategory_id') is-invalid @enderror" id="subcategory_id" name="subcategory_id" data-toggle="select2" data-placeholder="Choose ..." required>
+                                <option value="">Choose Sub Category...</option>
+                                @foreach ($categories as $category)
+                                    <optgroup label="{{ $category->name }}">
+                                        @foreach ($category->allsubcategories as $subcat)
+                                            <option value="{{ $subcat->id }}" @if($subcat->id == $edit_data->subcategory_id) selected @endif>{{ $subcat->subcategoryName }}</option>
                                         @endforeach
-                                    @endforeach
-                                </optgroup>
+                                    </optgroup>
+                                @endforeach
                             </select>
                             @error('subcategory_id')
                                 <span class="invalid-feedback" role="alert">
@@ -54,7 +52,7 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="childcategoryName" class="form-label">childcategoryName *</label>
+                            <label for="childcategoryName" class="form-label">Childcategory Name *</label>
                             <input type="text" id="childcategoryName" class="form-control @error('childcategoryName') is-invalid @enderror" name="childcategoryName" value="{{ $edit_data->childcategoryName }}" id="childcategoryName" required="">
                             @error('childcategoryName')
                                 <span class="invalid-feedback" role="alert">

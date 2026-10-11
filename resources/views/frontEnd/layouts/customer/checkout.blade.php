@@ -895,8 +895,8 @@
                 <form action="{{ route('customer.ordersave') }}" method="POST" id="checkout_order_form">
                     @csrf
                     <input type="hidden" name="paid_partial_payment_amount" value="{{ $partial_payment }}">
-                    <input type="hidden" id="hidden_couponId" name="couponId" value="">
-                    <input type="hidden" id="hidden_coupon" value="00">
+                    <input type="hidden" id="hidden_couponId" name="couponId" value="{{ Session::get('coupon_id') ?? '' }}">
+                    <input type="hidden" id="hidden_coupon" name="discount" value="{{ Session::get('discount') ?? '0' }}">
                     <input type="hidden" id="postal_code" name="postal_code" value="{{ old('postal_code') }}">
 
                     <!-- Card 1: Shipping & Delivery Information -->
