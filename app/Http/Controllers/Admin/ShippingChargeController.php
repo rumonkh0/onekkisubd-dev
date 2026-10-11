@@ -20,72 +20,94 @@ class ShippingChargeController extends Controller
     public function index(Request $request)
     {
         $show_data = ShippingCharge::orderBy('id', 'ASC')->get();
-        return view('backEnd.shippingcharge.index', compact('show_data'));
+        $total_charges = $show_data->count();
+        $active_charges = $show_data->where('status', 1)->count();
+        $inactive_charges = $show_data->where('status', 0)->count();
+
+        return view('backEnd.shippingcharge.index', compact('show_data', 'total_charges', 'active_charges', 'inactive_charges'));
     }
+
     public function create()
     {
         return view('backEnd.shippingcharge.create');
     }
+
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'status' => 'required',
+        $request->validate([
+            'name' => 'required|string|max:191',
+            'amount' => 'required|numeric|min:0',
         ]);        
 
-        $input = $request->all();
-        $input['status'] = $request->status?1:0;
-        // dd($input);
-        ShippingCharge::create($input);
-        Toastr::success('Success', 'Data insert successfully');
+        $shipping = new ShippingCharge();
+        $shipping->name = $request->name;
+        $shipping->amount = $request->amount;
+        $shipping->status = ($request->status == 1 || $request->status == 'on') ? 1 : 0;
+        $shipping->save();
+
+        Toastr::success('Success', 'Shipping charge created successfully');
         return redirect()->route('shippingcharges.index');
     }
 
     public function edit($id)
     {
-        $edit_data = ShippingCharge::find($id);
+        $edit_data = ShippingCharge::findOrFail($id);
         return view('backEnd.shippingcharge.edit', compact('edit_data'));
     }
 
     public function update(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'status' => 'required',
+        $request->validate([
+            'id' => 'required|exists:shipping_charges,id',
+            'name' => 'required|string|max:191',
+            'amount' => 'required|numeric|min:0',
         ]);
-        $update_data = ShippingCharge::find($request->id);
 
-        $input = $request->all();       
-        $input['status'] = $request->status?1:0;
-        $update_data->update($input);
+        $update_data = ShippingCharge::findOrFail($request->id);
+        $update_data->name = $request->name;
+        $update_data->amount = $request->amount;
+        $update_data->status = ($request->status == 1 || $request->status == 'on') ? 1 : 0;
+        $update_data->save();
 
-        Toastr::success('Success', 'Data update successfully');
+        Toastr::success('Success', 'Shipping charge updated successfully');
         return redirect()->route('shippingcharges.index');
     }
 
     public function inactive(Request $request)
     {
         $inactive = ShippingCharge::find($request->hidden_id);
-        $inactive->status = 0;
-        $inactive->save();
-        Toastr::success('Success', 'Data inactive successfully');
+        if ($inactive) {
+            $inactive->status = 0;
+            $inactive->save();
+            Toastr::success('Success', 'Shipping charge deactivated successfully');
+        } else {
+            Toastr::error('Error', 'Shipping charge not found');
+        }
         return redirect()->back();
     }
 
     public function active(Request $request)
     {
         $active = ShippingCharge::find($request->hidden_id);
-        $active->status = 1;
-        $active->save();
-        Toastr::success('Success', 'Data active successfully');
+        if ($active) {
+            $active->status = 1;
+            $active->save();
+            Toastr::success('Success', 'Shipping charge activated successfully');
+        } else {
+            Toastr::error('Error', 'Shipping charge not found');
+        }
         return redirect()->back();
     }
 
     public function destroy(Request $request)
     {
         $delete_data = ShippingCharge::find($request->hidden_id);
-        $delete_data->delete();
-        Toastr::success('Success', 'Data delete successfully');
+        if ($delete_data) {
+            $delete_data->delete();
+            Toastr::success('Success', 'Shipping charge deleted successfully');
+        } else {
+            Toastr::error('Error', 'Shipping charge not found');
+        }
         return redirect()->back();
     }
 }

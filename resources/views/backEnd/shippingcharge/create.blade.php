@@ -7,9 +7,11 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right">
-                    <a href="{{route('shippingcharges.index')}}" class="btn btn-primary waves-effect waves-light btn-sm rounded-pill">Manage</a>
+                    <a href="{{ route('shippingcharges.index') }}" class="btn btn-primary rounded-pill">
+                        <i class="fe-list me-1"></i> Manage Shipping Charges
+                    </a>
                 </div>
-                <h4 class="page-title">Shipping Charge Create</h4>
+                <h4 class="page-title">Create Shipping Charge</h4>
             </div>
         </div>
     </div>
@@ -18,49 +20,44 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('shippingcharges.store')}}" method="POST" class="row" data-parsley-validate="" >
+                    <form action="{{ route('shippingcharges.store') }}" method="POST" class="row">
                         @csrf                        
-                        <div class="col-sm-6">
-                            <div class="form-group mb-3">
-                                <label for="name" class="form-label">Area name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" id="name" />
-                                @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="name" class="form-label fw-semibold">Delivery Area / Zone Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" id="name" placeholder="e.g. Inside Dhaka, Outside Dhaka" required />
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
-                        <!-- col-end -->
-                        <div class="col-sm-6">
-                            <div class="form-group mb-3">
-                                <label for="amount" class="form-label">Amount</label>
-                                <input type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" id="amount" />
-                                @error('amount')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
+
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="amount" class="form-label fw-semibold">Delivery Charge Amount (৳) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+                                <input type="number" step="any" min="0" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" id="amount" placeholder="e.g. 120" required />
                             </div>
+                            @error('amount')
+                            <span class="invalid-feedback d-block" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
-                        <!-- col-end -->
-                        <div class="col-sm-6 mb-3">
-                            <div class="form-group">
-                                <label for="status" class="d-block form-label">Status</label>
-                                <label class="switch">
-                                    <input type="checkbox" value="1" name="status" checked />
-                                    <span class="slider round"></span>
-                                </label>
-                                @error('status')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
+
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="status" class="d-block form-label fw-semibold">Status (Active = Available on Checkout)</label>
+                            <label class="switch">
+                                <input type="checkbox" value="1" name="status" {{ old('status', '1') == '1' ? 'checked' : '' }} />
+                                <span class="slider round"></span>
+                            </label>
                         </div>
-                        <!-- col end -->
-                        <div>
-                            <input type="submit" class="btn btn-success" value="Submit" />
+
+                        <div class="col-12 pt-2 border-top">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fe-check me-1"></i> Save Shipping Charge
+                            </button>
+                            <a href="{{ route('shippingcharges.index') }}" class="btn btn-secondary ms-1">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -72,9 +69,3 @@
     </div>
 </div>
 @endsection 
-@section('script')
-<script src="{{asset('public/backEnd/')}}/assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/js/pages/form-validation.init.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/libs/select2/js/select2.min.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/js/pages/form-advanced.init.js"></script>
-@endsection
