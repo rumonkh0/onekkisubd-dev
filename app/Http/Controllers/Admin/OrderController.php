@@ -666,63 +666,115 @@ class OrderController extends Controller
     
     
     public function stock_report(Request $request){
-        $products = Product::select('id', 'name','new_price','stock')
-            ->where('status', 1);
+        $query = Product::with(['category', 'sizes'])->where('status', 1);
+
         if ($request->keyword) {
-            $products = $products->where('name', 'LIKE', '%' . $request->keyword . "%");
+            $query->where('name', 'LIKE', '%' . $request->keyword . "%");
         }
         if ($request->category_id) {
-            $products = $products->where('category_id', $request->category_id);
+            $query->where('category_id', $request->category_id);
         }
         if ($request->start_date && $request->end_date) {
-            $products =$products->whereBetween('updated_at', [$request->start_date,$request->end_date]);
+            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+        } elseif ($request->start_date) {
+            $query->whereDate('updated_at', '>=', $request->start_date);
+        } elseif ($request->end_date) {
+            $query->whereDate('updated_at', '<=', $request->end_date);
         }
-        $total_purchase = $products->sum(\DB::raw('purchase_price * stock'));
-        $total_stock = $products->sum('stock');
-        $total_price = $products->sum(\DB::raw('new_price * stock'));
-        $products = $products->paginate(20);
-        $categories = Category::where('status',1)->get();
-        return view('backEnd.reports.stock',compact('products','categories','total_purchase','total_stock','total_price'));
+
+        // Calculate totals across matched dataset
+        $all_products = (clone $query)->get();
+        $total_stock = 0;
+        $total_price = 0;
+        $total_purchase = 0;
+
+        foreach ($all_products as $prod) {
+            if ($prod->sizes && $prod->sizes->count() > 0) {
+                foreach ($prod->sizes as $sz) {
+                    $total_stock += $sz->quantity;
+                    $total_price += ($sz->quantity * $sz->SalePrice);
+                    $total_purchase += ($sz->quantity * ($sz->PurchasePrice ?: 0));
+                }
+            } else {
+                $total_stock += $prod->stock;
+                $total_price += ($prod->stock * $prod->new_price);
+                $total_purchase += ($prod->stock * ($prod->purchase_price ?: 0));
+            }
+        }
+
+        $products = $query->paginate(20)->withQueryString();
+        $categories = Category::where('status', 1)->select('id', 'name')->orderBy('name')->get();
+
+        return view('backEnd.reports.stock', compact('products', 'categories', 'total_purchase', 'total_stock', 'total_price'));
     }
+
     public function order_report(Request $request)
     {
-        // Retrieve active users
+        // Retrieve active users and order statuses
         $users = User::where('status', 1)->get();
+        $order_statuses = OrderStatus::where('status', 1)->get();
 
-        // Initialize the query for orders with related shipping and order details
-        $orders = OrderDetails::with('shipping', 'order')
-            ->whereHas('order', function ($query) {
-                $query->where('order_status', 6); // Only include orders with status 6
+        // Initialize the query for orders with related shipping, order, and status
+        $query = OrderDetails::with(['shipping', 'order.status']);
+
+        // Filter by order_status (defaults to 6: Completed, but allows any status or all)
+        if ($request->filled('order_status')) {
+            $statusId = $request->order_status;
+            if ($statusId !== 'all') {
+                $query->whereHas('order', function ($q) use ($statusId) {
+                    $q->where('order_status', $statusId);
+                });
+            }
+        } else {
+            // Default to Completed orders (status 6)
+            $query->whereHas('order', function ($q) {
+                $q->where('order_status', 6);
             });
+        }
 
-        // Apply keyword filter if provided
+        // Apply keyword filter (searches product_name, invoice_id, customer name, customer phone)
         if ($request->keyword) {
-            $orders = $orders->where('name', 'LIKE', '%' . $request->keyword . '%');
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'LIKE', '%' . $keyword . '%')
+                  ->orWhereHas('order', function ($oq) use ($keyword) {
+                      $oq->where('invoice_id', 'LIKE', '%' . $keyword . '%');
+                  })
+                  ->orWhereHas('shipping', function ($sq) use ($keyword) {
+                      $sq->where('name', 'LIKE', '%' . $keyword . '%')
+                         ->orWhere('phone', 'LIKE', '%' . $keyword . '%');
+                  });
+            });
         }
 
         // Apply user filter if provided
         if ($request->user_id) {
-            $orders = $orders->whereHas('order', function ($query) use ($request) {
-                $query->where('user_id', $request->user_id);
+            $query->whereHas('order', function ($q) use ($request) {
+                $q->where('user_id', $request->user_id);
             });
         }
 
-        // Apply date range filter if both start_date and end_date are provided
+        // Apply date range filter if provided
         if ($request->start_date && $request->end_date) {
-            $orders = $orders->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+        } elseif ($request->start_date) {
+            $query->whereDate('updated_at', '>=', $request->start_date);
+        } elseif ($request->end_date) {
+            $query->whereDate('updated_at', '<=', $request->end_date);
         }
 
-        // Calculate the total purchase, total item, and total sales over the entire dataset (before pagination)
-        $totalPurchase = $orders->sum(\DB::raw('purchase_price * qty'));
-        $total_item = $orders->sum('qty');
-        $total_sales = $orders->sum(\DB::raw('sale_price * qty'));
-        $discounts = Order::sum('discount');
+        // Calculate totals over entire matched dataset
+        $totalPurchase = (clone $query)->sum(\DB::raw('purchase_price * qty'));
+        $total_item = (clone $query)->sum('qty');
+        $total_sales = (clone $query)->sum(\DB::raw('sale_price * qty'));
 
-        // Now apply pagination (this won't affect the totals as they are calculated before pagination)
-        $orders = $orders->paginate(10);
+        // Calculate discounts only for the filtered orders (prevents lifetime discount subtraction!)
+        $matched_order_ids = (clone $query)->pluck('order_id')->unique();
+        $discounts = Order::whereIn('id', $matched_order_ids)->sum('discount');
 
-        // Return the view with the necessary data
-        return view('backEnd.reports.order', compact('orders', 'users', 'totalPurchase', 'total_item', 'total_sales', 'discounts'));
+        $orders = $query->orderBy('id', 'DESC')->paginate(20)->withQueryString();
+
+        return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'totalPurchase', 'total_item', 'total_sales', 'discounts'));
     }
 
 

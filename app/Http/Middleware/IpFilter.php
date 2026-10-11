@@ -12,7 +12,7 @@ class IpFilter
     {
         $ipblock = IpBlock::where('ip_no',$request->getClientIp())->first();
         if($ipblock){
-            abort(403, "You are restricted to access the site. Beacuse ".$ipblock->reason);
+            abort(403, "You are restricted to access the site. Because ".$ipblock->reason);
         }
         return $next($request);
     }

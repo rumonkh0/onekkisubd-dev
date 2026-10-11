@@ -106,29 +106,48 @@ class CustomerManageController extends Controller
         return redirect()->route('customer.account');
     }
     public function ip_block(Request $request){
-        $data = IpBlock::get();
+        $data = IpBlock::latest()->get();
         return view('backEnd.reports.ipblock',compact('data'));
     }
     public function ipblock_store(Request $request){
+        $request->validate([
+            'ip_no' => 'required|string|max:45|unique:ip_blocks,ip_no',
+            'reason' => 'required|string|max:255',
+        ]);
 
         $store_data = new IpBlock();
         $store_data->ip_no = $request->ip_no;
         $store_data->reason = $request->reason;
         $store_data->save();
-        Toastr::success('Success','IP address add successfully');
+        Toastr::success('Success','IP address added successfully');
         return redirect()->back();
     }
     public function ipblock_update(Request $request){
+        $request->validate([
+            'id' => 'required|exists:ip_blocks,id',
+            'ip_no' => 'required|string|max:45|unique:ip_blocks,ip_no,' . $request->id,
+            'reason' => 'required|string|max:255',
+        ]);
+
         $update_data = IpBlock::find($request->id);
-        $update_data->ip_no = $request->ip_no;
-        $update_data->reason = $request->reason;
-        $update_data->save();
-        Toastr::success('Success','IP address update successfully');
+        if ($update_data) {
+            $update_data->ip_no = $request->ip_no;
+            $update_data->reason = $request->reason;
+            $update_data->save();
+            Toastr::success('Success','IP address updated successfully');
+        } else {
+            Toastr::error('Error', 'IP record not found');
+        }
         return redirect()->back();
     }
     public function ipblock_destroy(Request $request){
-        $delete_data = IpBlock::find($request->id)->delete();
-        Toastr::success('Success','IP address delete successfully');
+        $delete_data = IpBlock::find($request->id);
+        if ($delete_data) {
+            $delete_data->delete();
+            Toastr::success('Success','IP address deleted successfully');
+        } else {
+            Toastr::error('Error', 'IP record not found');
+        }
         return redirect()->back();
     }
 }
