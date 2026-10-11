@@ -106,7 +106,7 @@ class CampaignController extends Controller
 
     public function edit($id)
     {
-        $edit_data = Campaign::with('images')->find($id);
+        $edit_data = Campaign::with(['images', 'banners'])->find($id);
         $select_products = Product::where('campaign_id', $id)->get();
         $show_data = Campaign::orderBy('id', 'DESC')->get();
         $products = Product::where(['status' => 1])->select('id', 'name', 'status')->get();
@@ -122,7 +122,7 @@ class CampaignController extends Controller
         ]);
 
         $update_data = Campaign::find($request->hidden_id);
-        $input = $request->except('hidden_id', 'product_ids', 'files', 'image');
+        $input = $request->except('hidden_id', 'product_ids', 'files', 'image', 'banner_img', 'campaign_review');
         $image_one = $request->file('image_one');
 
         // banner
@@ -205,18 +205,8 @@ class CampaignController extends Controller
         $update_data = Campaign::find($request->hidden_id);
         $update_data->update($input);
 
-        // banner
+        // banner images
         if ($request->hasFile('banner_img')) {
-
-            $oldBanners = LandingBanner::where('campaign_id', $update_data->id)->get();
-            foreach ($oldBanners as $old) {
-                $oldImagePath = public_path($old->image);
-                if (File::exists($oldImagePath)) {
-                    File::delete($oldImagePath);
-                }
-                $old->delete();
-            }
-
             $relativePath = 'public/uploads/campaign/';
             $savePath = public_path('uploads/campaign/');
 
@@ -224,30 +214,21 @@ class CampaignController extends Controller
                 File::makeDirectory($savePath, 0755, true);
             }
 
-            foreach ($request->banner_img as $banner_image) {
-                $imageName = 'campaign_banner' . uniqid() . '.' . $banner_image->getClientOriginalExtension();
-                $banner_image->move($savePath, $imageName);
+            foreach ($request->file('banner_img') as $banner_image) {
+                if ($banner_image && $banner_image->isValid()) {
+                    $imageName = 'campaign_banner' . uniqid() . '.' . $banner_image->getClientOriginalExtension();
+                    $banner_image->move($savePath, $imageName);
 
-                $campaign_banner = new LandingBanner();
-                $campaign_banner->campaign_id = $update_data->id;
-                $campaign_banner->image = $relativePath . $imageName;
-                $campaign_banner->save();
+                    $campaign_banner = new LandingBanner();
+                    $campaign_banner->campaign_id = $update_data->id;
+                    $campaign_banner->image = $relativePath . $imageName;
+                    $campaign_banner->save();
+                }
             }
         }
 
-        // campaign review
-
+        // campaign reviews
         if ($request->hasFile('campaign_review')) {
-
-            $oldReviews = CampaignReview::where('campaign_id', $update_data->id)->get();
-            foreach ($oldReviews as $old) {
-                $oldImagePath = public_path($old->image);
-                if (File::exists($oldImagePath)) {
-                    File::delete($oldImagePath);
-                }
-                $old->delete();
-            }
-
             $relativePath = 'public/uploads/campaign/';
             $savePath = public_path('uploads/campaign/');
 
@@ -255,14 +236,16 @@ class CampaignController extends Controller
                 File::makeDirectory($savePath, 0755, true);
             }
 
-            foreach ($request->campaign_review as $review_image) {
-                $imageName = 'campaign_review' . uniqid() . '.' . $review_image->getClientOriginalExtension();
-                $review_image->move($savePath, $imageName);
+            foreach ($request->file('campaign_review') as $review_image) {
+                if ($review_image && $review_image->isValid()) {
+                    $imageName = 'campaign_review' . uniqid() . '.' . $review_image->getClientOriginalExtension();
+                    $review_image->move($savePath, $imageName);
 
-                $campaign_review = new CampaignReview();
-                $campaign_review->campaign_id = $update_data->id;
-                $campaign_review->image = $relativePath . $imageName;
-                $campaign_review->save();
+                    $campaign_review = new CampaignReview();
+                    $campaign_review->campaign_id = $update_data->id;
+                    $campaign_review->image = $relativePath . $imageName;
+                    $campaign_review->save();
+                }
             }
         }
 
@@ -305,9 +288,36 @@ class CampaignController extends Controller
     public function imgdestroy(Request $request)
     {
         $delete_data = CampaignReview::find($request->id);
-        File::delete($delete_data->image);
-        $delete_data->delete();
-        Toastr::success('Success', 'Data delete successfully');
+        if ($delete_data) {
+            $imagePath = public_path($delete_data->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            } elseif (File::exists($delete_data->image)) {
+                File::delete($delete_data->image);
+            }
+            $delete_data->delete();
+            Toastr::success('Success', 'Review image deleted successfully');
+        } else {
+            Toastr::error('Error', 'Review image not found');
+        }
+        return redirect()->back();
+    }
+
+    public function bannerdestroy(Request $request)
+    {
+        $delete_data = LandingBanner::find($request->id);
+        if ($delete_data) {
+            $imagePath = public_path($delete_data->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            } elseif (File::exists($delete_data->image)) {
+                File::delete($delete_data->image);
+            }
+            $delete_data->delete();
+            Toastr::success('Success', 'Banner deleted successfully');
+        } else {
+            Toastr::error('Error', 'Banner not found');
+        }
         return redirect()->back();
     }
 }

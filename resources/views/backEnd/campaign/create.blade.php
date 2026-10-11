@@ -68,9 +68,11 @@
 
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
-                                    <label for="banner_img" class="form-label">Banner Image</label>
+                                    <label for="banner_img" class="form-label fw-bold">Hero Banner Images (Slider)</label>
+                                    <p class="text-muted fs-13 mb-2">Multiple images can be selected for the top hero slider.</p>
                                     <input type="file" class="form-control @error('banner_img') is-invalid @enderror"
-                                        name="banner_img[]" multiple>
+                                        name="banner_img[]" id="banner_img" multiple onchange="previewBannerImages(this)">
+                                    <div id="banner_img_preview" class="d-flex flex-wrap gap-2 mt-2"></div>
                                     @error('banner_img')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -115,40 +117,41 @@
                             </div>
                             <!-- col end -->
 
-                            <div class="col-sm-12 mb-3">
-                                <div class="form-group">
-                                    <label for="image_one" class="form-label">Pricing Image One*</label>
-                                    <input type="file" class="form-control @error('image_one') is-invalid @enderror " name="image_one"  value="{{ old('image_one') }}"  id="image_one" required="">
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_one" class="form-label fw-bold">Gallery Image 1 (রিয়েল ভিউ ১)*</label>
+                                    <input type="file" class="form-control @error('image_one') is-invalid @enderror" name="image_one" value="{{ old('image_one') }}" id="image_one" required="" onchange="previewSingleImage(this, 'create_image_one_preview')">
+                                    <div id="create_image_one_preview" class="mt-2"></div>
                                     @error('image_one')
-                                    <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
-                            <!-- col end -->
 
-                            <div class="col-sm-12 mb-3">
-                                <div class="form-group">
-                                    <label for="image_two" class="form-label">Pricing Image Two</label>
-                                    <input type="file" class="form-control @error('image_two') is-invalid @enderror " name="image_two"  value="{{ old('image_two') }}"  id="image_two">
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_two" class="form-label fw-bold">Gallery Image 2 (রিয়েল ভিউ ২)</label>
+                                    <input type="file" class="form-control @error('image_two') is-invalid @enderror" name="image_two" value="{{ old('image_two') }}" id="image_two" onchange="previewSingleImage(this, 'create_image_two_preview')">
+                                    <div id="create_image_two_preview" class="mt-2"></div>
                                     @error('image_two')
-                                    <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
-                            <!-- col end -->
 
-                            <div class="col-sm-12 mb-3">
-                                <div class="form-group">
-                                    <label for="image_three" class="form-label">Pricing Image Three</label>
-                                    <input type="file" class="form-control @error('image_three') is-invalid @enderror " name="image_three"  value="{{ old('image_three') }}"  id="image_three">
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_three" class="form-label fw-bold">Gallery Image 3 (রিয়েল ভিউ ৩)</label>
+                                    <input type="file" class="form-control @error('image_three') is-invalid @enderror" name="image_three" value="{{ old('image_three') }}" id="image_three" onchange="previewSingleImage(this, 'create_image_three_preview')">
+                                    <div id="create_image_three_preview" class="mt-2"></div>
                                     @error('image_three')
-                                    <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
@@ -336,8 +339,10 @@
 
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
-                                    <label for="campaign_review" class="form-label">Campaign Review</label>
-                                    <input type="file" name="campaign_review[]" class="form-control" multiple>
+                                    <label for="campaign_review" class="form-label fw-bold">Customer Reviews (Slider)</label>
+                                    <p class="text-muted fs-13 mb-2">Upload screenshot or review images from satisfied customers. Multiple images supported.</p>
+                                    <input type="file" name="campaign_review[]" id="campaign_review" class="form-control" multiple onchange="previewReviewImages(this)">
+                                    <div id="review_img_preview" class="d-flex flex-wrap gap-2 mt-2"></div>
                                     @error('campaign_review')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -401,5 +406,57 @@
             });
             $('.select2').select2();
         });
+
+        function previewBannerImages(input) {
+            var preview = document.getElementById('banner_img_preview');
+            preview.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.className = 'border rounded p-1 bg-light text-center shadow-sm';
+                        div.style.width = '140px';
+                        div.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100%; height: 78px; object-fit: cover;"><span class="badge bg-success mt-1 d-block" style="font-size:10px;">Selected</span>';
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function previewReviewImages(input) {
+            var preview = document.getElementById('review_img_preview');
+            preview.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.className = 'border rounded p-1 bg-light text-center shadow-sm';
+                        div.style.width = '100px';
+                        div.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100%; height: 80px; object-fit: cover;"><span class="badge bg-success mt-1 d-block" style="font-size:10px;">Selected</span>';
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function previewSingleImage(input, targetId) {
+            var preview = document.getElementById(targetId);
+            if (!preview) return;
+            preview.innerHTML = '';
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var div = document.createElement('div');
+                    div.className = 'border rounded p-1 bg-white text-center shadow-sm';
+                    div.innerHTML = '<span class="d-block text-success fs-11 fw-bold mb-1">Selected:</span><img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">';
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 @endsection

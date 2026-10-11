@@ -279,12 +279,89 @@
             margin-bottom: 24px;
             position: relative;
         }
+        .camp-slider-aspect-16-9 .owl-carousel,
+        .camp-slider-aspect-16-9 .owl-stage-outer,
+        .camp-slider-aspect-16-9 .owl-stage,
+        .camp-slider-aspect-16-9 .owl-item,
         .camp-slider-aspect-16-9 .slider-item,
+        .camp-slider-aspect-16-9 .single-banner {
+            width: 100%;
+            height: 100%;
+        }
+        .camp-slider-aspect-16-9 .slider-item img,
+        .camp-slider-aspect-16-9 .single-banner img,
         .camp-slider-aspect-16-9 img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        /* Hero Banner Slider Navigation & Dots */
+        .camp-hero-slider .owl-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            z-index: 10;
+        }
+        .camp-hero-slider .owl-dots .owl-dot {
+            outline: none;
+        }
+        .camp-hero-slider .owl-dots .owl-dot span {
+            width: 10px;
+            height: 10px;
+            margin: 0;
+            background: rgba(255, 255, 255, 0.65) !important;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: block;
+        }
+        .camp-hero-slider .owl-dots .owl-dot.active span {
+            width: 26px;
+            background: #ffffff !important;
+            border-radius: 999px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+        .camp-hero-slider .owl-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 12px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .camp-hero-slider .owl-nav button.owl-prev,
+        .camp-hero-slider .owl-nav button.owl-next {
+            pointer-events: auto;
+            width: 38px;
+            height: 38px;
+            background: rgba(10, 33, 27, 0.55) !important;
+            color: #ffffff !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px !important;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .camp-hero-slider .owl-nav button.owl-prev:hover,
+        .camp-hero-slider .owl-nav button.owl-next:hover {
+            background: rgba(10, 33, 27, 0.9) !important;
+            transform: scale(1.08);
+            border-color: #ffffff !important;
         }
 
         /* Value Props Grid */
@@ -425,7 +502,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
-            align-items: stretch;
+            align-items: start;
         }
 
         .camp-media-card {
@@ -435,7 +512,6 @@
             padding: 16px 14px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
             text-align: center;
             transition: all 0.28s ease;
@@ -465,23 +541,27 @@
             gap: 6px;
         }
 
-        /* 1:1 Square Wrapper */
+        /* Full Width, Variable Height Image Wrapper */
+        .camp-media-img-wrapper,
         .aspect-box-1-1 {
             width: 100%;
-            aspect-ratio: 1 / 1;
             border-radius: 14px;
             overflow: hidden;
-            background: #f4f2ee;
+            background: #ffffff;
             margin-bottom: 12px;
+            position: relative;
+            box-shadow: inset 0 0 0 1px rgba(10, 33, 27, 0.08);
         }
+        .camp-media-img-wrapper img,
         .aspect-box-1-1 img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            display: block;
             transition: transform 0.4s ease;
         }
+        .camp-media-card:hover .camp-media-img-wrapper img,
         .camp-media-card:hover .aspect-box-1-1 img {
-            transform: scale(1.06);
+            transform: scale(1.04);
         }
 
         /* 9:16 Story/Portrait Wrapper */
@@ -1373,7 +1453,7 @@
             @endphp
 
             <div class="camp-slider-aspect-16-9">
-                @if($landingBanners->count() > 0)
+                @if($landingBanners->count() > 1)
                     <div class="owl-carousel camp-hero-slider">
                         @foreach($landingBanners as $banner)
                             <div class="slider-item">
@@ -1381,10 +1461,22 @@
                             </div>
                         @endforeach
                     </div>
-                @elseif($campaign_data->image_one)
-                    <img src="{{ asset($campaign_data->image_one) }}" alt="{{ $campaign_data->name }}" loading="eager" />
-                @elseif($product->image)
-                    <img src="{{ asset($product->image->image) }}" alt="{{ $campaign_data->name }}" loading="eager" />
+                @elseif($landingBanners->count() == 1)
+                    <div class="slider-item single-banner">
+                        <img src="{{ asset($landingBanners->first()->image) }}" alt="{{ $campaign_data->name }} Banner" loading="eager" />
+                    </div>
+                @elseif(!empty($campaign_data->banner))
+                    <div class="slider-item single-banner">
+                        <img src="{{ asset($campaign_data->banner) }}" alt="{{ $campaign_data->name }} Banner" loading="eager" />
+                    </div>
+                @elseif(!empty($campaign_data->image_one))
+                    <div class="slider-item single-banner">
+                        <img src="{{ asset($campaign_data->image_one) }}" alt="{{ $campaign_data->name }} Banner" loading="eager" />
+                    </div>
+                @elseif(!empty($product->image))
+                    <div class="slider-item single-banner">
+                        <img src="{{ asset($product->image->image) }}" alt="{{ $campaign_data->name }} Banner" loading="eager" />
+                    </div>
                 @endif
             </div>
 
@@ -1485,8 +1577,8 @@
                     @if($campaign_data->image_two)
                         <div class="camp-media-card">
                             <div>
-                                <span class="camp-media-badge"><i class="fas fa-mobile-alt"></i> রিয়েল ভিউ ২</span>
-                                <div class="aspect-box-9-16">
+                                <span class="camp-media-badge"><i class="fas fa-camera"></i> রিয়েল ভিউ ২</span>
+                                <div class="aspect-box-1-1">
                                     <img src="{{ asset($campaign_data->image_two) }}" alt="{{ $campaign_data->name }}" loading="lazy" />
                                 </div>
                             </div>
@@ -1500,8 +1592,8 @@
                     @if($campaign_data->image_three)
                         <div class="camp-media-card">
                             <div>
-                                <span class="camp-media-badge"><i class="fas fa-image"></i> রিয়েল ভিউ ৩</span>
-                                <div class="aspect-box-4-5">
+                                <span class="camp-media-badge"><i class="fas fa-camera"></i> রিয়েল ভিউ ৩</span>
+                                <div class="aspect-box-1-1">
                                     <img src="{{ asset($campaign_data->image_three) }}" alt="{{ $campaign_data->name }}" loading="lazy" />
                                 </div>
                             </div>
@@ -2108,17 +2200,23 @@
     <script>
         $(document).ready(function() {
             // Hero 16:9 Banner Slider
-            $(".camp-hero-slider").owlCarousel({
-                items: 1,
-                loop: true,
-                dots: true,
-                autoplay: true,
-                autoplayTimeout: 4500,
-                autoplayHoverPause: true,
-                smartSpeed: 900,
-                nav: false,
-                margin: 0
-            });
+            if ($(".camp-hero-slider").length > 0) {
+                $(".camp-hero-slider").owlCarousel({
+                    items: 1,
+                    loop: true,
+                    dots: true,
+                    nav: true,
+                    navText: [
+                        "<i class='fas fa-chevron-left'></i>",
+                        "<i class='fas fa-chevron-right'></i>"
+                    ],
+                    autoplay: true,
+                    autoplayTimeout: 4500,
+                    autoplayHoverPause: true,
+                    smartSpeed: 800,
+                    margin: 0
+                });
+            }
 
             // Reviews 1:1 Slider
             $(".camp-reviews-slider").owlCarousel({

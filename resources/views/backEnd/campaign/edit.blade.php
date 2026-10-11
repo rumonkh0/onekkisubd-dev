@@ -61,12 +61,33 @@
 
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
-                                    <label for="banner_img" class="form-label">Banner Image</label>
+                                    <label for="banner_img" class="form-label fw-bold">Hero Banner Images (Slider)</label>
+                                    <p class="text-muted fs-13 mb-2">You can select multiple images to create a banner slider.</p>
+                                    
+                                    @if($edit_data->banners && $edit_data->banners->count() > 0)
+                                        <div class="existing-banner-list mb-3">
+                                            <span class="d-block mb-1 text-muted fs-13 fw-semibold">Existing Banners ({{ $edit_data->banners->count() }}):</span>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @foreach ($edit_data->banners as $banner_image)
+                                                    <div class="position-relative d-inline-block border rounded p-1 bg-light text-center" style="width: 140px;">
+                                                        <img src="{{ asset($banner_image->image) }}" alt="Banner" class="img-fluid rounded" style="width: 100%; height: 78px; object-fit: cover;">
+                                                        <a href="{{ route('campaign.banner.destroy', ['id' => $banner_image->id]) }}"
+                                                           onclick="return confirm('Are you sure you want to delete this banner image?')"
+                                                           class="btn btn-danger btn-xs position-absolute top-0 end-0 m-1 rounded-circle"
+                                                           style="width: 22px; height: 22px; padding: 0; line-height: 22px; display: inline-flex; align-items: center; justify-content: center;"
+                                                           title="Delete this banner">
+                                                            <i class="mdi mdi-close"></i>
+                                                        </a>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <input type="file" class="form-control @error('banner_img') is-invalid @enderror"
-                                        name="banner_img[]" multiple>
-                                        @foreach (App\Models\LandingBanner::where('campaign_id',$edit_data->id)->get() as $banner_image)
-                                            <img src="{{ asset($banner_image->image) }}" alt="" width="80" class="m-2">
-                                        @endforeach
+                                        name="banner_img[]" id="banner_img" multiple onchange="previewBannerImages(this)">
+                                    <div id="banner_img_preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+
                                     @error('banner_img')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -124,12 +145,18 @@
                             </div>
                             <!-- col end -->
 
-                            <div class="col-sm-6 mb-3">
-                                <div class="form-group">
-                                    <label for="image_one" class="form-label">Pricing Image One</label>
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_one" class="form-label fw-bold">Gallery Image 1 (রিয়েল ভিউ ১)</label>
                                     <input type="file" class="form-control @error('image_one') is-invalid @enderror"
-                                        name="image_one" value="{{ $edit_data->image_one }}" id="image_one">
-                                    <img src="{{ asset($edit_data->image_one) }}" alt="" class="edit-image">
+                                        name="image_one" id="image_one" onchange="previewSingleImage(this, 'image_one_preview')">
+                                    <div id="image_one_preview" class="mt-2"></div>
+                                    @if($edit_data->image_one)
+                                        <div class="mt-2 text-center border rounded p-1 bg-white">
+                                            <span class="d-block text-muted fs-11 mb-1">Current Image:</span>
+                                            <img src="{{ asset($edit_data->image_one) }}" alt="Gallery Image 1" style="max-height: 120px; max-width: 100%; object-fit: contain; border-radius: 6px;">
+                                        </div>
+                                    @endif
                                     @error('image_one')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -138,12 +165,18 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 mb-3">
-                                <div class="form-group">
-                                    <label for="image_two" class="form-label">Pricing Image Two</label>
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_two" class="form-label fw-bold">Gallery Image 2 (রিয়েল ভিউ ২)</label>
                                     <input type="file" class="form-control @error('image_two') is-invalid @enderror"
-                                        name="image_two" value="{{ $edit_data->image_two }}" id="image_two">
-                                    <img src="{{ asset($edit_data->image_two) }}" alt="" class="edit-image">
+                                        name="image_two" id="image_two" onchange="previewSingleImage(this, 'image_two_preview')">
+                                    <div id="image_two_preview" class="mt-2"></div>
+                                    @if($edit_data->image_two)
+                                        <div class="mt-2 text-center border rounded p-1 bg-white">
+                                            <span class="d-block text-muted fs-11 mb-1">Current Image:</span>
+                                            <img src="{{ asset($edit_data->image_two) }}" alt="Gallery Image 2" style="max-height: 120px; max-width: 100%; object-fit: contain; border-radius: 6px;">
+                                        </div>
+                                    @endif
                                     @error('image_two')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -152,12 +185,19 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 mb-3">
-                                <div class="form-group">
-                                    <label for="image_three" class="form-label">Pricing Image Three</label>
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group border rounded p-2 bg-light">
+                                    <label for="image_three" class="form-label fw-bold">Gallery Image 3 (রিয়েল ভিউ ৩)</label>
                                     <input type="file" class="form-control @error('image_three') is-invalid @enderror"
-                                        name="image_three" value="{{ $edit_data->image_three }}" id="image_three">
-                                    <img src="{{ asset($edit_data->image_three) }}" alt="" class="edit-image">
+                                        name="image_three" id="image_three" onchange="previewSingleImage(this, 'image_three_preview')">
+                                    <div id="image_three_preview" class="mt-2"></div>
+                                    @if($edit_data->image_three)
+                                        <div class="mt-2 text-center border rounded p-1 bg-white">
+                                            <span class="d-block text-muted fs-11 mb-1">Current Image:</span>
+                                            <img src="{{ asset($edit_data->image_three) }}" alt="Gallery Image 3" style="height: 100px; width: 100px; object-fit: cover; border-radius: 6px;">
+                                        </div>
+                                    @endif
+
                                     @error('image_three')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -339,11 +379,32 @@
                             </div>
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
-                                    <label for="campaign_review" class="form-label">Campaign Review</label>
-                                    <input type="file" name="campaign_review[]" class="form-control" multiple>
-                                    @foreach (App\Models\CampaignReview::where('campaign_id', $edit_data->id)->get() as $campaign)
-                                        <img src="{{ asset($campaign->image) }}" alt="" width="80" class="m-2">
-                                    @endforeach
+                                    <label for="campaign_review" class="form-label fw-bold">Customer Reviews (Slider)</label>
+                                    <p class="text-muted fs-13 mb-2">Upload screenshot or review images from satisfied customers. Multiple images supported.</p>
+                                    
+                                    @if($edit_data->images && $edit_data->images->count() > 0)
+                                        <div class="existing-review-list mb-3">
+                                            <span class="d-block mb-1 text-muted fs-13 fw-semibold">Existing Reviews ({{ $edit_data->images->count() }}):</span>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @foreach ($edit_data->images as $review_item)
+                                                    <div class="position-relative d-inline-block border rounded p-1 bg-light text-center" style="width: 100px;">
+                                                        <img src="{{ asset($review_item->image) }}" alt="Review" class="img-fluid rounded" style="width: 100%; height: 80px; object-fit: cover;">
+                                                        <a href="{{ route('campaign.image.destroy', ['id' => $review_item->id]) }}"
+                                                           onclick="return confirm('Are you sure you want to delete this review image?')"
+                                                           class="btn btn-danger btn-xs position-absolute top-0 end-0 m-1 rounded-circle"
+                                                           style="width: 22px; height: 22px; padding: 0; line-height: 22px; display: inline-flex; align-items: center; justify-content: center;"
+                                                           title="Delete this review image">
+                                                            <i class="mdi mdi-close"></i>
+                                                        </a>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <input type="file" name="campaign_review[]" id="campaign_review" class="form-control" multiple onchange="previewReviewImages(this)">
+                                    <div id="review_img_preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+
                                     @error('campaign_review')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -426,5 +487,57 @@
             });
             $('.select2').select2();
         });
+
+        function previewBannerImages(input) {
+            var preview = document.getElementById('banner_img_preview');
+            preview.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.className = 'border rounded p-1 bg-light text-center shadow-sm';
+                        div.style.width = '140px';
+                        div.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100%; height: 78px; object-fit: cover;"><span class="badge bg-success mt-1 d-block" style="font-size:10px;">New Selected</span>';
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function previewReviewImages(input) {
+            var preview = document.getElementById('review_img_preview');
+            preview.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.className = 'border rounded p-1 bg-light text-center shadow-sm';
+                        div.style.width = '100px';
+                        div.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100%; height: 80px; object-fit: cover;"><span class="badge bg-success mt-1 d-block" style="font-size:10px;">New Selected</span>';
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function previewSingleImage(input, targetId) {
+            var preview = document.getElementById(targetId);
+            if (!preview) return;
+            preview.innerHTML = '';
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var div = document.createElement('div');
+                    div.className = 'border rounded p-1 bg-white text-center shadow-sm';
+                    div.innerHTML = '<span class="d-block text-success fs-11 fw-bold mb-1">New Selection:</span><img src="' + e.target.result + '" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">';
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 @endsection
