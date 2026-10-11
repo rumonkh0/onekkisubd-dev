@@ -48,23 +48,10 @@ class DashboardController extends Controller
         // inventory
         $categories = Category::where('status',1)->get();
 
-        // accounts
-        // deposit
-        $courier_payment = Deposit::where(['status' => 1, 'deposit_type' => 1])->sum('amount');
-        $officesale_payment = Deposit::where(['status' => 1, 'deposit_type' => 2])->sum('amount');
-        $expense_others = Deposit::where(['status' => 1, 'deposit_type' => 3])->sum('amount');
-        $total_payment = Deposit::where(['status' => 1])->sum('amount');
-        // expense
-        $boost_cost = Expense::where(['status' => 1, 'expense_type' => 1])->sum('amount');
-        $office_cost = Expense::where(['status' => 1, 'expense_type' => 2])->sum('amount');
-        $bank_deposit = Expense::where(['status' => 1, 'expense_type' => 3])->sum('amount');
-        $packaging_cost = Expense::where(['status' => 1, 'expense_type' => 4])->sum('amount');
-        $transport_cost = Expense::where(['status' => 1, 'expense_type' => 5])->sum('amount');
-        $others_expense_cost = Expense::where(['status' => 1, 'expense_type' => 6])->sum('amount');
-        $total_cost = Expense::where(['status' => 1])->sum('amount');
-
-        $account_balance = $total_payment - $total_cost;
-
+        // Lifetime overall accounts balance
+        $lifetime_deposit = Deposit::where('status', 1)->sum('amount');
+        $lifetime_expense = Expense::where('status', 1)->sum('amount');
+        $lifetime_balance = $lifetime_deposit - $lifetime_expense;
 
         // account filtering
         $startDate = $request->start_date;
@@ -75,7 +62,7 @@ class DashboardController extends Controller
             $endDate = now()->endOfMonth()->toDateString();
         }
 
-        // accounts
+        // accounts within filtered period
         // deposit
         $courier_payment = Deposit::where(['status'=>1,'deposit_type' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
         $officesale_payment = Deposit::where(['status' => 1, 'deposit_type' => 2])->whereBetween('date', [$startDate, $endDate])->sum('amount');
@@ -90,7 +77,10 @@ class DashboardController extends Controller
         $others_expense_cost = Expense::where(['status' => 1, 'expense_type' => 6])->whereBetween('date', [$startDate, $endDate])->sum('amount');
         $total_cost = Expense::where(['status' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
 
-        return view('backEnd.admin.dashboard',compact('total_order','today_order','total_product','total_customer','latest_order','latest_customer','today_delivery','total_delivery','last_week','last_month','monthly_sale', 'pending_order', 'pre_order', 'confirm_order', 'shipped_courier', 'return_order', 'delivery_done_order', 'total_cancel_order','categories', 'courier_payment', 'officesale_payment', 'expense_others', 'total_payment', 'boost_cost', 'office_cost', 'bank_deposit', 'packaging_cost', 'transport_cost', 'others_expense_cost', 'total_cost', 'account_balance'));
+        // Net balance for the filtered period
+        $account_balance = $total_payment - $total_cost;
+
+        return view('backEnd.admin.dashboard',compact('total_order','today_order','total_product','total_customer','latest_order','latest_customer','today_delivery','total_delivery','last_week','last_month','monthly_sale', 'pending_order', 'pre_order', 'confirm_order', 'shipped_courier', 'return_order', 'delivery_done_order', 'total_cancel_order','categories', 'courier_payment', 'officesale_payment', 'expense_others', 'total_payment', 'boost_cost', 'office_cost', 'bank_deposit', 'packaging_cost', 'transport_cost', 'others_expense_cost', 'total_cost', 'account_balance', 'lifetime_balance'));
     }
     public function changepassword(){
         return view('backEnd.admin.changepassword');

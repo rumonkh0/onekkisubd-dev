@@ -124,4 +124,94 @@ class DepositExpenseModuleTest extends TestCase
         $response->assertRedirect(route('expense.index'));
         $this->assertNull(Expense::find($expense->id));
     }
+
+    public function test_deposit_and_expense_filters_and_dashboard_balance()
+    {
+        // Create deposits
+        $d1 = Deposit::create([
+            'title' => 'Courier Test Jan 2035',
+            'amount' => 5000,
+            'deposit_type' => 1,
+            'payment_type' => 1,
+            'date' => '2035-01-10',
+            'status' => 1,
+        ]);
+        $d2 = Deposit::create([
+            'title' => 'Office Test Jan 2035',
+            'amount' => 3000,
+            'deposit_type' => 2,
+            'payment_type' => 2,
+            'date' => '2035-01-15',
+            'status' => 1,
+        ]);
+        $d3 = Deposit::create([
+            'title' => 'Others Inactive 2035',
+            'amount' => 2000,
+            'deposit_type' => 3,
+            'payment_type' => 3,
+            'date' => '2035-01-20',
+            'status' => 0,
+        ]);
+
+        // Create expenses
+        $e1 = Expense::create([
+            'title' => 'Boost Test Jan 2035',
+            'amount' => 1500,
+            'expense_type' => 1,
+            'payment_type' => 2,
+            'date' => '2035-01-12',
+            'status' => 1,
+        ]);
+        $e2 = Expense::create([
+            'title' => 'Packaging Test Jan 2035',
+            'amount' => 1000,
+            'expense_type' => 4,
+            'payment_type' => 1,
+            'date' => '2035-01-18',
+            'status' => 1,
+        ]);
+
+        // Test Deposit filtering by date and type
+        $response = $this->actingAs($this->admin)->get(route('deposit.index', [
+            'start_date' => '2035-01-01',
+            'end_date' => '2035-01-31',
+            'deposit_type' => 1,
+        ]));
+        $response->assertOk();
+        $response->assertViewHas('total_amount', 5000.0);
+        $response->assertViewHas('active_amount', 5000.0);
+        $response->assertViewHas('total_count', 1);
+
+        // Test Expense filtering by date
+        $response = $this->actingAs($this->admin)->get(route('expense.index', [
+            'start_date' => '2035-01-01',
+            'end_date' => '2035-01-31',
+            'expense_type' => 4,
+        ]));
+        $response->assertOk();
+        $response->assertViewHas('total_amount', 1000.0);
+        $response->assertViewHas('total_count', 1);
+
+        // Test Dashboard accounting balance calculation
+        $response = $this->actingAs($this->admin)->get(route('dashboard', [
+            'start_date' => '2035-01-01',
+            'end_date' => '2035-01-31',
+        ]));
+        $response->assertOk();
+        // For Jan 2035: Active Deposits = 5000 + 3000 = 8000, Expenses = 1500 + 1000 = 2500, Net Balance = 5500
+        $response->assertViewHas('total_payment', 8000.0);
+        $response->assertViewHas('total_cost', 2500.0);
+        $response->assertViewHas('account_balance', 5500.0);
+        $response->assertViewHas('courier_payment', 5000.0);
+        $response->assertViewHas('officesale_payment', 3000.0);
+        $response->assertViewHas('boost_cost', 1500.0);
+        $response->assertViewHas('packaging_cost', 1000.0);
+
+        // Clean up created records
+        $d1->delete();
+        $d2->delete();
+        $d3->delete();
+        $e1->delete();
+        $e2->delete();
+    }
 }

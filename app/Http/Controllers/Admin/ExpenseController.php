@@ -15,10 +15,38 @@ class ExpenseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Expense::latest()->get();
-        return view('backEnd.expense.index',compact('data'));
+        $query = Expense::query();
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('date', [$request->start_date, $request->end_date]);
+        } elseif ($request->filled('start_date')) {
+            $query->whereDate('date', '>=', $request->start_date);
+        } elseif ($request->filled('end_date')) {
+            $query->whereDate('date', '<=', $request->end_date);
+        }
+
+        if ($request->filled('expense_type')) {
+            $query->where('expense_type', $request->expense_type);
+        }
+
+        if ($request->filled('payment_type')) {
+            $query->where('payment_type', $request->payment_type);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $data = $query->orderBy('date', 'desc')->orderBy('id', 'desc')->get();
+
+        $total_amount = $data->sum('amount');
+        $active_amount = $data->where('status', 1)->sum('amount');
+        $active_count = $data->where('status', 1)->count();
+        $total_count = $data->count();
+
+        return view('backEnd.expense.index', compact('data', 'total_amount', 'active_amount', 'active_count', 'total_count'));
     }
 
     /**

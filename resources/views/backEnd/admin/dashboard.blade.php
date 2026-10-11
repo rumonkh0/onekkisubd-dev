@@ -116,7 +116,7 @@
                     <div class="stat-widget-value text-primary">
                         ৳<span data-plugin="counterup">{{ number_format($account_balance, 0) }}</span>
                     </div>
-                    <small class="text-muted" style="font-size: 11.5px;">Net available funds</small>
+                    <small class="text-muted" style="font-size: 11.5px;">Period Net (Lifetime: ৳{{ number_format($lifetime_balance, 0) }})</small>
                 </div>
                 <div class="stat-widget-icon stat-icon-primary">
                     <i class="fe-credit-card"></i>
