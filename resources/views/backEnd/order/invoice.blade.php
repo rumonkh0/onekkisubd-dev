@@ -156,7 +156,7 @@
             <div class="invoice-header-row">
                 <div>
                     <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}"
-                         alt="{{ $generalsetting->name }}" style="max-height: 50px; max-width: 200px;"
+                         alt="{{ $generalsetting->name }}" style="height: 85px; max-height: 95px; max-width: 300px; width: auto; object-fit: contain;"
                          onerror="this.style.display='none'">
                     <h5 class="mt-2 mb-0 fw-bold">{{ $generalsetting->name }}</h5>
                     <p class="text-muted mb-0 font-12">{{ $contact->phone ?? '' }} | {{ $contact->email ?? '' }}</p>

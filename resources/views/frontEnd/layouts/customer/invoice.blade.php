@@ -99,7 +99,9 @@
         gap: 20px;
     }
     .tea-invoice-logo {
-        height: 52px;
+        height: 88px;
+        max-height: 98px;
+        max-width: 330px;
         width: auto;
         object-fit: contain;
         margin-bottom: 10px;

@@ -176,9 +176,19 @@
             justify-content: space-between;
         }
         .camp-logo img {
-            max-height: 48px;
+            height: 92px;
+            max-height: 100px;
             width: auto;
+            max-width: 330px;
             object-fit: contain;
+            display: block;
+        }
+        @media (max-width: 576px) {
+            .camp-logo img {
+                height: 60px;
+                max-height: 66px;
+                max-width: 220px;
+            }
         }
         .camp-header-cta {
             display: inline-flex;

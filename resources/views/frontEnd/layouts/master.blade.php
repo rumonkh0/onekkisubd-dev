@@ -57,6 +57,137 @@
         .font-bengali, .font-bn, [lang="bn"], .bangla, .potro_font, .alinur, .solaiman, .solaiman_font {
             font-family: 'SolaimanLipi', 'Solaiman Lipi', sans-serif !important;
         }
+
+        /* ========================================================
+           PROMOTIONAL PRODUCT CARD BADGES
+           ======================================================== */
+        .tea-badge-discount,
+        .tea-badge-deal,
+        .tea-badge-trending,
+        .tea-badge-flash {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            padding: 3.5px 8px !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            line-height: 1 !important;
+            letter-spacing: 0.25px !important;
+            color: #ffffff !important;
+            border-radius: 6px !important;
+            white-space: nowrap !important;
+            width: fit-content !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            text-transform: none !important;
+            overflow: visible !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+
+        .tea-badge-discount {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        }
+
+        .tea-badge-deal {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .tea-badge-trending {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            box-shadow: 0 2px 6px rgba(4, 120, 87, 0.35) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .tea-badge-flash {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+            box-shadow: 0 2px 6px rgba(194, 65, 12, 0.35) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        }
+
+        .tea-badge-icon {
+            width: 11px !important;
+            height: 11px !important;
+            flex-shrink: 0 !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        /* ========================================================
+           RESPONSIVE BRAND LOGO SIZING
+           ======================================================== */
+        .tea-header-logo {
+            height: 92px !important;
+            max-height: 100px !important;
+            width: auto !important;
+            max-width: 330px !important;
+            object-fit: contain !important;
+            display: block !important;
+            transition: all 0.25s ease !important;
+        }
+
+        @media (max-width: 991px) {
+            .tea-header-logo {
+                height: 72px !important;
+                max-height: 78px !important;
+                max-width: 260px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .tea-header-logo {
+                height: 58px !important;
+                max-height: 64px !important;
+                max-width: 210px !important;
+            }
+        }
+
+        #claude-header.is-fixed .tea-header-logo {
+            height: 70px !important;
+            max-height: 76px !important;
+        }
+
+        @media (max-width: 576px) {
+            #claude-header.is-fixed .tea-header-logo {
+                height: 52px !important;
+                max-height: 56px !important;
+            }
+        }
+
+        /* Footer Brand Logo */
+        .tea-footer-logo {
+            height: 110px !important;
+            max-height: 120px !important;
+            width: auto !important;
+            max-width: 380px !important;
+            object-fit: contain !important;
+            display: block !important;
+            margin-bottom: 14px !important;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2)) !important;
+        }
+
+        @media (max-width: 768px) {
+            .tea-footer-logo {
+                height: 85px !important;
+                max-height: 95px !important;
+                max-width: 300px !important;
+            }
+        }
+
+        /* Mobile Drawer Menu Logo */
+        .tea-mobile-drawer-logo {
+            height: 85px !important;
+            max-height: 95px !important;
+            width: auto !important;
+            max-width: 280px !important;
+            object-fit: contain !important;
+            display: block !important;
+        }
     </style>
 
 
@@ -617,7 +748,7 @@
     <div class="mobile-menu" style="background:">
         <div class="mobile-menu-logo">
             <div class="logo-image ">
-                <img src="{{asset($generalsetting->white_logo)}}" alt="" style="width:120px" />
+                <img src="{{asset($generalsetting->white_logo)}}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="tea-mobile-drawer-logo" />
             </div>
             <div class="mobile-menu-close">
                 <i class="fa fa-times"></i>
@@ -752,9 +883,9 @@
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 select-none"
                     aria-label="{{ $generalsetting->name ?? 'OnekkisuBD' }} home">
                     @if(!empty($generalsetting->white_logo))
-                        <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="h-10 sm:h-12 w-auto max-w-[200px] object-contain" />
+                        <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="tea-header-logo" />
                     @elseif(!empty($generalsetting->dark_logo))
-                        <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="h-10 sm:h-12 w-auto max-w-[200px] object-contain" />
+                        <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="tea-header-logo" />
                     @else
                         <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
                             <svg viewBox="0 0 48 48" class="h-12 w-12" fill="none">
@@ -1251,11 +1382,11 @@
                     <div class="brand-logo brand-logo-footer">
                         @if(!empty($generalsetting->dark_logo))
                             <a href="{{ route('home') }}">
-                                <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" style="max-height: 52px; width: auto; object-fit: contain;" />
+                                <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="tea-footer-logo" />
                             </a>
                         @elseif(!empty($generalsetting->white_logo))
                             <a href="{{ route('home') }}">
-                                <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" style="max-height: 52px; width: auto; object-fit: contain;" />
+                                <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name ?? 'OnekkisuBD' }}" class="tea-footer-logo" />
                             </a>
                         @else
                             <svg class="brand-mark" viewBox="0 0 82 82" aria-hidden="true">
@@ -1568,6 +1699,9 @@
                 if (!header) return;
                 const topbarHeight = topbar ? topbar.offsetHeight : 38;
                 if (window.scrollY > topbarHeight) {
+                    if (spacer && !header.classList.contains('is-fixed')) {
+                        spacer.style.height = header.offsetHeight + 'px';
+                    }
                     header.classList.add('is-fixed');
                     if (spacer) spacer.classList.add('active');
                 } else {
