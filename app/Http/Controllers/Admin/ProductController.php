@@ -83,7 +83,11 @@ class ProductController extends Controller
         $product->purchase_price = $request->purchase_price;
         $product->old_price = $request->old_price;
         $product->new_price = $request->new_price;
-        $product->stock = $request->stock;
+        if ($request->size && is_array($request->size) && count($request->size) > 0) {
+            $product->stock = collect($request->size)->sum('quantity');
+        } else {
+            $product->stock = $request->stock ?? 0;
+        }
         $product->pro_unit = $request->pro_unit;
         $product->pro_video = $request->pro_video;
         $product->description = $request->description;
@@ -154,7 +158,8 @@ class ProductController extends Controller
                 foreach ($sizes as $si) {
                     $size = new Productsize();
                     $size->product_id = $product->id;
-                    $size->size_id = $si['sizeID'];
+                    // $size->size_id = $si['sizeID'];
+                    $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
                     $size->size = $si['size'];
                     $size->quantity = $si['quantity'];
                     $size->RegularPrice = $si['RegularPrice'];
@@ -296,7 +301,11 @@ class ProductController extends Controller
         $product->purchase_price = $request->purchase_price;
         $product->old_price = $request->old_price;
         $product->new_price = $request->new_price;
-        $product->stock = $request->stock;
+        if ($request->size && is_array($request->size) && count($request->size) > 0) {
+            $product->stock = collect($request->size)->sum('quantity');
+        } else {
+            $product->stock = $request->stock ?? 0;
+        }
         $product->pro_unit = $request->pro_unit;
         $product->pro_video = $request->pro_video;
         $product->description = $request->description;
@@ -387,7 +396,8 @@ class ProductController extends Controller
                     if (isset($si['sID'])) {
                         $size = Productsize::where('id', $si['sID'])->first();
                         $size->product_id = $product->id;
-                        $size->size_id = $si['sizeID'];
+                        // $size->size_id = $si['sizeID'];
+                        $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
                         $size->size = $si['size'];
                         $size->quantity = $si['quantity'];
                         $size->RegularPrice = $si['RegularPrice'];
@@ -397,7 +407,8 @@ class ProductController extends Controller
                     } else {
                         $size = new Productsize();
                         $size->product_id = $product->id;
-                        $size->size_id = $si['sizeID'];
+                        // $size->size_id = $si['sizeID'];
+                        $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
                         $size->size = $si['size'];
                         $size->quantity = $si['quantity'];
                         $size->RegularPrice = $si['RegularPrice'];

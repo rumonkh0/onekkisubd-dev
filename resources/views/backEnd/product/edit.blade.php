@@ -200,7 +200,7 @@
                         <!-- col-end -->
                         <div class="col-sm-4">
                             <div class="form-group mb-3">
-                                <label for="stock" class="form-label">Stock *</label>
+                                <label for="stock" class="form-label">Stock * <span id="stock_auto_badge" class="badge bg-soft-info text-info d-none" style="font-size: 11px; font-weight: normal;"><i class="fa fa-calculator me-1"></i>Auto-summed from sizes</span></label>
                                 <input type="text" class="form-control @error('stock') is-invalid @enderror"
                                     name="stock" value="{{ $edit_data->stock }}" id="stock" />
                                 @error('stock')
@@ -413,20 +413,20 @@
                                                                 style="width:80px;border: none;color: black;"
                                                                 value="{{ $size->id }}"><input type="text"
                                                                 id="sizeID"
-                                                                style="width:80px;border: none;color: black;"
-                                                                value="{{ $size->size_id }}" disabled></td>
+                                                                style="width:50px;border: none;background: transparent;color: #666;"
+                                                                value="{{ $size->size_id }}" readonly></td>
                                                         <td><input type="text" name="size" id="size"
-                                                                style="width:80px;border: none;color: black;"
-                                                                value="{{ $size->size }}" disabled> </td>
-                                                        <td><input type="text" name="quantity"
+                                                                class="form-control" style="min-width:120px;"
+                                                                value="{{ $size->size }}" required> </td>
+                                                        <td><input type="number" name="quantity"
                                                             value="{{ $size->quantity }}" id="quantity"
                                                             class="form-control" style="width:100px;float:left;"></td>
-                                                        <td><input type="text" name="RegularPrice"
+                                                        <td><input type="number" name="RegularPrice"
                                                                 value="{{ $size->RegularPrice }}" id="RegularPrice"
                                                                 class="form-control" style="width:100px;float:left;">
                                                             <span id="taka">TK</span>
                                                         </td>
-                                                        <td><input type="text" name="Discount"
+                                                        <td><input type="number" name="Discount"
                                                                 value="{{ $size->Discount }}" id="Discount"
                                                                 class="form-control" style="width:100px;float:left;">
                                                             <span id="taka">TK</span>
@@ -439,11 +439,18 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
+                                                    {{-- Pre-created sizes select2 dropdown (commented out for manual entry)
                                                     <td colspan="5">
                                                         <select id="sizevariantID" style="width: 100%;">
                                                             <option value="">Select Product Size / Weight
                                                             </option>
                                                         </select>
+                                                    </td>
+                                                    --}}
+                                                    <td colspan="6" class="text-start p-2">
+                                                        <button type="button" class="btn btn-primary btn-sm" id="addSizeRowBtn">
+                                                            <i class="fa fa-plus"></i> Add Size / Weight Manually
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             </tfoot>
@@ -820,6 +827,7 @@
             );
         });
 
+        /* Pre-created select2 size selector (commented out for manual entry)
         $("#sizevariantID").select2({
             placeholder: "Select a Product Size",
             templateResult: function(state) {
@@ -857,6 +865,42 @@
                 "</tr>"
             );
         });
+        */
+
+        function syncStockFromSizes() {
+            var ptype = $('#type').val();
+            var rows = $('#sizeTable tbody tr');
+            if (ptype == '1' || rows.length > 0) {
+                var total = 0;
+                rows.each(function() {
+                    var q = parseFloat($(this).find('#quantity, input[name="quantity"]').val()) || 0;
+                    total += q;
+                });
+                $('#stock').val(total).prop('readonly', true);
+                $('#stock_auto_badge').removeClass('d-none');
+            } else {
+                $('#stock').prop('readonly', false);
+                $('#stock_auto_badge').addClass('d-none');
+            }
+        }
+
+        $('#type').on('change', syncStockFromSizes);
+        $(document).on('input change', '#sizeTable input[name="quantity"], #sizeTable #quantity', syncStockFromSizes);
+        syncStockFromSizes();
+
+        $("#addSizeRowBtn").on("click", function() {
+            $("#sizeTable tbody").append(
+                "<tr>" +
+                '<td><input type="hidden" id="sID" value=""><input type="text" id="sizeID" style="width:50px;border:none;background:transparent;color:#666;" value="0" readonly></td>' +
+                '<td><input type="text" name="size" id="size" class="form-control" placeholder="e.g. 500 gm / XL" style="min-width:120px;" required></td>' +
+                '<td><input type="number" name="quantity" id="quantity" class="form-control" style="width:100px;float:left;" placeholder="Qty" value="1"></td>' +
+                '<td><input type="number" name="RegularPrice" id="RegularPrice" class="form-control" style="width:100px;float:left;" placeholder="Price"><span id="taka">TK</span></td>' +
+                '<td><input type="number" name="Discount" id="Discount" class="form-control" style="width:100px;float:left;" placeholder="0" value="0"><span id="taka">TK</span></td>' +
+                '<td><button type="button" class="btn btn-sm btn-danger sdelete-btn"><i class="fa fa-trash"></i></button></td>\n' +
+                "</tr>"
+            );
+            syncStockFromSizes();
+        });
 
         $(document).on("click", ".mdelete-btn", function() {
             var mID = $(this).closest("tr").find("#mID").val();
@@ -878,19 +922,22 @@
         $(document).on("click", ".sdelete-btn", function() {
             var sID = $(this).closest("tr").find("#sID").val();
             $(this).closest("tr").remove();
-            $.ajax({
-                type: "GET",
-                url: '{{ url('admin/remove-size/') }}' + '/' + sID,
+            syncStockFromSizes();
+            if (sID) {
+                $.ajax({
+                    type: "GET",
+                    url: '{{ url('admin/remove-size/') }}' + '/' + sID,
 
-                success: function(response) {
-                    var data = JSON.parse(response);
-                    if (data["status"] === "success") {
-                        toastr.success(data["message"]);
-                    } else {
-                        toastr.error(data["message"])
+                    success: function(response) {
+                        var data = JSON.parse(response);
+                        if (data["status"] === "success") {
+                            toastr.success(data["message"]);
+                        } else {
+                            toastr.error(data["message"])
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
 

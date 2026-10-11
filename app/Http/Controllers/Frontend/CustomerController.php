@@ -376,11 +376,11 @@ class CustomerController extends Controller
             $order_details->qty             =   $cart->qty;
             $order_details->save();
 
-            if(Product::find($cart->id)->stock == 1 ){
-                Productsize::where('size', $order_size)->decrement('quantity', $cart->qty);
-            }else{
-                Product::where('id', $cart->id)->decrement('stock', $cart->qty);
+            $item_size = $cart->options->product_size ? $cart->options->product_size : $request->product_size;
+            if (!empty($item_size)) {
+                Productsize::where('product_id', $cart->id)->where('size', $item_size)->decrement('quantity', $cart->qty);
             }
+            Product::where('id', $cart->id)->decrement('stock', $cart->qty);
 
         }
 
@@ -542,6 +542,9 @@ class CustomerController extends Controller
             $order_details->sale_price      =   $request->subtotal;
             $order_details->qty             =   $request->quantity;
             $order_details->save();
+            if (!empty($request->package)) {
+                Productsize::where('product_id', $product->id)->where('size', $request->package)->decrement('quantity', $request->quantity);
+            }
             Product::where('id', $product->id)->decrement('stock', $request->quantity);
         // }
 

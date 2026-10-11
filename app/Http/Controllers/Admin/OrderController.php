@@ -412,6 +412,9 @@ class OrderController extends Controller
 
         Order::whereIn('id', $ids)->update(['order_status' => $request->order_status]);
 
+        // Stock is already decremented upon order creation at checkout.
+        // Prevent double-decrement when marking orders shipped:
+        /*
         if ($request->order_status == 5) {
             $orders = Order::whereIn('id', $ids)->get();
             foreach ($orders as $order) {
@@ -425,6 +428,7 @@ class OrderController extends Controller
                 }
             }
         }
+        */
         return response()->json(['status' => 'success', 'message' => 'Order status changed successfully']);
     }
 

@@ -328,10 +328,12 @@
                                         <a href="{{ route('colors.index') }}"><i data-feather="file-plus"></i>
                                             Colors</a>
                                     </li>
+                                    {{-- Pre-created sizes menu (commented out for manual entry)
                                     <li>
                                         <a href="{{ route('sizes.index') }}"><i data-feather="file-plus"></i>
                                             Sizes</a>
                                     </li>
+                                    --}}
                                     <li>
                                         <a href="{{ route('coupon') }}"><i data-feather="file-plus"></i>Coupon</a>
                                     </li>
