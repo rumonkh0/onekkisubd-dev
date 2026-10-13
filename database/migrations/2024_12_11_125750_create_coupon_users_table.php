@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('coupon_users', function (Blueprint $table) {
-            $table->id();
-            $table->integer('customer_id');
-            $table->integer('coupon_id');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('coupon_users')) {
+            Schema::create('coupon_users', function (Blueprint $table) {
+                $table->id();
+                $table->integer('customer_id');
+                $table->integer('coupon_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

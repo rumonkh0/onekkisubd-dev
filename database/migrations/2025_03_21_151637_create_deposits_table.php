@@ -13,17 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('deposits', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->integer('amount');
-            $table->string('deposit_type');
-            $table->string('payment_type');
-            $table->string('file')->nullable();
-            $table->date('date')->nullable();
-            $table->integer('status');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('deposits')) {
+            Schema::create('deposits', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->integer('amount');
+                $table->string('deposit_type');
+                $table->string('payment_type');
+                $table->string('file')->nullable();
+                $table->date('date')->nullable();
+                $table->integer('status');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

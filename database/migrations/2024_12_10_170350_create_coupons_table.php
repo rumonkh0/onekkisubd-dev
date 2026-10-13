@@ -13,16 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('coupons', function (Blueprint $table) {
-            $table->id();
-            $table->string('coupon_name');
-            $table->integer('coupon_type');
-            $table->integer('amount');
-            $table->date('validity');
-            $table->string('unique_id')->nullable();
-            $table->integer('count')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('coupons')) {
+            Schema::create('coupons', function (Blueprint $table) {
+                $table->id();
+                $table->string('coupon_name');
+                $table->integer('coupon_type');
+                $table->integer('amount');
+                $table->date('validity');
+                $table->string('unique_id')->nullable();
+                $table->integer('count')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

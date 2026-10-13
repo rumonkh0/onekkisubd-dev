@@ -13,17 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->integer('amount');
-            $table->string('expense_type');
-            $table->string('payment_type');
-            $table->string('file')->nullable();
-            $table->date('date')->nullable();
-            $table->integer('status');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('expenses')) {
+            Schema::create('expenses', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->integer('amount');
+                $table->string('expense_type');
+                $table->string('payment_type');
+                $table->string('file')->nullable();
+                $table->date('date')->nullable();
+                $table->integer('status');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
