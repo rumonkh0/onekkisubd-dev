@@ -7,7 +7,9 @@
 		public function boot()
 		{
 			$this->loadRoutesFrom(__DIR__.'/routes/web.php');
-			$this->loadViewsFrom(__DIR__.'/views','shurjopay');
+			if (is_dir(__DIR__.'/views')) {
+				$this->loadViewsFrom(__DIR__.'/views','shurjopay');
+			}
 		}
 		
 		public function register()

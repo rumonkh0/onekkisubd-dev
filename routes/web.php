@@ -489,7 +489,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
 
     // backend customer route
     Route::get('customer', [CustomerManageController::class, 'index'])->name('customers.index');
-    Route::get('customer/manage', [CustomerManageController::class, 'index'])->name('customers.index');
+    Route::get('customer/manage', [CustomerManageController::class, 'index'])->name('customers.manage');
     Route::get('customer/{id}/edit', [CustomerManageController::class, 'edit'])->name('customers.edit');
     Route::post('customer/update', [CustomerManageController::class, 'update'])->name('customers.update');
     Route::post('customer/inactive', [CustomerManageController::class, 'inactive'])->name('customers.inactive');
