@@ -114,7 +114,10 @@ class FrontendController extends Controller
 
         $frontcategory = Category::where(['status' => 1, 'front_view' => 1])
             ->select('id', 'name', 'image', 'slug', 'status')
-            ->orderByRaw("FIELD(id, 1, 2, 3, 4, 5, 7)")
+            ->withCount(['products' => function ($query) {
+                $query->where('status', 1);
+            }])
+            ->orderByRaw("FIELD(id, 1, 2, 3, 4, 5, 7) = 0, FIELD(id, 1, 2, 3, 4, 5, 7)")
             ->limit(6)
             ->get();
 

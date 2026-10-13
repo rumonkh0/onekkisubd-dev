@@ -940,7 +940,6 @@
                         $categoriesList = [
                             [
                                 'name' => 'Fruit & Flower Tea',
-                                'count' => 24,
                                 'image' => asset('images/categories/cat-1.jpg'),
                                 'tone' => 'pink',
                                 'slug' => 'fruit-&-flower-(চা)',
@@ -948,7 +947,6 @@
                             ],
                             [
                                 'name' => 'Black Tea',
-                                'count' => 18,
                                 'image' => asset('images/categories/cat-2.jpg'),
                                 'tone' => 'sand',
                                 'slug' => 'black-tea(দুধ-চালাল-চা)',
@@ -956,7 +954,6 @@
                             ],
                             [
                                 'name' => 'Green Tea',
-                                'count' => 20,
                                 'image' => asset('images/categories/cat-3.jpg'),
                                 'tone' => 'sage',
                                 'slug' => 'green-tea-(গ্রিন-টি-)',
@@ -964,7 +961,6 @@
                             ],
                             [
                                 'name' => 'Roselle Tea',
-                                'count' => 16,
                                 'image' => asset('images/categories/cat-4.jpg'),
                                 'tone' => 'rose',
                                 'slug' => 'roselle-tea(চাশরবত)',
@@ -972,7 +968,6 @@
                             ],
                             [
                                 'name' => 'Masala',
-                                'count' => 12,
                                 'image' => asset('images/categories/cat-5.jpg'),
                                 'tone' => 'ochre',
                                 'slug' => 'masala(মসলা)',
@@ -980,7 +975,6 @@
                             ],
                             [
                                 'name' => 'Tea Jar & Accessories',
-                                'count' => 10,
                                 'image' => asset('images/categories/cat-6.jpg'),
                                 'tone' => 'olive',
                                 'slug' => 'tea-jar-500ml-(সেল🔥)',
@@ -1099,7 +1093,11 @@
                     @foreach($categoriesList as $cat)
                         @php
                             $dbCategory = isset($frontcategory) ? $frontcategory->firstWhere('slug', $cat['slug']) : null;
+                            if (!$dbCategory) {
+                                $dbCategory = \App\Models\Category::where('slug', $cat['slug'])->withCount(['products' => function($q) { $q->where('status', 1); }])->first();
+                            }
                             $catUrl = $dbCategory ? route('category', $dbCategory->slug) : url('category/' . $cat['slug']);
+                            $prodCount = $dbCategory ? ($dbCategory->products_count ?? $dbCategory->products()->where('status', 1)->count()) : 0;
                         @endphp
                         <a href="{{ $catUrl }}" class="group openai-category-item">
                             <div class="openai-category-photo">
@@ -1139,7 +1137,7 @@
                             </span>
 
                             <strong>{{ $cat['name'] }}</strong>
-                            <small>{{ $cat['count'] }} Products</small>
+                            <small>{{ $prodCount }} {{ $prodCount == 1 ? 'Product' : 'Products' }}</small>
                             <svg class="openai-category-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 12h14" />
