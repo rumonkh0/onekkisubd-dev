@@ -273,23 +273,30 @@
             </div>
 
             <div class="tea-track-body">
-                <form action="{{ route('customer.order_track_result') }}" method="GET" data-parsley-validate="" id="order_track_form">
+                @if(session('error'))
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; color: #991b1b; font-size: 13.5px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 18px; color: #dc2626; flex-shrink: 0;"></i>
+                        <div>{{ session('error') }}</div>
+                    </div>
+                @endif
+
+                <form action="{{ route('customer.order_track_result') }}" method="GET" id="order_track_form">
                     <!-- Phone Field -->
                     <div class="tea-form-group">
                         <label for="phone" class="tea-form-label">
-                            <span>মোবাইল নম্বর <span class="text-danger">*</span></span>
+                            <span>মোবাইল নম্বর</span>
                             <span class="sub-en">Phone Number</span>
                         </label>
                         <div class="tea-input-wrapper">
                             <span class="tea-input-icon"><i class="fa-solid fa-phone"></i></span>
-                            <input type="number" 
+                            <input type="tel" 
                                    id="phone" 
                                    class="tea-track-input @error('phone') is-invalid @enderror" 
                                    name="phone" 
                                    value="{{ old('phone', request('phone')) }}" 
-                                   placeholder="০১XXXXXXXXX" 
-                                   required 
-                                   data-parsley-required-message="অর্ডারের মোবাইল নম্বর দিন">
+                                   placeholder="01XXXXXXXXX বা ০১XXXXXXXXX" 
+                                   inputmode="tel"
+                                   autocomplete="tel">
                         </div>
                         <span class="tea-field-hint">অর্ডার করার সময় যে মোবাইল নম্বর দিয়েছেন</span>
                         @error('phone')
@@ -312,7 +319,7 @@
                                    class="tea-track-input @error('invoice_id') is-invalid @enderror" 
                                    name="invoice_id" 
                                    value="{{ old('invoice_id', request('invoice_id')) }}" 
-                                   placeholder="যেমন: 75508">
+                                   placeholder="যেমন: 32634 বা #32634">
                         </div>
                         <span class="tea-field-hint">নির্দিষ্ট অর্ডার ট্র্যাক করতে ইনভয়েস নম্বর লিখুন</span>
                         @error('invoice_id')
@@ -362,6 +369,19 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('public/frontEnd/') }}/js/parsley.min.js"></script>
-<script src="{{ asset('public/frontEnd/') }}/js/form-validation.init.js"></script>
+<script>
+    document.getElementById('order_track_form').addEventListener('submit', function(e) {
+        var phone = document.getElementById('phone').value.trim();
+        var invoice = document.getElementById('invoice_id').value.trim();
+        if (!phone && !invoice) {
+            e.preventDefault();
+            if (typeof toastr !== 'undefined') {
+                toastr.warning('অনুগ্রহ করে মোবাইল নম্বর অথবা ইনভয়েস নম্বর লিখুন।', 'তথ্য দিন');
+            } else {
+                alert('অনুগ্রহ করে মোবাইল নম্বর অথবা ইনভয়েস নম্বর লিখুন।');
+            }
+            document.getElementById('phone').focus();
+        }
+    });
+</script>
 @endpush

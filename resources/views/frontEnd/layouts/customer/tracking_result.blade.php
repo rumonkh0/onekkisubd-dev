@@ -554,7 +554,7 @@
                 
                 $stepNumber = 1;
                 $progressWidth = '0%';
-                if (in_array($statusId, [6, 12])) {
+                if (in_array($statusId, [6, 12, 13])) {
                     $stepNumber = 4;
                     $progressWidth = '100%';
                 } elseif (in_array($statusId, [5, 11])) {
@@ -571,7 +571,10 @@
                 // Status badge class
                 $badgeClass = 'status-pending';
                 $badgeBengali = 'অর্ডার গৃহীত';
-                if (in_array($statusId, [6, 12])) {
+                if ($statusId == 13) {
+                    $badgeClass = 'status-delivered';
+                    $badgeBengali = 'আংশিক ডেলিভারি';
+                } elseif (in_array($statusId, [6, 12])) {
                     $badgeClass = 'status-delivered';
                     $badgeBengali = 'ডেলিভারি সম্পন্ন';
                 } elseif (in_array($statusId, [5, 11])) {
@@ -705,7 +708,7 @@
 
                     <!-- Payment & Financial Summary -->
                     @php
-                        $subtotal = $value->amount - $value->shipping_charge + $value->discount;
+                        $subtotal = ($value->amount ?? 0) - ($value->shipping_charge ?? 0) + ($value->discount ?? 0);
                     @endphp
                     <div class="tea-summary-box">
                         <div class="tea-box-title">
@@ -717,9 +720,9 @@
                         </div>
                         <div class="tea-pricing-row">
                             <span>ডেলিভারি চার্জ:</span>
-                            <strong>৳{{ number_format($value->shipping_charge) }}</strong>
+                            <strong>৳{{ number_format($value->shipping_charge ?? 0) }}</strong>
                         </div>
-                        @if($value->discount > 0)
+                        @if(($value->discount ?? 0) > 0)
                             <div class="tea-pricing-row" style="color: #047857;">
                                 <span>ডিসকাউন্ট:</span>
                                 <strong>-৳{{ number_format($value->discount) }}</strong>
@@ -727,7 +730,7 @@
                         @endif
                         <div class="tea-pricing-row total-row">
                             <span>সর্বমোট পরিশোধযোগ্য:</span>
-                            <span class="tea-total-amount">৳{{ number_format($value->amount) }}</span>
+                            <span class="tea-total-amount">৳{{ number_format($value->amount ?? 0) }}</span>
                         </div>
                     </div>
                 </div>

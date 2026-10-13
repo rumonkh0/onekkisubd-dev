@@ -638,44 +638,56 @@ class CustomerController extends Controller
 
     public function order_track_result(Request $request)
     {
+        $bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-        $phone = $request->phone;
-        $invoice_id = $request->invoice_id;
+        $phone = $request->phone ? str_replace($bengaliDigits, $englishDigits, trim((string)$request->phone)) : null;
+        $invoice_id = $request->invoice_id ? str_replace($bengaliDigits, $englishDigits, trim((string)$request->invoice_id)) : null;
 
-        if ($phone && !$invoice_id) {
-            $order = DB::table('orders')
-                ->join('shippings', 'orders.id', '=', 'shippings.order_id')
-                ->where(['shippings.phone' => $phone])
-                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
-                ->orderBy('orders.id', 'desc')
-                ->get();
-        } else if ($invoice_id && $phone) {
-            $order = DB::table('orders')
-                ->join('shippings', 'orders.id', '=', 'shippings.order_id')
-                ->where(['orders.invoice_id' => $invoice_id, 'shippings.phone' => $phone])
-                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
-                ->orderBy('orders.id', 'desc')
-                ->get();
-        } else if ($invoice_id && !$phone) {
-            $order = DB::table('orders')
-                ->join('shippings', 'orders.id', '=', 'shippings.order_id')
-                ->where(['orders.invoice_id' => $invoice_id])
-                ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
-                ->orderBy('orders.id', 'desc')
-                ->get();
-        } else {
-            $order = collect();
+        if ($invoice_id) {
+            $invoice_id = ltrim($invoice_id, '#');
         }
+
+        $phoneVariants = [];
+        if ($phone) {
+            $digitsOnly = preg_replace('/[^0-9]/', '', $phone);
+            if (str_starts_with($digitsOnly, '88') && strlen($digitsOnly) === 13) {
+                $digitsOnly = substr($digitsOnly, 2);
+            }
+            if (strlen($digitsOnly) === 10 && str_starts_with($digitsOnly, '1')) {
+                $digitsOnly = '0' . $digitsOnly;
+            }
+            $phoneVariants = array_unique(array_filter([
+                $phone,
+                $digitsOnly,
+                '+88' . $digitsOnly,
+                '88' . $digitsOnly,
+            ]));
+        }
+
+        $query = DB::table('orders')
+            ->leftJoin('shippings', 'orders.id', '=', 'shippings.order_id')
+            ->select('orders.*', 'shippings.name as shipping_name', 'shippings.phone as shipping_phone', 'shippings.address as shipping_address', 'shippings.area as shipping_area')
+            ->orderBy('orders.id', 'desc');
+
+        if (!empty($phoneVariants) && $invoice_id) {
+            $query->where('orders.invoice_id', $invoice_id)
+                  ->whereIn('shippings.phone', $phoneVariants);
+        } elseif (!empty($phoneVariants)) {
+            $query->whereIn('shippings.phone', $phoneVariants);
+        } elseif ($invoice_id) {
+            $query->where('orders.invoice_id', $invoice_id);
+        } else {
+            Toastr::warning('অনুগ্রহ করে মোবাইল নম্বর অথবা ইনভয়েস নম্বর লিখুন।', 'তথ্য দিন');
+            return redirect()->route('customer.order_track')->with('error', 'অনুগ্রহ করে মোবাইল নম্বর অথবা ইনভয়েস নম্বর লিখুন।');
+        }
+
+        $order = $query->get();
 
         if ($order->count() == 0) {
-
-            Toastr::error('message', 'Something Went Wrong !');
-            return redirect()->back();
+            Toastr::error('আপনার তথ্যের সাথে মিল রেখে কোনো অর্ডার পাওয়া যায়নি। সঠিক মোবাইল বা ইনভয়েস নম্বর দিয়ে আবার চেষ্টা করুন।', 'অর্ডার পাওয়া যায়নি');
+            return redirect()->route('customer.order_track')->with('error', 'আপনার তথ্যের সাথে মিল রেখে কোনো অর্ডার পাওয়া যায়নি। সঠিক মোবাইল বা ইনভয়েস নম্বর দিয়ে আবার চেষ্টা করুন।');
         }
-
-        //   return $order->count();
-
-
 
         return view('frontEnd.layouts.customer.tracking_result', compact('order'));
     }

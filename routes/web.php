@@ -129,6 +129,11 @@ Route::group(['prefix' => 'customer', 'namespace' => 'Frontend', 'middleware' =>
     Route::get('/order-track', [CustomerController::class, 'order_track'])->name('customer.order_track');
     Route::get('/order-track/result', [CustomerController::class, 'order_track_result'])->name('customer.order_track_result');
 });
+
+// Top-level order track shortcuts (without /customer/ prefix)
+Route::get('/order-track', [CustomerController::class, 'order_track']);
+Route::get('/order-track/result', [CustomerController::class, 'order_track_result']);
+
 // customer auth
 Route::group(['prefix' => 'customer', 'namespace' => 'Frontend', 'middleware' => ['customer', 'ipcheck', 'check_refer']], function () {
 
