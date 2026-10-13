@@ -1305,6 +1305,7 @@
     dataLayer.push({ ecommerce: null });
     dataLayer.push({
         event: "begin_checkout",
+        /*
         client_ip_address: "{{ request()->ip() }}",
         client_user_agent: navigator.userAgent,
         user_data: {
@@ -1312,6 +1313,7 @@
                 postal_code: "{{ old('postal_code') }}"
             }
         },
+        */
         ecommerce: {
             currency: "BDT",
             value: Number("<?php echo $subtotal; ?>"),
@@ -1333,6 +1335,7 @@
         }
     });
 
+    /*
     $('#postal_code').on('change blur', function() {
         var zip = $(this).val().trim();
         if (zip) {
@@ -1347,6 +1350,7 @@
             });
         }
     });
+    */
 </script>
 
 <script>

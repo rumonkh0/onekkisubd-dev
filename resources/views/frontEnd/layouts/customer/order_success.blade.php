@@ -809,9 +809,10 @@
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({ ecommerce: null });
 
-    // Push the purchase event to dataLayer with user data, IP, and user agent.
+    // Push the purchase event to dataLayer.
     dataLayer.push({
         event: "purchase",
+        /*
         client_ip_address: "{{ request()->ip() }}",
         client_user_agent: navigator.userAgent,
         user_data: {
@@ -824,6 +825,7 @@
                 country: "BD"
             }
         },
+        */
         ecommerce: {
             currency: "BDT",
             value: Number("<?php echo $order->amount ?>"),
@@ -850,9 +852,11 @@
                     Customer_Address: "{{ $order->shipping ? $order->shipping->address : '' }}",
                     Customer_Phone_Number: "{{ $order->shipping ? $order->shipping->phone : '' }}",
                     Customer_Country: 'Bangladesh',
+                    /*
                     Customer_Postal_Code: "{{ $postal_code }}",
                     Customer_IP: "{{ request()->ip() }}",
                     Customer_User_Agent: navigator.userAgent,
+                    */
                     Customer_Visitor_ID: "{{ $order->shipping ? $order->shipping->id : '' }}",
                     payment_method: "{{ $payments ? $payments->payment_method : '' }}",
                 }
