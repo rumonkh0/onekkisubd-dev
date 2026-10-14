@@ -15,6 +15,9 @@
     @stack('css')
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload primary Bengali fonts to prevent Cumulative Layout Shift (CLS) -->
+    <link rel="preload" href="{{ asset('public/frontEnd/fonts/solaimanlipi-normal.woff2') }}" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{{ asset('public/frontEnd/fonts/solaimanlipi-bold.woff2') }}" as="font" type="font/woff2" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Hind+Siliguri:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet" media="print" onload="this.media='all'" />
@@ -773,7 +776,7 @@
                 <li class="parent-category">
                     <a href="{{url('category/' . $scategory->slug)}}" class="menu-category-name" style="font-size: 20px">
                         <img class="rounded" src="{{asset($scategory->image)}}" alt="" class="side_cat_img"
-                            style="width:40px" />
+                            style="width:40px;height:40px;object-fit:cover;" loading="lazy" decoding="async" width="40" height="40" />
                         {{$scategory->name}}
                     </a>
                     @if($scategory->subcategories->count() > 0)
