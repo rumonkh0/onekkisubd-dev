@@ -15,9 +15,8 @@
     @stack('css')
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preload primary Bengali fonts to prevent Cumulative Layout Shift (CLS) -->
+    <!-- Preload primary Bengali font to prevent CLS without clogging bandwidth -->
     <link rel="preload" href="{{ asset('public/frontEnd/fonts/solaimanlipi-normal.woff2') }}" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="{{ asset('public/frontEnd/fonts/solaimanlipi-bold.woff2') }}" as="font" type="font/woff2" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Hind+Siliguri:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet" media="print" onload="this.media='all'" />
@@ -25,8 +24,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Hind+Siliguri:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     </noscript>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="{{ asset('public/frontEnd/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Font Awesome CSS loaded non-blocking instead of heavy 500KB JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
