@@ -542,17 +542,17 @@
 
         /* Remove button */
         .tea-cart-item-del {
-            width: 26px;
-            height: 26px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #d1d5db;
             background: #ffffff;
-            color: #9ca3af;
+            color: #4b5563;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             transition: all 0.2s ease;
             flex-shrink: 0;
             padding: 0;
@@ -1024,15 +1024,15 @@
                     </form>
 
                     <!-- Wishlist -->
-                    <a href="{{ route('wishlist') }}" aria-label="Wishlist"
-                        class="relative rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                    <a href="{{ route('wishlist') }}" aria-label="View Wishlist"
+                        class="relative flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path
                                 d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                         </svg>
                         <span
-                            class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white"
+                            class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-tea-800 px-1 text-[10px] font-semibold text-white"
                             id="wishlistCount">{{ Cart::instance('wishlist')->count() }}</span>
                     </a>
 
@@ -1045,8 +1045,8 @@
                             $rawSubtotal = str_replace(',', '', $rawSubtotal);
                             $headerSubtotal = (float) str_replace('.00', '', $rawSubtotal);
                         @endphp
-                        <a href="{{ route('customer.checkout') }}" aria-label="Cart"
-                            class="tea-cart-nav-trigger relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+                        <a href="{{ route('customer.checkout') }}" aria-label="View Shopping Cart"
+                            class="tea-cart-nav-trigger relative flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="8" cy="21" r="1" />
@@ -1054,7 +1054,7 @@
                                 <path
                                     d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                             </svg>
-                            <span class="tea-cart-nav-badge absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">
+                            <span class="tea-cart-nav-badge absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-tea-800 px-1 text-[10px] font-semibold text-white">
                                 {{ $headerCartCount }}
                             </span>
                         </a>
@@ -1181,8 +1181,8 @@
                     @endif
 
                     <!-- Mobile Menu Hamburger -->
-                    <button type="button" id="claude-mobile-toggle" aria-label="Toggle menu"
-                        class="rounded-lg p-2 text-tea-800 hover:bg-tea-50 xl:hidden">
+                    <button type="button" id="claude-mobile-toggle" aria-label="Toggle navigation menu"
+                        class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-tea-800 hover:bg-tea-50 xl:hidden">
                         <svg class="h-6 w-6" id="claude-hamburger-icon" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="4" x2="20" y1="12" y2="12" />
@@ -1256,9 +1256,9 @@
     </div>
     <!-- ==================== END NAVBAR (CLAUDE DESIGN) ==================== -->
 
-    <div id="content">
+    <main id="content" role="main">
         @yield('content')
-    </div>
+    </main>
     <!-- content end -->
     <!--    <footer>-->
     <!--    <div class="footer-top">-->
@@ -1674,7 +1674,7 @@
 
     <!-- Floating ScrollTop button -->
     <button id="claude-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top"
-        class="fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
+        class="fixed bottom-6 right-6 z-[90] flex h-12 w-12 min-h-[48px] min-w-[48px] items-center justify-center rounded-full bg-tea-700 text-white shadow-lg shadow-tea-950/30 transition-all hover:bg-tea-800 opacity-0 translate-y-4 pointer-events-none">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="m18 15-6-6-6 6" />
@@ -1988,7 +1988,7 @@
             background-color: white;
 
             & .modal-header {
-                background: #2db742;
+                background: #1e7e34;
                 padding: 16px 16px;
                 column-gap: 20px;
 
@@ -2000,7 +2000,7 @@
 
                 & p {
                     font-size: 12px;
-                    color: rgb(217, 235, 198);
+                    color: #ffffff;
                 }
 
                 & strong {
@@ -2013,7 +2013,7 @@
                 background-color: #ffffff;
 
                 & strong {
-                    color: #a5abb7;
+                    color: #374151;
                     font-size: 15px;
                     font-weight: 500;
                     padding: 0 3px;
@@ -2021,7 +2021,7 @@
 
                 & a {
                     background: #f5f7f9;
-                    border-left: 2px solid #2db742;
+                    border-left: 2px solid #1e7e34;
                     border-radius: 2px 4px 2px 4px;
                     -webkit-border-radius: 2px 4px 2px 4px;
                     -moz-border-radius: 2px 4px 2px 4px;
@@ -2035,13 +2035,13 @@
 
                     & div p {
                         & span:first-child {
-                            color: #363c47;
+                            color: #1f2937;
                             font-size: 14px;
                             line-height: 1.188em !important;
                         }
 
                         & span:last-child {
-                            color: #989b9f;
+                            color: #4b5563;
                             font-size: 11px;
                             line-height: 1.125em !important;
                             padding: 2px 0 0;
@@ -2110,7 +2110,7 @@
     </style>
 
     <!-- Button trigger modal -->
-    <button type="button" class="whats-app-btn">
+    <button type="button" class="whats-app-btn" aria-label="Chat on WhatsApp">
         <i class="fa-brands fa-whatsapp"></i>
         <i class="fa-solid fa-x"></i>
         <!-- <div class="wa__btn_popup_txt "><span>Need <br> Help?</span></div> -->
@@ -2143,7 +2143,7 @@
             </a>
         </div>
         <div class="modal-footer justify-content-center pb-3">
-            <a href=""><i color="#a9a9a9" class="fa-solid fa-bolt"></i></a>
+            <a href="https://wa.me/+88{{App\Models\Contact::first()->phone ?? ''}}" aria-label="Powered by WhatsApp" target="_blank" rel="noopener"><i style="color: #6b7280;" class="fa-solid fa-bolt"></i></a>
         </div>
     </div>
 

@@ -407,7 +407,7 @@
 
                             <!-- Image -->
                             <div class="relative aspect-square overflow-hidden bg-white p-3">
-                                <a href="{{ route('product', $prod->slug) }}" class="block h-full w-full">
+                                <a href="{{ route('product', $prod->slug) }}" class="block h-full w-full" tabindex="-1" aria-hidden="true">
                                     <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy" decoding="async"
                                         class="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105" />
                                 </a>
@@ -421,12 +421,12 @@
                                     </a>
                                 </h3>
                                 @if($bnName)
-                                    <p class="font-bengali text-center text-[12px] text-tea-900/70">{{ $bnName }}</p>
+                                    <p class="font-bengali text-center text-[12px] text-tea-900">{{ $bnName }}</p>
                                 @endif
 
                                 <div class="mt-2 flex items-center justify-center gap-2">
                                     @if($hasOldPrice)
-                                        <span class="text-[12px] text-tea-900/50 line-through">
+                                        <span class="text-[12px] text-tea-800/80 line-through">
                                             <span class="font-bengali">৳</span> {{ number_format($prod->old_price, 0) }}
                                         </span>
                                     @endif
@@ -438,6 +438,7 @@
                                 <div class="mt-auto pt-3">
                                     <div class="flex items-center gap-2">
                                         <button type="button" data-id="{{ $prod->id }}"
+                                            aria-label="Add {{ $engName }} to cart"
                                             class="cart_store flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-tea-700 px-3 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-tea-800">
                                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -449,8 +450,8 @@
                                             Add to Cart
                                         </button>
                                         <button type="button" onclick="addTowishlist('{{ $prod->id }}')"
-                                            aria-label="Add to wishlist"
-                                            class="flex h-9 w-9 items-center justify-center rounded-lg border border-tea-200 text-tea-800 transition-colors hover:border-red-200 hover:text-red-500">
+                                            aria-label="Add {{ $engName }} to wishlist"
+                                            class="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-tea-200 text-tea-800 transition-colors hover:border-red-200 hover:text-red-500">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path
@@ -551,7 +552,7 @@
                                 </span>
                                 <span class="text-[12px] leading-tight">
                                     <span class="block font-semibold text-tea-950">Fast Delivery</span>
-                                    <span class="text-tea-900/60">Across Bangladesh</span>
+                                    <span class="text-tea-800">Across Bangladesh</span>
                                 </span>
                             </li>
                             <li class="flex items-center gap-2.5">
@@ -565,7 +566,7 @@
                                 </span>
                                 <span class="text-[12px] leading-tight">
                                     <span class="block font-semibold text-tea-950">100% Organic</span>
-                                    <span class="text-tea-900/60">Pure & Natural</span>
+                                    <span class="text-tea-800">Pure & Natural</span>
                                 </span>
                             </li>
                             <li class="flex items-center gap-2.5">
@@ -579,7 +580,7 @@
                                 </span>
                                 <span class="text-[12px] leading-tight">
                                     <span class="block font-semibold text-tea-950">Trusted Quality</span>
-                                    <span class="text-tea-900/60">Loved by Tea Lovers</span>
+                                    <span class="text-tea-800">Loved by Tea Lovers</span>
                                 </span>
                             </li>
                         </ul>
@@ -598,15 +599,15 @@
 
                 <!-- Carousel -->
                 <div class="relative">
-                    <button type="button" onclick="scrollNewArrivals(-1)" aria-label="Previous"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
+                    <button type="button" onclick="scrollNewArrivals(-1)" aria-label="Previous slide"
+                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m15 18-6-6 6-6" />
                         </svg>
                     </button>
-                    <button type="button" onclick="scrollNewArrivals(1)" aria-label="Next"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
+                    <button type="button" onclick="scrollNewArrivals(1)" aria-label="Next slide"
+                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m9 18 6-6-6-6" />
@@ -669,8 +670,8 @@
 
                                     <!-- Wishlist Button -->
                                     <button type="button" onclick="addTowishlist('{{ $nprod->id }}')"
-                                        aria-label="Add to wishlist"
-                                        class="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-tea-100 bg-white/90 shadow-sm transition-colors hover:text-red-500">
+                                         aria-label="Add {{ $engName }} to wishlist"
+                                         class="absolute right-3 top-3 z-10 flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-full border border-tea-100 bg-white/90 shadow-sm transition-colors hover:text-red-500">
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path
@@ -680,7 +681,7 @@
 
                                     <!-- Image -->
                                     <div class="relative aspect-square overflow-hidden bg-white p-3">
-                                        <a href="{{ route('product', $nprod->slug) }}" class="block h-full w-full">
+                                        <a href="{{ route('product', $nprod->slug) }}" class="block h-full w-full" tabindex="-1" aria-hidden="true">
                                             <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy" decoding="async"
                                                 class="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105" />
                                         </a>
@@ -696,7 +697,7 @@
                                             </a>
                                         </h3>
                                         @if($bnName)
-                                            <p class="font-bengali text-center text-[12px] text-tea-900/70">{{ $bnName }}</p>
+                                            <p class="font-bengali text-center text-[12px] text-tea-900">{{ $bnName }}</p>
                                         @endif
 
                                         <!-- Rating -->
@@ -709,12 +710,12 @@
                                                         points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                                 </svg>
                                             @endfor
-                                            <span class="ml-1 text-[11px] text-tea-900/60">({{ rand(18, 42) }})</span>
+                                            <span class="ml-1 text-[11px] text-tea-800">({{ rand(18, 42) }})</span>
                                         </div>
 
                                         <div class="mt-2 flex items-center justify-center gap-2">
                                             @if($hasOldPrice)
-                                                <span class="text-[12px] text-tea-900/50 line-through">
+                                                <span class="text-[12px] text-tea-800/80 line-through">
                                                     <span class="font-bengali">৳</span> {{ number_format($nprod->old_price, 0) }}
                                                 </span>
                                             @endif
@@ -725,6 +726,7 @@
 
                                         <div class="mt-auto pt-3">
                                             <button type="button" data-id="{{ $nprod->id }}"
+                                                aria-label="Add {{ $engName }} to cart"
                                                 class="cart_store flex w-full items-center justify-center gap-1.5 rounded-lg bg-tea-700 px-3 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-tea-800">
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -779,7 +781,7 @@
                     </span>
                     <span class="leading-tight">
                         <span class="block text-[13px] font-semibold text-tea-950">100% Natural Ingredients</span>
-                        <span class="text-[11.5px] text-tea-900/60">Pure goodness in every cup</span>
+                        <span class="text-[11.5px] text-tea-800">Pure goodness in every cup</span>
                     </span>
                 </div>
 
@@ -798,7 +800,7 @@
                     </span>
                     <span class="leading-tight">
                         <span class="block text-[13px] font-semibold text-tea-950">Fast & Reliable Delivery</span>
-                        <span class="text-[11.5px] text-tea-900/60">All over Bangladesh</span>
+                        <span class="text-[11.5px] text-tea-800">All over Bangladesh</span>
                     </span>
                 </div>
 
@@ -815,7 +817,7 @@
                     </span>
                     <span class="leading-tight">
                         <span class="block text-[13px] font-semibold text-tea-950">Secure Payment</span>
-                        <span class="text-[11.5px] text-tea-900/60">Your information is safe with us</span>
+                        <span class="text-[11.5px] text-tea-800">Your information is safe with us</span>
                     </span>
                 </div>
 
@@ -833,7 +835,7 @@
                     </span>
                     <span class="leading-tight">
                         <span class="block text-[13px] font-semibold text-tea-950">Happy Customers</span>
-                        <span class="text-[11.5px] text-tea-900/60">Trusted by thousands</span>
+                        <span class="text-[11.5px] text-tea-800">Trusted by thousands</span>
                     </span>
                 </div>
             </div>
@@ -921,15 +923,14 @@
                 <!-- Heading -->
                 <div class="mx-auto max-w-2xl text-center">
                     <div class="flex items-center justify-center gap-4">
-                        <span class="h-px w-16 bg-gold-500/70"></span>
-                        <span class="text-[11px] font-semibold tracking-[0.35em] text-tea-900/70 uppercase">Explore
-                            our</span>
-                        <span class="h-px w-16 bg-gold-500/70"></span>
+                        <span class="h-px w-16 bg-tea-600/60"></span>
+                        <span class="text-[11px] font-semibold tracking-[0.35em] text-tea-900 uppercase">Explore our</span>
+                        <span class="h-px w-16 bg-tea-600/60"></span>
                     </div>
                     <h2 class="mt-2 font-serif text-5xl font-bold text-tea-950 sm:text-6xl">
-                        Top <span class="text-gold-500">Categories</span>
+                        Top <span class="text-[#854d0e]">Categories</span>
                     </h2>
-                    <p class="mt-3 text-[11px] font-medium tracking-[0.3em] text-tea-900/60 text-center uppercase">
+                    <p class="mt-3 text-[11px] font-medium tracking-[0.3em] text-tea-800 text-center uppercase">
                         Premium teas for a healthier, happier you
                     </p>
                     <div class="mt-3 flex items-center justify-center gap-2">
@@ -1082,7 +1083,7 @@
 
                         .openai-category-item small {
                             font-size: 11px;
-                            color: #8c968c;
+                            color: #4b5563;
                             margin-top: 3px;
                             font-weight: 500;
                         }
@@ -1265,14 +1266,14 @@
 
                 <!-- Carousel -->
                 <div class="relative">
-                    <button type="button" onclick="scrollBlog(-1)" aria-label="Previous"
+                    <button type="button" onclick="scrollBlog(-1)" aria-label="Previous story"
                         class="blog-nav-btn -left-3 lg:-left-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-xl transition-all hover:scale-105 hover:bg-tea-700 hover:text-white md:flex">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m15 18-6-6 6-6" />
                         </svg>
                     </button>
-                    <button type="button" onclick="scrollBlog(1)" aria-label="Next"
+                    <button type="button" onclick="scrollBlog(1)" aria-label="Next story"
                         class="blog-nav-btn -right-3 lg:-right-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-xl transition-all hover:scale-105 hover:bg-tea-700 hover:text-white md:flex">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -1325,7 +1326,7 @@
                             <article data-card
                                 class="group blog-story-card flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(20%-16px)]">
                                 <div class="relative aspect-[4/3] overflow-hidden">
-                                    <a href="{{ $bUrl }}" class="block h-full w-full">
+                                    <a href="{{ $bUrl }}" class="block h-full w-full" tabindex="-1" aria-hidden="true">
                                         <img src="{{ $blogImg }}" alt="{{ $bTitle }}" loading="lazy" decoding="async"
                                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                     </a>
@@ -1339,7 +1340,7 @@
                                         class="font-bengali line-clamp-3 text-[14px] font-bold leading-snug text-tea-950 transition-colors group-hover:text-tea-700">
                                         <a href="{{ $bUrl }}">{{ $bTitle }}</a>
                                     </h3>
-                                    <p class="font-bengali mt-2 line-clamp-4 text-[12.5px] leading-relaxed text-tea-900/70">
+                                    <p class="font-bengali mt-2 line-clamp-4 text-[12.5px] leading-relaxed text-tea-900">
                                         {{ $bExcerpt }}
                                     </p>
                                     <div class="mt-auto flex items-center justify-between pt-4">
@@ -1354,7 +1355,7 @@
                                             </span>
                                             <span class="leading-tight">
                                                 <span class="block text-[11.5px] font-semibold text-tea-950">Admin</span>
-                                                <span class="text-[10px] text-tea-900/50">{{ $bDate }}</span>
+                                                <span class="text-[10px] text-tea-800">{{ $bDate }}</span>
                                             </span>
                                         </div>
                                         <a href="{{ $bUrl }}"

@@ -5,15 +5,15 @@
     $rawSubtotal = str_replace(',', '', $rawSubtotal);
     $headerSubtotal = (float) str_replace('.00', '', $rawSubtotal);
 @endphp
-<a href="{{ route('customer.checkout') }}" aria-label="Cart"
-    class="tea-cart-nav-trigger relative block rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
+<a href="{{ route('customer.checkout') }}" aria-label="View Shopping Cart"
+    class="tea-cart-nav-trigger relative flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-tea-800 transition-colors hover:bg-tea-50">
     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <circle cx="8" cy="21" r="1" />
         <circle cx="19" cy="21" r="1" />
         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
     </svg>
-    <span class="tea-cart-nav-badge absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-semibold text-white">
+    <span class="tea-cart-nav-badge absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-tea-800 px-1 text-[10px] font-semibold text-white">
         {{ $headerCartCount }}
     </span>
 </a>
