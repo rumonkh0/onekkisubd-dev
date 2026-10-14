@@ -11,9 +11,11 @@
     <meta property="og:title" content="OnekkisuBD - Experience The Pure Taste Of Nature" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url('/') }}" />
-    <meta property="og:image" content="{{ asset('images/hero.jpg') }}" />
+    <meta property="og:image" content="{{ asset('images/hero.webp') }}" />
     <meta property="og:description"
         content="Handcrafted premium tea, collected from authentic sources to bring you a healthier and happier life." />
+    <!-- Preload LCP Hero Banner for immediate discovery -->
+    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" fetchpriority="high" />
 @endpush
 
 @section('content')
@@ -21,14 +23,14 @@
 
         @php
             $productImages = [
-                29 => 'images/products/black-tea.jpg',
-                11 => 'images/products/green-tea-jar.jpg',
-                10 => 'images/products/roselle-tea.jpg',
-                9 => 'images/products/green-tea-cup.jpg',
-                6 => 'images/products/gold-tea.jpg',
-                43 => 'images/products/roselle-pack.jpg',
-                38 => 'images/products/chamomile.jpg',
-                36 => 'images/products/tea-jar.jpg',
+                29 => 'images/products/black-tea.webp',
+                11 => 'images/products/green-tea-jar.webp',
+                10 => 'images/products/roselle-tea.webp',
+                9 => 'images/products/green-tea-cup.webp',
+                6 => 'images/products/gold-tea.webp',
+                43 => 'images/products/roselle-pack.webp',
+                38 => 'images/products/chamomile.webp',
+                36 => 'images/products/tea-jar.webp',
             ];
         @endphp
 
@@ -37,8 +39,15 @@
                  ========================================================================== -->
         <section id="home" class="relative overflow-hidden bg-tea-900">
             <!-- Background image -->
-            <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
-                class="absolute inset-0 h-full w-full object-cover object-[70%_center]" />
+            <picture>
+                <source srcset="{{ asset('images/hero.webp') }}" type="image/webp">
+                <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
+                    class="absolute inset-0 h-full w-full object-cover object-[70%_center]"
+                    fetchpriority="high"
+                    decoding="async"
+                    width="1376"
+                    height="768" />
+            </picture>
             <!-- Overlays for readability -->
             <div class="absolute inset-0 bg-[#f4f6ec]/80 lg:hidden"></div>
             <div
@@ -940,42 +949,42 @@
                         $categoriesList = [
                             [
                                 'name' => 'Fruit & Flower Tea',
-                                'image' => asset('images/categories/cat-1.jpg'),
+                                'image' => asset('images/categories/cat-1.webp'),
                                 'tone' => 'pink',
                                 'slug' => 'fruit-&-flower-(চা)',
                                 'icon' => 'flower',
                             ],
                             [
                                 'name' => 'Black Tea',
-                                'image' => asset('images/categories/cat-2.jpg'),
+                                'image' => asset('images/categories/cat-2.webp'),
                                 'tone' => 'sand',
                                 'slug' => 'black-tea(দুধ-চালাল-চা)',
                                 'icon' => 'coffee',
                             ],
                             [
                                 'name' => 'Green Tea',
-                                'image' => asset('images/categories/cat-3.jpg'),
+                                'image' => asset('images/categories/cat-3.webp'),
                                 'tone' => 'sage',
                                 'slug' => 'green-tea-(গ্রিন-টি-)',
                                 'icon' => 'leaf',
                             ],
                             [
                                 'name' => 'Roselle Tea',
-                                'image' => asset('images/categories/cat-4.jpg'),
+                                'image' => asset('images/categories/cat-4.webp'),
                                 'tone' => 'rose',
                                 'slug' => 'roselle-tea(চাশরবত)',
                                 'icon' => 'flower',
                             ],
                             [
                                 'name' => 'Masala',
-                                'image' => asset('images/categories/cat-5.jpg'),
+                                'image' => asset('images/categories/cat-5.webp'),
                                 'tone' => 'ochre',
                                 'slug' => 'masala(মসলা)',
                                 'icon' => 'leaf',
                             ],
                             [
                                 'name' => 'Tea Jar & Accessories',
-                                'image' => asset('images/categories/cat-6.jpg'),
+                                'image' => asset('images/categories/cat-6.webp'),
                                 'tone' => 'olive',
                                 'slug' => 'tea-jar-500ml-(সেল🔥)',
                                 'icon' => 'coffee',
@@ -1300,7 +1309,7 @@
                             @php
                                 $tag = $blogCategoryTags[$idx % count($blogCategoryTags)];
                                 $blogImgNum = ($idx % 5) + 1;
-                                $blogImg = asset('images/blogs/blog-' . $blogImgNum . '.jpg');
+                                $blogImg = asset('images/blogs/blog-' . $blogImgNum . '.webp');
                                 $bTitle = !empty($b->b_title) ? $b->b_title : 'রোজেলা চায়ের স্বাস্থ্য উপকারিতা (Health Benefits of Hibiscus Roselle)';
                                 $bExcerpt = !empty($b->b_short_des)
                                     ? Str::limit(strip_tags($b->b_short_des), 110)

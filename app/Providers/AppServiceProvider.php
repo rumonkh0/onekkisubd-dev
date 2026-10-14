@@ -42,7 +42,9 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         try {
-            $shurjopay = PaymentGateway::where(['status' => 1, 'type' => 'shurjopay'])->first();
+            $shurjopay = \Illuminate\Support\Facades\Cache::remember('global_shurjopay', 3600, function () {
+                return PaymentGateway::where(['status' => 1, 'type' => 'shurjopay'])->first();
+            });
             if ($shurjopay) {
                 Config::set(['shurjopay.apiCredentials.username' => $shurjopay->username]);
                 Config::set(['shurjopay.apiCredentials.password' => $shurjopay->password]);
@@ -51,49 +53,80 @@ class AppServiceProvider extends ServiceProvider
                 Config::set(['shurjopay.apiCredentials.cancel_url' => $shurjopay->return_url]);
                 Config::set(['shurjopay.apiCredentials.base_url' => $shurjopay->base_url]);
             }
-            $generalsetting = GeneralSetting::where('status', 1)->limit(1)->first();
+
+            $generalsetting = \Illuminate\Support\Facades\Cache::remember('global_generalsetting', 3600, function () {
+                return GeneralSetting::where('status', 1)->limit(1)->first();
+            });
             view()->share('generalsetting', $generalsetting);
 
-            $sidecategories = Category::where('parent_id', '=', '0')->where('status', 1)->select('id', 'name', 'slug', 'status', 'image')->get();
+            $sidecategories = \Illuminate\Support\Facades\Cache::remember('global_sidecategories', 3600, function () {
+                return Category::where('parent_id', '=', '0')->where('status', 1)->select('id', 'name', 'slug', 'status', 'image')->get();
+            });
             view()->share('sidecategories', $sidecategories);
 
-            $menucategories = Category::where('status', 1)->select('id', 'name', 'slug', 'status', 'image')->get();
+            $menucategories = \Illuminate\Support\Facades\Cache::remember('global_menucategories', 3600, function () {
+                return Category::where('status', 1)->select('id', 'name', 'slug', 'status', 'image')->get();
+            });
             view()->share('menucategories', $menucategories);
 
-            $contact = Contact::where('status', 1)->first();
+            $contact = \Illuminate\Support\Facades\Cache::remember('global_contact', 3600, function () {
+                return Contact::where('status', 1)->first();
+            });
             view()->share('contact', $contact);
 
-            $socialicons = SocialMedia::where('status', 1)->get();
+            $socialicons = \Illuminate\Support\Facades\Cache::remember('global_socialicons', 3600, function () {
+                return SocialMedia::where('status', 1)->get();
+            });
             view()->share('socialicons', $socialicons);
 
-            $pages = CreatePage::where('status', 1)->limit(3)->get();
+            $pages = \Illuminate\Support\Facades\Cache::remember('global_pages_top', 3600, function () {
+                return CreatePage::where('status', 1)->limit(3)->get();
+            });
             view()->share('pages', $pages);
 
-            $pagesright = CreatePage::where('status', 1)->skip(3)->limit(10)->get();
+            $pagesright = \Illuminate\Support\Facades\Cache::remember('global_pages_right', 3600, function () {
+                return CreatePage::where('status', 1)->skip(3)->limit(10)->get();
+            });
             view()->share('pagesright', $pagesright);
 
-            $cmnmenu = CreatePage::where('status', 1)->get();
+            $cmnmenu = \Illuminate\Support\Facades\Cache::remember('global_cmnmenu', 3600, function () {
+                return CreatePage::where('status', 1)->get();
+            });
             view()->share('cmnmenu', $cmnmenu);
 
-            $brands = Brand::where('status', 1)->get();
+            $brands = \Illuminate\Support\Facades\Cache::remember('global_brands', 3600, function () {
+                return Brand::where('status', 1)->get();
+            });
             view()->share('brands', $brands);
 
-            $neworder = Order::where('order_status', '1')->count();
+            $neworder = \Illuminate\Support\Facades\Cache::remember('global_neworder_count', 120, function () {
+                return Order::where('order_status', '1')->count();
+            });
             view()->share('neworder', $neworder);
 
-            $pendingorder = Order::where('order_status', '1')->latest()->limit(9)->get();
+            $pendingorder = \Illuminate\Support\Facades\Cache::remember('global_pendingorders', 120, function () {
+                return Order::where('order_status', '1')->latest()->limit(9)->get();
+            });
             view()->share('pendingorder', $pendingorder);
 
-            $orderstatus = OrderStatus::get();
+            $orderstatus = \Illuminate\Support\Facades\Cache::remember('global_orderstatus', 3600, function () {
+                return OrderStatus::get();
+            });
             view()->share('orderstatus', $orderstatus);
 
-            $pixels = EcomPixel::where('status', 1)->get();
+            $pixels = \Illuminate\Support\Facades\Cache::remember('global_pixels', 3600, function () {
+                return EcomPixel::where('status', 1)->get();
+            });
             view()->share('pixels', $pixels);
 
-            $gtm_code = GoogleTagManager::where('status', 1)->get();
+            $gtm_code = \Illuminate\Support\Facades\Cache::remember('global_gtm_code', 3600, function () {
+                return GoogleTagManager::where('status', 1)->get();
+            });
             view()->share('gtm_code', $gtm_code);
 
-            $shippingcharge = ShippingCharge::where('status', 1)->get();
+            $shippingcharge = \Illuminate\Support\Facades\Cache::remember('global_shippingcharge', 3600, function () {
+                return ShippingCharge::where('status', 1)->get();
+            });
             view()->share('shippingcharge', $shippingcharge);
         } catch (\Throwable $e) {
             // Database not connected or tables not yet migrated
