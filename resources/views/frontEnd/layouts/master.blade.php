@@ -16,8 +16,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Hind+Siliguri:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Hind+Siliguri:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    </noscript>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -48,8 +51,12 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></noscript>
 
-    <link rel="stylesheet" href="{{asset('public/frontEnd/css/mobile-menu.css')}}" />
-    <link rel="stylesheet" href="{{asset('public/frontEnd/css/wsit-menu.css')}}" />
+    <link rel="stylesheet" href="{{asset('public/frontEnd/css/mobile-menu.css')}}" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="{{asset('public/frontEnd/css/mobile-menu.css')}}" /></noscript>
+
+    <link rel="stylesheet" href="{{asset('public/frontEnd/css/wsit-menu.css')}}" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="{{asset('public/frontEnd/css/wsit-menu.css')}}" /></noscript>
+
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/style.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/responsive.css')}}" />
     <link rel="stylesheet" href="{{asset('public/frontEnd/css/theme.css')}}?v={{ @filemtime(public_path('frontEnd/css/theme.css')) ?: '1.0' }}" />
@@ -228,37 +235,30 @@
         <!-- End Facebook Pixel Code -->
     @endforeach
 
-    @if(count($gtm_code) > 0)
-        @foreach($gtm_code as $gtm)
-            <!-- Google Tag Manager -->
-            <script>
-                window.addEventListener('load', function() {
-                    (function (w, d, s, l, i) {
-                        w[l] = w[l] || []; w[l].push({
-                            'gtm.start': new Date().getTime(), event: 'gtm.js'
-                        }); var f = d.getElementsByTagName(s)[0],
-                            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-                    })(window, document, 'script', 'dataLayer', 'GTM-{{ $gtm->code }}');
-                });
-            </script>
-            <!-- End Google Tag Manager -->
-        @endforeach
-    @else
-        <!-- Google Tag Manager -->
-        <script>
-            window.addEventListener('load', function() {
+    @php
+        $activeGtm = (isset($gtm_code) && count($gtm_code) > 0) ? $gtm_code->first()->code : 'NVND3N5J';
+    @endphp
+    <!-- Optimized Google Tag Manager: Loads on first interaction or fallback timer to prevent mobile thread locking -->
+    <script>
+        (function() {
+            var gtmLoaded = false;
+            function triggerGtm() {
+                if (gtmLoaded) return;
+                gtmLoaded = true;
                 (function (w, d, s, l, i) {
                     w[l] = w[l] || []; w[l].push({
                         'gtm.start': new Date().getTime(), event: 'gtm.js'
                     }); var f = d.getElementsByTagName(s)[0],
                         j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                             'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-                })(window, document, 'script', 'dataLayer', 'GTM-NVND3N5J');
+                })(window, document, 'script', 'dataLayer', 'GTM-{{ $activeGtm }}');
+            }
+            ['scroll', 'touchstart', 'mousemove', 'click', 'keydown'].forEach(function(evt) {
+                window.addEventListener(evt, triggerGtm, { once: true, passive: true });
             });
-        </script>
-        <!-- End Google Tag Manager -->
-    @endif
+            setTimeout(triggerGtm, 3500);
+        })();
+    </script>
 
     <style>
         @media only screen and (min-width: 320px) and (max-width: 767px) {
@@ -1342,7 +1342,7 @@
 
     <!-- ==================== LUXURY FOOTER (OPENAI DESIGN) ==================== -->
     <footer id="contact" class="claude-theme site-footer relative overflow-hidden"
-        style="background-image: linear-gradient(90deg, rgba(9, 31, 25, 0.9) 0%, rgba(9, 31, 25, 0.92) 68%, rgba(9, 31, 25, 0.42) 100%), url('{{ asset('images/footer-bg.jpg') }}'); background-position: right center !important;">
+        style="background-image: linear-gradient(90deg, rgba(9, 31, 25, 0.9) 0%, rgba(9, 31, 25, 0.92) 68%, rgba(9, 31, 25, 0.42) 100%), url('{{ asset('images/footer-bg.webp') }}'); background-position: right center !important;">
         <!-- Decorative leaves (retained as requested) -->
         <svg viewBox="0 0 64 64"
             class="pointer-events-none absolute right-[26%] top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow"

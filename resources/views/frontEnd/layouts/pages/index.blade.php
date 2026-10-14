@@ -14,8 +14,9 @@
     <meta property="og:image" content="{{ asset('images/hero.webp') }}" />
     <meta property="og:description"
         content="Handcrafted premium tea, collected from authentic sources to bring you a healthier and happier life." />
-    <!-- Preload LCP Hero Banner for immediate discovery -->
-    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" fetchpriority="high" />
+    <!-- Preload LCP Hero Banner for immediate discovery (Mobile & Desktop) -->
+    <link rel="preload" as="image" href="{{ asset('images/hero-mobile.webp') }}" type="image/webp" media="(max-width: 640px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" media="(min-width: 641px)" fetchpriority="high" />
 @endpush
 
 @section('content')
@@ -40,6 +41,7 @@
         <section id="home" class="relative overflow-hidden bg-tea-900">
             <!-- Background image -->
             <picture>
+                <source media="(max-width: 640px)" srcset="{{ asset('images/hero-mobile.webp') }}" type="image/webp">
                 <source srcset="{{ asset('images/hero.webp') }}" type="image/webp">
                 <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
                     class="absolute inset-0 h-full w-full object-cover object-[70%_center]"
@@ -55,9 +57,9 @@
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-tea-950/30 via-transparent to-transparent"></div>
 
-            <!-- Floating leaves -->
+            <!-- Floating leaves (desktop only to save mobile CPU/battery) -->
             <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -left-4 top-6 h-20 w-20 rotate-[160deg] opacity-80 animate-float-slow"
+                class="pointer-events-none absolute -left-4 top-6 hidden h-20 w-20 rotate-[160deg] opacity-80 animate-float-slow lg:block"
                 fill="none" aria-hidden="true">
                 <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad1)" />
                 <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -98,7 +100,7 @@
             </svg>
 
             <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -bottom-3 left-[30%] h-16 w-16 rotate-45 opacity-70 animate-float"
+                class="pointer-events-none absolute -bottom-3 left-[30%] hidden h-16 w-16 rotate-45 opacity-70 animate-float lg:block"
                 style="animation-delay: 1.5s;" fill="none" aria-hidden="true">
                 <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad4)" />
                 <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -111,7 +113,7 @@
             </svg>
 
             <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -right-4 bottom-10 h-24 w-24 rotate-[110deg] opacity-80 animate-float-slow"
+                class="pointer-events-none absolute -right-4 bottom-10 hidden h-24 w-24 rotate-[110deg] opacity-80 animate-float-slow lg:block"
                 style="animation-delay: 2s;" fill="none" aria-hidden="true">
                 <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad5)" />
                 <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -406,7 +408,7 @@
                             <!-- Image -->
                             <div class="relative aspect-square overflow-hidden bg-white p-3">
                                 <a href="{{ route('product', $prod->slug) }}" class="block h-full w-full">
-                                    <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy"
+                                    <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy" decoding="async"
                                         class="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105" />
                                 </a>
                             </div>
@@ -679,7 +681,7 @@
                                     <!-- Image -->
                                     <div class="relative aspect-square overflow-hidden bg-white p-3">
                                         <a href="{{ route('product', $nprod->slug) }}" class="block h-full w-full">
-                                            <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy"
+                                            <img src="{{ $cardImg }}" alt="{{ $engName }}" loading="lazy" decoding="async"
                                                 class="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105" />
                                         </a>
                                     </div>
@@ -1110,7 +1112,7 @@
                         @endphp
                         <a href="{{ $catUrl }}" class="group openai-category-item">
                             <div class="openai-category-photo">
-                                <img src="{{ $cat['image'] }}" alt="{{ $cat['name'] }}" loading="lazy" />
+                                <img src="{{ $cat['image'] }}" alt="{{ $cat['name'] }}" loading="lazy" decoding="async" />
                             </div>
 
                             <!-- Icon Badge -->
@@ -1324,7 +1326,7 @@
                                 class="group blog-story-card flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] xl:w-[calc(20%-16px)]">
                                 <div class="relative aspect-[4/3] overflow-hidden">
                                     <a href="{{ $bUrl }}" class="block h-full w-full">
-                                        <img src="{{ $blogImg }}" alt="{{ $bTitle }}" loading="lazy"
+                                        <img src="{{ $blogImg }}" alt="{{ $bTitle }}" loading="lazy" decoding="async"
                                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                     </a>
                                     <span
