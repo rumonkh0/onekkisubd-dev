@@ -1918,32 +1918,43 @@
             margin-bottom: 50px;
             z-index: 1000;
             cursor: pointer;
-            background-color: transparent;
-            background: rgb(45, 183, 66);
+            background: #25D366;
             height: 56px;
             width: 56px;
             border-radius: 50%;
-            transition: all .4s linear !important;
+            border: none;
+            outline: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+            padding: 0;
+        }
 
-            & svg {
-                color: white;
-                width: 36px;
-                height: 36px;
-            }
+        .whats-app-btn:hover {
+            transform: scale(1.08);
+            background: #20ba5a;
+        }
 
-            & .fa-whatsapp {
-                transition: all .4s linear !important;
-                position: absolute;
-                top: calc(50% - 18px);
-                left: calc(50% - 18px);
-            }
+        .whats-app-btn .wa-icon-chat,
+        .whats-app-btn .wa-icon-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+        }
 
-            & .fa-x {
-                transition: all .4s linear !important;
-                position: absolute;
-                width: 0px;
-                height: 0px;
-            }
+        .whats-app-btn .wa-icon-close {
+            display: none;
+        }
+
+        .whats-app-btn.is-open .wa-icon-chat {
+            display: none !important;
+        }
+
+        .whats-app-btn.is-open .wa-icon-close {
+            display: flex !important;
         }
 
         /* .all-categories {
@@ -2111,9 +2122,17 @@
 
     <!-- Button trigger modal -->
     <button type="button" class="whats-app-btn" aria-label="Chat on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-        <i class="fa-solid fa-x"></i>
-        <!-- <div class="wa__btn_popup_txt "><span>Need <br> Help?</span></div> -->
+        <span class="wa-icon-holder wa-icon-chat">
+            <svg viewBox="0 0 478.165 478.165" width="30" height="30" fill="#ffffff" aria-hidden="true">
+                <path d="M478.165 232.946c0 128.567-105.057 232.966-234.679 232.966-41.102 0-79.814-10.599-113.445-28.969L0 478.165l42.437-125.04c-21.438-35.065-33.77-76.207-33.77-120.159C8.667 104.34 113.763 0 243.485 0c129.623 0 234.68 104.34 234.68 232.946zM243.485 37.098c-108.802 0-197.422 87.803-197.422 195.868 0 42.915 13.986 82.603 37.576 114.879l-24.586 72.542 75.849-23.968c31.121 20.481 68.457 32.296 108.583 32.296 108.723 0 197.323-87.843 197.323-195.908 0-107.886-88.6-195.709-197.323-195.709zM361.931 286.62c-1.395-2.331-5.22-3.746-10.898-6.814-5.917-2.849-34.089-16.497-39.508-18.37-5.16-1.913-8.986-2.849-12.811 2.829-4.005 5.638-14.903 18.629-18.23 22.354-3.546 3.785-6.854 4.264-12.552 1.435-5.618-2.809-24.267-8.866-46.203-28.391-17.055-15.042-28.67-33.711-31.997-39.508-3.427-5.758-.398-8.826 2.471-11.635 2.69-2.59 5.778-6.734 8.627-10.041 2.969-3.287 3.905-5.638 5.798-9.424 1.913-3.905.936-7.192-.478-10.141-1.415-2.849-13.01-30.881-17.752-42.337-4.841-11.416-9.543-9.523-12.871-9.523-3.467 0-7.212-.478-11.117-.478-3.785 0-10.041 1.395-15.381 7.192-5.2 5.658-20.123 19.465-20.123 47.597 0 28.052 20.601 55.308 23.55 59.053 2.869 3.785 39.747 63.197 98.303 86.07 58.476 22.872 58.476 15.321 69.115 14.365 10.38-.956 34.069-13.867 38.811-27.096 4.66-13.45 4.66-24.766 3.246-27.137z"/>
+            </svg>
+        </span>
+        <span class="wa-icon-holder wa-icon-close">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </span>
     </button>
 
     <!-- Modal -->
@@ -2152,43 +2171,16 @@
     <div id="page-overlay"></div>
 
     <script>
-        var btn = document.querySelector('.whats-app-btn');
-        if (btn) {
-            btn.addEventListener('click', function () {
+        var waBtn = document.querySelector('.whats-app-btn');
+        if (waBtn) {
+            waBtn.addEventListener('click', function () {
                 var popup = document.querySelector('.wa__popup_chat_box');
-                var whatsapp = document.querySelector('.fa-whatsapp');
                 var need_help = document.querySelector('.wa__btn_popup_txt');
-                var fa_x = document.querySelector('.fa-x');
-                if (popup && whatsapp) {
+                if (popup) {
                     popup.classList.toggle('wa__active');
-                    need_help.classList.toggle('popup_txt_hide');
-
-                    if (popup.classList.contains('wa__active')) {
-                        // Add rotation animation
-                        whatsapp.style.transform = 'rotate(360deg)'; // One full rotation
-                        whatsapp.style.width = '0px';
-                        whatsapp.style.height = '0px';
-                        whatsapp.style.top = '50%';
-                        whatsapp.style.left = '50%';
-
-                        fa_x.style.transform = 'rotate(-360deg)'; // One full rotation
-                        fa_x.style.width = '26px';
-                        fa_x.style.height = '26px';
-                        fa_x.style.top = 'calc(50% - 13px)';
-                        fa_x.style.left = 'calc(50% - 13px)';
-                    }
-                    else {
-                        whatsapp.style.transform = 'rotate(-360deg)'; // One full rotation
-                        whatsapp.style.width = '36px';
-                        whatsapp.style.height = '36px';
-                        whatsapp.style.top = 'calc(50% - 18px)';
-                        whatsapp.style.left = 'calc(50% - 18px)';
-
-                        fa_x.style.transform = 'rotate(360deg)'; // One full rotation
-                        fa_x.style.width = '0px';
-                        fa_x.style.height = '0px';
-                        fa_x.style.top = '50%';
-                        fa_x.style.left = '50%';
+                    waBtn.classList.toggle('is-open');
+                    if (need_help) {
+                        need_help.classList.toggle('popup_txt_hide');
                     }
                 }
             });
