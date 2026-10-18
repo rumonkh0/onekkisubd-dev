@@ -1862,6 +1862,18 @@
                                 </svg>
                                 <span>01850945080</span>
                             </a>
+                            <a href="https://www.facebook.com/share/1Dp6Zf4dws/" target="_blank" rel="noopener noreferrer" class="tea-contact-link-row">
+                                <i class="fab fa-facebook-f" style="width: 18px; text-align: center; color: #1877f2;"></i>
+                                <span>Facebook Page</span>
+                            </a>
+                            <a href="https://www.instagram.com/onekkisubd?rpxt=MTdjMGhzamowazY0eg==" target="_blank" rel="noopener noreferrer" class="tea-contact-link-row">
+                                <i class="fab fa-instagram" style="width: 18px; text-align: center; color: #e1306c;"></i>
+                                <span>Instagram Profile</span>
+                            </a>
+                            <a href="https://www.youtube.com/@onekkisuponno" target="_blank" rel="noopener noreferrer" class="tea-contact-link-row">
+                                <i class="fab fa-youtube" style="width: 18px; text-align: center; color: #ef4444;"></i>
+                                <span>YouTube Channel</span>
+                            </a>
                         </div>
                     </div>
                     <div class="tea-stamp-help">Good Tea Good Life!</div>

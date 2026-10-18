@@ -842,6 +842,35 @@
             </div>
         </div>
 
+        <!-- Social Channels Connect Bar -->
+        <div class="tea-social-connect-card mb-4" style="background:#ffffff; border:1px solid #edf2ec; border-radius:18px; padding:22px 28px; box-shadow:0 4px 20px rgba(15, 40, 26, 0.03); margin-bottom:36px;">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <div style="width:48px; height:48px; border-radius:50%; background:#eaf4eb; border:1.5px solid #d5e8d5; color:#275a38; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin:0 0 3px; font-family:'Playfair Display', Georgia, serif; font-size:18px; font-weight:700; color:#112a1d;">Follow Our Official Channels</h4>
+                        <p style="margin:0; font-size:13.5px; color:#6b7280;">Stay connected on social media for new organic products, brewing guides, and exclusive offers.</p>
+                    </div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+                    <a href="https://www.facebook.com/share/1Dp6Zf4dws/" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:9999px; background:#f0f4ff; color:#1877f2; border:1px solid #d0e0fc; font-size:13.5px; font-weight:600; text-decoration:none; transition:all 0.2s ease;">
+                        <i class="fa-brands fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/onekkisubd?rpxt=MTdjMGhzamowazY0eg==" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:9999px; background:#fdf2f4; color:#e1306c; border:1px solid #f9d1d9; font-size:13.5px; font-weight:600; text-decoration:none; transition:all 0.2s ease;">
+                        <i class="fa-brands fa-instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://www.youtube.com/@onekkisuponno" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:9999px; background:#fef2f2; color:#ef4444; border:1px solid #fecaca; font-size:13.5px; font-weight:600; text-decoration:none; transition:all 0.2s ease;">
+                        <i class="fa-brands fa-youtube"></i>
+                        <span>YouTube</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Contact Form Card -->
         <div class="tea-form-card">
             <div class="tea-form-header">

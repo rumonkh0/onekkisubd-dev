@@ -63,9 +63,10 @@
             <tr>
                 <td>
                     <ul style="padding:0 !important">                       
-        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #4551F7; border-radius: 50px;float:left !important"><a href="https://www.facebook.com/websolutionitcom"><img src="https://giftshopbd.websolutionit.com/public/frontEnd/images/facebook-f-brands.png"  style="margin-top: 8px;height: 25px;" /></a></li>
-        				                    
-        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #4DBC60; border-radius: 50px;float:left !important"><a href="https://wa.link/zw696d"><img src="https://giftshopbd.websolutionit.com/public/frontEnd/images/whatsapp-brands.png" style="margin-top: 8px;height: 25px;" /></a></li>
+        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #1877F2; border-radius: 50px;float:left !important"><a href="https://www.facebook.com/share/1Dp6Zf4dws/" target="_blank"><img src="https://giftshopbd.websolutionit.com/public/frontEnd/images/facebook-f-brands.png" style="margin-top: 8px;height: 25px;" alt="Facebook" /></a></li>
+        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #E1306C; border-radius: 50px;float:left !important"><a href="https://www.instagram.com/onekkisubd?rpxt=MTdjMGhzamowazY0eg==" target="_blank" style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;">IG</a></li>
+        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #FF0000; border-radius: 50px;float:left !important"><a href="https://www.youtube.com/@onekkisuponno" target="_blank" style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;">YT</a></li>
+        				<li style="list-style: none; margin: 0 5px; height: 40px; width: 40px; text-align: center; line-height: 40px; background: #4DBC60; border-radius: 50px;float:left !important"><a href="https://wa.link/zw696d"><img src="https://giftshopbd.websolutionit.com/public/frontEnd/images/whatsapp-brands.png" style="margin-top: 8px;height: 25px;" alt="WhatsApp" /></a></li>
         			</ul>
     			</td>
 			</tr>

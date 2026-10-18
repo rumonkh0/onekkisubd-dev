@@ -42,6 +42,9 @@ use App\Http\Controllers\WishlistController;
 
 Route::group(['prefix' => 'admin'], function () {
     Auth::routes();
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
 });
 
 Route::get('/cc', function () {
