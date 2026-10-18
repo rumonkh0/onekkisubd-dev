@@ -40,11 +40,15 @@ use App\Http\Controllers\Admin\MapController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\WishlistController;
 
-Route::group(['prefix' => 'admin'], function () {
-    Auth::routes();
-    Route::get('/', function () {
-        return redirect()->route('dashboard');
-    });
+// Admin Authentication Routes
+Route::get('admin/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('admin/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::post('admin/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+Route::get('admin', function () {
+    return redirect()->route('dashboard');
+});
+Route::get('admin/admin/login', function () {
+    return redirect()->route('login');
 });
 
 Route::get('/cc', function () {
