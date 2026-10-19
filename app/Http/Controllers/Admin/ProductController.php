@@ -142,8 +142,8 @@ class ProductController extends Controller
                     $variant->product_id = $product->id;
                     $variant->color_id = $vr['mediaID'];
                     $variant->color = $vr['color'];
-                    $variantImg = $vr['image'];
-                    if ($variantImg) {
+                    $variantImg = $vr['image'] ?? null;
+                    if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                         $imgnamev = $time . $variantImg->getClientOriginalName();
                         $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
                         $imguploadPathv = ('public/images/variant/');
@@ -435,8 +435,8 @@ class ProductController extends Controller
                         $variant->product_id = $product->id;
                         $variant->color_id = $vr['mediaID'];
                         $variant->color = $vr['color'];
-                        $variantImg = $vr['image'];
-                        if ($variantImg != 'undefined') {
+                        $variantImg = $vr['image'] ?? null;
+                        if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                             $imgnamev = $time . $variantImg->getClientOriginalName();
                             $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
                             $imguploadPathv = ('public/images/variant/');
@@ -450,8 +450,8 @@ class ProductController extends Controller
                         $variant->product_id = $product->id;
                         $variant->color_id = $vr['mediaID'];
                         $variant->color = $vr['color'];
-                        $variantImg = $vr['image'];
-                        if ($variantImg) {
+                        $variantImg = $vr['image'] ?? null;
+                        if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                             $imgnamev = $time . $variantImg->getClientOriginalName();
                             $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
                             $imguploadPathv = ('public/images/variant/');

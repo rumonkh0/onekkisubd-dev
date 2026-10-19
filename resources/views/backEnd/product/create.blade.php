@@ -32,7 +32,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <form method="POST" class="row" data-parsley-validate="" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('products.store') }}" onsubmit="return false;" class="row" data-parsley-validate="" enctype="multipart/form-data">
                         @csrf
                         <div class="col-sm-6">
                             <div class="form-group mb-3">
@@ -584,13 +584,8 @@
                     sizeCount++;
                 });
 
-                if (variant == 0) {
-                    toastr.error('Product Color Should Not Be Empty');
-                    return;
-                }
-
-                if (size == 0) {
-                    toastr.error('Size / Weight Should Not Be Empty');
+                if (variant.length === 0 && size.length === 0) {
+                    toastr.error('Please add at least one Color or Size / Weight variant');
                     return;
                 }
 
@@ -611,14 +606,16 @@
             formData.append('pro_unit', pro_unit.val());
             formData.append('pro_video', pro_video.val());
             formData.append('description', description.val());
-            formData.append('status', status.val());
-            formData.append('topsale', topsale.val());
-            formData.append('feature_product', feature_product.val());
-            formData.append('deal_of_theday', deal_of_theday.val());
+            formData.append('status', status.is(':checked') ? 1 : 0);
+            formData.append('topsale', topsale.is(':checked') ? 1 : 0);
+            formData.append('feature_product', feature_product.is(':checked') ? 1 : 0);
+            formData.append('deal_of_theday', deal_of_theday.is(':checked') ? 1 : 0);
             formData.append('type', type.val());
             formData.append('short_des', short_des.val());
             formData.append('prebooking', prebooking.val());
-            formData.append('image', $('#productimage')[0].files[0]);
+            if ($('#productimage')[0].files[0]) {
+                formData.append('image', $('#productimage')[0].files[0]);
+            }
 
             var fileList = $('#PostImage').get(0).files;
 
@@ -634,12 +631,16 @@
             } else {
                 variant.forEach((item, index) => {
                     Object.entries(item).forEach(([key, value]) => {
-                        formData.append(`variant[${index}][${key}]`, value);
+                        if (value !== undefined) {
+                            formData.append(`variant[${index}][${key}]`, value);
+                        }
                     });
                 });
                 size.forEach((item, index) => {
                     Object.entries(item).forEach(([key, value]) => {
-                        formData.append(`size[${index}][${key}]`, value);
+                        if (value !== undefined) {
+                            formData.append(`size[${index}][${key}]`, value);
+                        }
                     });
                 });
             }
@@ -661,6 +662,9 @@
                     } else {
                         toastr.error(data["message"])
                     }
+                },
+                error: function(xhr) {
+                    toastr.error('Error occurred while creating product. ' + (xhr.responseJSON?.message || 'Server error (' + xhr.status + ')'));
                 }
             });
 
