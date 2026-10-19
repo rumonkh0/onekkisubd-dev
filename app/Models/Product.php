@@ -17,6 +17,41 @@ class Product extends Model
     {
         return $this->hasOne(Productimage::class, 'product_id')->select('id','image','product_id');
     }
+
+    public function getImageAttribute($value)
+    {
+        $relation = $this->getRelationValue('image');
+        if ($relation) {
+            return $relation;
+        }
+
+        // Fallback 1: First slider image (PostImage)
+        if (!empty($this->PostImage)) {
+            $sliders = json_decode($this->PostImage, true);
+            if (!empty($sliders) && is_array($sliders)) {
+                $firstSlider = reset($sliders);
+                if (!empty($firstSlider)) {
+                    $obj = new \stdClass();
+                    $obj->id = 0;
+                    $obj->product_id = $this->id;
+                    $obj->image = 'public/images/product/slider/' . $firstSlider;
+                    return $obj;
+                }
+            }
+        }
+
+        // Fallback 2: Variant image
+        $variant = Productcolor::where('product_id', $this->id)->whereNotNull('Image')->where('Image', '!=', '')->first();
+        if ($variant && !empty($variant->Image)) {
+            $obj = new \stdClass();
+            $obj->id = 0;
+            $obj->product_id = $this->id;
+            $obj->image = $variant->Image;
+            return $obj;
+        }
+
+        return null;
+    }
     public function images()
     {
         return $this->hasMany(Productimage::class, 'product_id')->select('id','image','product_id');

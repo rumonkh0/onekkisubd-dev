@@ -147,6 +147,11 @@ class ProductController extends Controller
                 $pimage->image      = $imageUrl;
                 $pimage->save();
             }
+        } elseif (!empty($imageData) && isset($imageData[0])) {
+            $pimage             = new Productimage();
+            $pimage->product_id = $product->id;
+            $pimage->image      = 'public/images/product/slider/' . $imageData[0];
+            $pimage->save();
         }
 
         if ($result) {
@@ -452,6 +457,11 @@ class ProductController extends Controller
             $pimage             = new Productimage();
             $pimage->product_id = $product->id;
             $pimage->image      = $imageUrl;
+            $pimage->save();
+        } elseif (!Productimage::where('product_id', $product->id)->exists() && !empty($imageData) && isset($imageData[0])) {
+            $pimage             = new Productimage();
+            $pimage->product_id = $product->id;
+            $pimage->image      = 'public/images/product/slider/' . $imageData[0];
             $pimage->save();
         }
 

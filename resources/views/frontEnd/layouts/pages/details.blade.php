@@ -1707,7 +1707,7 @@
                             @endif
 
                             <a href="{{ route('product', $value->slug) }}" class="tea-card-media">
-                                <img src="{{ asset($value->image ? $value->image->image : '') }}" alt="{{ $value->name }}" loading="lazy" />
+                                <img src="{{ asset($value->image && !empty($value->image->image) ? $value->image->image : 'public/uploads/default/no-image.png') }}" alt="{{ $value->name }}" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}';" />
                             </a>
 
                             <div class="tea-card-body">

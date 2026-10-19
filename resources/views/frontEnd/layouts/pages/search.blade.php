@@ -481,10 +481,10 @@
                         @endif
 
                         <a href="{{ route('product', $value->slug) }}" class="tea-prod-img-wrap">
-                            <img src="{{ asset($value->image ? $value->image->image : '') }}" 
+                            <img src="{{ asset($value->image && !empty($value->image->image) ? $value->image->image : 'public/uploads/default/no-image.png') }}" 
                                  alt="{{ $value->name }}" 
                                  class="tea-prod-img" 
-                                 onerror="this.src='{{ asset('public/uploads/settings/1740644407-onekkisu.webp') }}'" />
+                                 onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}';" />
                         </a>
 
                         <div class="tea-prod-body">

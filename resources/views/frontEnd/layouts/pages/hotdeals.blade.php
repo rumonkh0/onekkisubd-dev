@@ -635,9 +635,9 @@
                         <!-- Image -->
                         <div class="tea-card-image-wrap">
                             <a href="{{ route('product', $value->slug) }}">
-                                <img src="{{ asset($value->image ? $value->image->image : 'public/uploads/default.png') }}"
+                                <img src="{{ asset($value->image && !empty($value->image->image) ? $value->image->image : 'public/uploads/default/no-image.png') }}"
                                      alt="{{ $value->name }}"
-                                     loading="lazy" />
+                                     loading="lazy" onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}';" />
                             </a>
                         </div>
 

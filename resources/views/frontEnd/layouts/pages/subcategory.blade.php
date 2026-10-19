@@ -1129,7 +1129,7 @@
 
                                 $hasDiscount = !empty($value->old_price) && $value->old_price > $value->new_price;
                                 $discountPct = $hasDiscount ? round((($value->old_price - $value->new_price) * 100) / $value->old_price) : 0;
-                                $prodImage = $value->image ? asset($value->image->image) : asset('public/uploads/default.png');
+                                $prodImage = ($value->image && !empty($value->image->image)) ? asset($value->image->image) : asset('public/uploads/default/no-image.png');
                                 $isOutOfStock = isset($value->stock) && $value->stock <= 0;
                             @endphp
 
@@ -1145,7 +1145,7 @@
                                     </span>
 
                                     <a href="{{ route('product', $value->slug) }}">
-                                        <img src="{{ $prodImage }}" alt="{{ $engName }}" class="tea-card-img" loading="lazy" />
+                                        <img src="{{ $prodImage }}" alt="{{ $engName }}" class="tea-card-img" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}';" />
                                     </a>
                                 </div>
 
