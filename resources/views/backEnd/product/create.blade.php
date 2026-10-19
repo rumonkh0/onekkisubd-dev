@@ -199,6 +199,9 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div id="productimage_preview_box" class="mt-2" style="display:none;">
+                                <img id="productimage_preview_img" src="" style="max-width:120px;max-height:120px;border-radius:6px;border:1px solid #ced4da;padding:2px;" alt="Selected Image">
+                            </div>
                         </div>
                         <!-- col end -->
                         <div class="col-sm-4">
@@ -262,6 +265,9 @@
                                     <input type="file" onchange="prevPost_Img()" name="PostImage[]"
                                         id="PostImage" multiple>
                                 </button>
+                            </div>
+                            <div class="file">
+                                <div id="prevFile" style="width: 100%;float:left;background: lightgray;min-height:10px;border-radius:6px;padding:4px;"></div>
                             </div>
                         </div>
 
@@ -565,7 +571,9 @@
                     var obj = {};
                     obj.mediaID = currentRow.find("#mediaID").val();
                     obj.color = currentRow.find("#color").val();
-                    obj.image = currentRow.find("#image")[0].files[0];
+                    if (currentRow.find("#image")[0] && currentRow.find("#image")[0].files && currentRow.find("#image")[0].files[0]) {
+                        obj.image = currentRow.find("#image")[0].files[0];
+                    }
                     variant.push(obj);
                     variantCount++;
                 });
@@ -613,15 +621,22 @@
             formData.append('type', type.val());
             formData.append('short_des', short_des.val());
             formData.append('prebooking', prebooking.val());
-            if ($('#productimage')[0].files[0]) {
+            if ($('#productimage')[0] && $('#productimage')[0].files && $('#productimage')[0].files[0]) {
                 formData.append('image', $('#productimage')[0].files[0]);
             }
 
-            var fileList = $('#PostImage').get(0).files;
-
-            if (fileList.length > 0) {
-                for (let i = 0; i < fileList.length; i += 1) {
-                    formData.append('PostImage[]', fileList[i]);
+            if (PostImages && PostImages.length > 0) {
+                for (let i = 0; i < PostImages.length; i += 1) {
+                    if (PostImages[i].file) {
+                        formData.append('PostImage[]', PostImages[i].file);
+                    }
+                }
+            } else {
+                var fileList = $('#PostImage').get(0).files;
+                if (fileList && fileList.length > 0) {
+                    for (let i = 0; i < fileList.length; i += 1) {
+                        formData.append('PostImage[]', fileList[i]);
+                    }
                 }
             }
 
@@ -787,6 +802,31 @@
         $(document).on("click", ".delete-btn", function() {
             $(this).closest("tr").remove();
             syncStockFromSizes();
+        });
+
+        $('#productimage').on('change', function() {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#productimage_preview_img').attr('src', e.target.result);
+                    $('#productimage_preview_box').show();
+                };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                $('#productimage_preview_box').hide();
+            }
+        });
+
+        $(document).on('change', '#mediaTable input[type="file"]', function() {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                var imgElement = $(input).closest('tr').find('img');
+                reader.onload = function(e) {
+                    imgElement.attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         });
 
     });

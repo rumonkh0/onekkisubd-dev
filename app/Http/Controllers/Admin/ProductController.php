@@ -100,13 +100,22 @@ class ProductController extends Controller
         $product->type = $request->type;
 
         if ($request->hasFile('PostImage')) {
-            foreach ($request->file('PostImage') as $imgfiles) {
-                $name = time() . "_" . $imgfiles->getClientOriginalName();
-                $name = strtolower(preg_replace('/\s+/', '-', $name));
-                $imgfiles->move(public_path() . '/images/product/slider/', $name);
-                $imageData[] = $name;
+            $imageData = [];
+            $targetDirS = public_path('images/product/slider');
+            if (!File::isDirectory($targetDirS)) {
+                File::makeDirectory($targetDirS, 0775, true, true);
             }
-            $product->PostImage = json_encode($imageData);
+            foreach ($request->file('PostImage') as $imgfiles) {
+                if ($imgfiles && $imgfiles instanceof \Illuminate\Http\UploadedFile) {
+                    $name = time() . "_" . $imgfiles->getClientOriginalName();
+                    $name = strtolower(preg_replace('/\s+/', '-', $name));
+                    $imgfiles->move($targetDirS, $name);
+                    $imageData[] = $name;
+                }
+            }
+            if (!empty($imageData)) {
+                $product->PostImage = json_encode($imageData);
+            }
         }
 
         $result = $product->save();
@@ -123,16 +132,21 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $name =  time() . '-' . $image->getClientOriginalName();
-            $name = strtolower(preg_replace('/\s+/', '-', $name));
-            $uploadPath = 'public/uploads/product/';
-            $image->move($uploadPath, $name);
-            $imageUrl = $uploadPath . $name;
+            if ($image && $image instanceof \Illuminate\Http\UploadedFile) {
+                $name =  time() . '-' . $image->getClientOriginalName();
+                $name = strtolower(preg_replace('/\s+/', '-', $name));
+                $targetDir = public_path('uploads/product');
+                if (!File::isDirectory($targetDir)) {
+                    File::makeDirectory($targetDir, 0775, true, true);
+                }
+                $image->move($targetDir, $name);
+                $imageUrl = 'public/uploads/product/' . $name;
 
-            $pimage             = new Productimage();
-            $pimage->product_id = $product->id;
-            $pimage->image      = $imageUrl;
-            $pimage->save();
+                $pimage             = new Productimage();
+                $pimage->product_id = $product->id;
+                $pimage->image      = $imageUrl;
+                $pimage->save();
+            }
         }
 
         if ($result) {
@@ -140,15 +154,18 @@ class ProductController extends Controller
                 foreach ($variants as $vr) {
                     $variant = new Productcolor();
                     $variant->product_id = $product->id;
-                    $variant->color_id = $vr['mediaID'];
-                    $variant->color = $vr['color'];
+                    $variant->color_id = $vr['mediaID'] ?? null;
+                    $variant->color = $vr['color'] ?? null;
                     $variantImg = $vr['image'] ?? null;
                     if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                         $imgnamev = $time . $variantImg->getClientOriginalName();
                         $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
-                        $imguploadPathv = ('public/images/variant/');
-                        $variantImg->move($imguploadPathv, $imgnamev);
-                        $variantImgUrl = $imguploadPathv . $imgnamev;
+                        $targetDirV = public_path('images/variant');
+                        if (!File::isDirectory($targetDirV)) {
+                            File::makeDirectory($targetDirV, 0775, true, true);
+                        }
+                        $variantImg->move($targetDirV, $imgnamev);
+                        $variantImgUrl = 'public/images/variant/' . $imgnamev;
                         $variant->Image = $variantImgUrl;
                     }
                     $variant->save();
@@ -391,13 +408,22 @@ class ProductController extends Controller
         $product->updated_at = Carbon::now();
 
         if ($request->hasFile('PostImage')) {
-            foreach ($request->file('PostImage') as $imgfiles) {
-                $name = time() . "_" . $imgfiles->getClientOriginalName();
-                $name = strtolower(preg_replace('/\s+/', '-', $name));
-                $imgfiles->move(public_path() . '/images/product/slider/', $name);
-                $imageData[] = $name;
+            $imageData = [];
+            $targetDirS = public_path('images/product/slider');
+            if (!File::isDirectory($targetDirS)) {
+                File::makeDirectory($targetDirS, 0775, true, true);
             }
-            $product->PostImage = json_encode($imageData);
+            foreach ($request->file('PostImage') as $imgfiles) {
+                if ($imgfiles && $imgfiles instanceof \Illuminate\Http\UploadedFile) {
+                    $name = time() . "_" . $imgfiles->getClientOriginalName();
+                    $name = strtolower(preg_replace('/\s+/', '-', $name));
+                    $imgfiles->move($targetDirS, $name);
+                    $imageData[] = $name;
+                }
+            }
+            if (!empty($imageData)) {
+                $product->PostImage = json_encode($imageData);
+            }
         };
 
 
@@ -413,50 +439,57 @@ class ProductController extends Controller
 
         $image = $request->file('image');
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image') && $image instanceof \Illuminate\Http\UploadedFile) {
             Productimage::where('product_id', $product->id)->delete();
             $name =  time() . '-' . $image->getClientOriginalName();
             $name = strtolower(preg_replace('/\s+/', '-', $name));
-            $uploadPath = 'public/uploads/product/';
-            $image->move($uploadPath, $name);
-            $imageUrl = $uploadPath . $name;
+            $targetDir = public_path('uploads/product');
+            if (!File::isDirectory($targetDir)) {
+                File::makeDirectory($targetDir, 0775, true, true);
+            }
+            $image->move($targetDir, $name);
+            $imageUrl = 'public/uploads/product/' . $name;
             $pimage             = new Productimage();
             $pimage->product_id = $product->id;
             $pimage->image      = $imageUrl;
             $pimage->save();
-        } else {
         }
 
         if ($result) {
             if (!empty($variants)) {
                 foreach ($variants as $vr) {
-                    if (isset($vr['mID'])) {
-                        $variant = Productcolor::where('id', $vr['mID'])->first();
+                    if (!empty($vr['mID']) && ($variant = Productcolor::where('id', $vr['mID'])->first())) {
                         $variant->product_id = $product->id;
-                        $variant->color_id = $vr['mediaID'];
-                        $variant->color = $vr['color'];
+                        $variant->color_id = $vr['mediaID'] ?? null;
+                        $variant->color = $vr['color'] ?? null;
                         $variantImg = $vr['image'] ?? null;
                         if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                             $imgnamev = $time . $variantImg->getClientOriginalName();
                             $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
-                            $imguploadPathv = ('public/images/variant/');
-                            $variantImg->move($imguploadPathv, $imgnamev);
-                            $variantImgUrl = $imguploadPathv . $imgnamev;
+                            $targetDirV = public_path('images/variant');
+                            if (!File::isDirectory($targetDirV)) {
+                                File::makeDirectory($targetDirV, 0775, true, true);
+                            }
+                            $variantImg->move($targetDirV, $imgnamev);
+                            $variantImgUrl = 'public/images/variant/' . $imgnamev;
                             $variant->Image = $variantImgUrl;
                         }
                         $variant->update();
                     } else {
                         $variant = new Productcolor();
                         $variant->product_id = $product->id;
-                        $variant->color_id = $vr['mediaID'];
-                        $variant->color = $vr['color'];
+                        $variant->color_id = $vr['mediaID'] ?? null;
+                        $variant->color = $vr['color'] ?? null;
                         $variantImg = $vr['image'] ?? null;
                         if ($variantImg && $variantImg instanceof \Illuminate\Http\UploadedFile) {
                             $imgnamev = $time . $variantImg->getClientOriginalName();
                             $imgnamev = strtolower(preg_replace('/\s+/', '-', $imgnamev));
-                            $imguploadPathv = ('public/images/variant/');
-                            $variantImg->move($imguploadPathv, $imgnamev);
-                            $variantImgUrl = $imguploadPathv . $imgnamev;
+                            $targetDirV = public_path('images/variant');
+                            if (!File::isDirectory($targetDirV)) {
+                                File::makeDirectory($targetDirV, 0775, true, true);
+                            }
+                            $variantImg->move($targetDirV, $imgnamev);
+                            $variantImgUrl = 'public/images/variant/' . $imgnamev;
                             $variant->Image = $variantImgUrl;
                         }
                         $variant->save();

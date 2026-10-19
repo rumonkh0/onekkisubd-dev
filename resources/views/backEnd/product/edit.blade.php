@@ -226,11 +226,17 @@
                             </div>
 
 
-                            <div class="product_img">
-                                @foreach ($edit_data->images as $image)
-                                    <img src="{{ asset($image->image) }}" class="edit-image border"
-                                        alt="" />
-                                @endforeach
+                            <div class="product_img mt-2">
+                                <div id="productimage_new_preview" style="display:none;" class="mb-2">
+                                    <span class="badge bg-success mb-1">New selected image:</span><br>
+                                    <img id="productimage_new_img" src="" style="max-width:120px;max-height:120px;border-radius:6px;border:2px solid #28a745;padding:2px;" alt="New preview" />
+                                </div>
+                                <div id="productimage_current_preview">
+                                    @foreach ($edit_data->images as $image)
+                                        <img src="{{ asset($image->image) }}" class="edit-image border"
+                                            alt="" />
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                         <!-- col end -->
@@ -689,7 +695,9 @@
                     obj.mID = currentRow.find("#mID").val();
                     obj.mediaID = currentRow.find("#mediaID").val();
                     obj.color = currentRow.find("#color").val();
-                    obj.image = currentRow.find("#image")[0].files[0];
+                    if (currentRow.find("#image")[0] && currentRow.find("#image")[0].files && currentRow.find("#image")[0].files[0]) {
+                        obj.image = currentRow.find("#image")[0].files[0];
+                    }
                     variant.push(obj);
                     variantCount++;
                 });
@@ -742,13 +750,22 @@
             formData.append('type', type.val());
             formData.append('short_des', short_des.val());
             formData.append('prebooking', prebooking.val());
-            formData.append('image', $('#productimage')[0].files[0]);
+            if ($('#productimage')[0] && $('#productimage')[0].files && $('#productimage')[0].files[0]) {
+                formData.append('image', $('#productimage')[0].files[0]);
+            }
 
-            var fileList = $('#PostImage').get(0).files;
-
-            if (fileList.length > 0) {
-                for (let i = 0; i < fileList.length; i += 1) {
-                    formData.append('PostImage[]', fileList[i]);
+            if (PostImages && PostImages.length > 0) {
+                for (let i = 0; i < PostImages.length; i += 1) {
+                    if (PostImages[i].file) {
+                        formData.append('PostImage[]', PostImages[i].file);
+                    }
+                }
+            } else {
+                var fileList = $('#PostImage').get(0).files;
+                if (fileList && fileList.length > 0) {
+                    for (let i = 0; i < fileList.length; i += 1) {
+                        formData.append('PostImage[]', fileList[i]);
+                    }
                 }
             }
 
@@ -757,12 +774,16 @@
             } else {
                 variant.forEach((item, index) => {
                     Object.entries(item).forEach(([key, value]) => {
-                        formData.append(`variant[${index}][${key}]`, value);
+                        if (value !== undefined && value !== null && value !== '') {
+                            formData.append(`variant[${index}][${key}]`, value);
+                        }
                     });
                 });
                 size.forEach((item, index) => {
                     Object.entries(item).forEach(([key, value]) => {
-                        formData.append(`size[${index}][${key}]`, value);
+                        if (value !== undefined && value !== null && value !== '') {
+                            formData.append(`size[${index}][${key}]`, value);
+                        }
                     });
                 });
             }
@@ -943,6 +964,31 @@
 
         $(document).on("click", ".delete-btn", function() {
             $(this).closest("tr").remove();
+        });
+
+        $('#productimage').on('change', function() {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#productimage_new_img').attr('src', e.target.result);
+                    $('#productimage_new_preview').show();
+                };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                $('#productimage_new_preview').hide();
+            }
+        });
+
+        $(document).on('change', '#mediaTable input[type="file"]', function() {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                var imgElement = $(input).closest('tr').find('img');
+                reader.onload = function(e) {
+                    imgElement.attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         });
 
     });
