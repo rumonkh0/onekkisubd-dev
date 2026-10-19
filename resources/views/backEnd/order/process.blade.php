@@ -66,8 +66,8 @@
                                 @foreach($data->orderdetails as $key => $product)
                                     <tr>
                                         <td style="width: 50px;">
-                                            <img src="{{ asset($product->image ? $product->image->image : 'public/frontEnd/images/no-image.png') }}"
-                                                 class="rounded border" height="45" width="45" alt="" onerror="this.src='{{ asset('public/frontEnd/images/no-image.png') }}'">
+                                            <img src="{{ asset($product->image ? $product->image->image : 'public/uploads/default/no-image.png') }}"
+                                                 class="rounded border" height="45" width="45" alt="" onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}'">
                                         </td>
                                         <td>
                                             <div class="fw-bold text-dark font-13">{{ $product->product_name }}</div>

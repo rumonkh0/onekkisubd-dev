@@ -138,13 +138,13 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <img src="{{ asset($value->image ? $value->image->image : 'public/frontEnd/images/no-image.png') }}"
-                                                    class="backend-image" alt="{{ $value->name }}" onerror="this.src='{{ asset('public/frontEnd/images/no-image.png') }}'">
+                                                <img src="{{ asset($value->image ? $value->image->image : 'public/uploads/default/no-image.png') }}"
+                                                    class="backend-image" alt="{{ $value->name }}" onerror="this.onerror=null;this.src='{{ asset('public/uploads/default/no-image.png') }}'">
                                             </td>
                                             <td>
-                                                <div class="fw-bold text-primary font-14">৳{{ number_format($value->new_price, 0) }}</div>
-                                                @if($value->old_price && $value->old_price > $value->new_price)
-                                                    <small class="text-muted text-decoration-line-through">৳{{ number_format($value->old_price, 0) }}</small>
+                                                <div class="fw-bold text-primary font-14">৳{{ number_format($value->new_price ?? 0, 0) }}</div>
+                                                @if($value->old_price && $value->old_price > ($value->new_price ?? 0))
+                                                    <small class="text-muted text-decoration-line-through">৳{{ number_format($value->old_price ?? 0, 0) }}</small>
                                                 @endif
                                             </td>
                                             <td>
