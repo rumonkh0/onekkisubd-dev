@@ -806,6 +806,9 @@
                     } else {
                         toastr.error(data["message"])
                     }
+                },
+                error: function(xhr) {
+                    toastr.error('Error occurred while updating product. ' + (xhr.responseJSON?.message || 'Server error (' + xhr.status + ')'));
                 }
             });
         });
