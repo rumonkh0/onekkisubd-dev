@@ -371,6 +371,7 @@
                                 $bnName = '(' . trim($matches[2]) . ')';
                             } else {
                                 $engName = $rawName;
+                                $bnName = '';
                             }
                         @endphp
 
@@ -420,18 +421,18 @@
                                         {{ $engName }}
                                     </a>
                                 </h3>
-                                @if($bnName)
+                                @if(!empty($bnName))
                                     <p class="font-bengali text-center text-[12px] text-tea-900">{{ $bnName }}</p>
                                 @endif
 
                                 <div class="mt-2 flex items-center justify-center gap-2">
                                     @if($hasOldPrice)
                                         <span class="text-[12px] text-tea-800/80 line-through">
-                                            <span class="font-bengali">৳</span> {{ number_format($prod->old_price, 0) }}
+                                            <span class="font-bengali">৳</span> {{ number_format($prod->old_price ?? 0, 0) }}
                                         </span>
                                     @endif
                                     <span class="text-[15px] font-bold text-tea-700">
-                                        <span class="font-bengali">৳</span> {{ number_format($prod->new_price, 0) }}
+                                        <span class="font-bengali">৳</span> {{ number_format($prod->new_price ?? 0, 0) }}
                                     </span>
                                 </div>
 
@@ -696,7 +697,7 @@
                                                 {{ $engName }}
                                             </a>
                                         </h3>
-                                        @if($bnName)
+                                        @if(!empty($bnName))
                                             <p class="font-bengali text-center text-[12px] text-tea-900">{{ $bnName }}</p>
                                         @endif
 
@@ -716,11 +717,11 @@
                                         <div class="mt-2 flex items-center justify-center gap-2">
                                             @if($hasOldPrice)
                                                 <span class="text-[12px] text-tea-800/80 line-through">
-                                                    <span class="font-bengali">৳</span> {{ number_format($nprod->old_price, 0) }}
+                                                    <span class="font-bengali">৳</span> {{ number_format($nprod->old_price ?? 0, 0) }}
                                                 </span>
                                             @endif
                                             <span class="text-[15px] font-bold text-tea-700">
-                                                <span class="font-bengali">৳</span> {{ number_format($nprod->new_price, 0) }}
+                                                <span class="font-bengali">৳</span> {{ number_format($nprod->new_price ?? 0, 0) }}
                                             </span>
                                         </div>
 
