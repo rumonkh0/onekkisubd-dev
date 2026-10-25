@@ -56,22 +56,28 @@ class ApiIntegrationController extends Controller
         return redirect()->back();
     }
     
-    public function courier_manage ()
+    public function courier_manage()
     {
-        $steadfast = Courierapi::where('type','=','steadfast')->first();
-        $pathao = Courierapi::where('type','=','pathao')->first();
-        return view('backEnd.apiintegration.courier_manage',compact('steadfast','pathao'));
+        $steadfast = Courierapi::where('type', '=', 'steadfast')->first();
+        $pathao = Courierapi::where('type', '=', 'pathao')->first();
+        $pathaoService = new \App\Services\PathaoService();
+        $pathaoTokenStatus = $pathaoService->getTokenStatus();
+        return view('backEnd.apiintegration.courier_manage', compact('steadfast', 'pathao', 'pathaoTokenStatus'));
     }
     
-    public function courier_update (Request $request)
+    public function courier_update(Request $request)
     {
-      
         $update_data = Courierapi::find($request->id);
         $input = $request->all();
-        $input['status'] = $request->status?1:0;
+        $input['status'] = $request->status ? 1 : 0;
+        if (isset($input['token'])) {
+            $input['token'] = trim($input['token']);
+        }
         $update_data->update($input);
         
-        Toastr::success('Success','Data update successfully');
+        \Illuminate\Support\Facades\Cache::flush();
+        
+        Toastr::success('Success', 'Courier API configuration updated successfully');
         return redirect()->back();
     }
 }

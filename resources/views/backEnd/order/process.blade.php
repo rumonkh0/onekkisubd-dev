@@ -184,6 +184,57 @@
                             @enderror
                         </div>
 
+                        <!-- Courier Selection Box (Shown when status is In Courier: 5) -->
+                        <div class="col-12" id="courier_config_box" style="display: {{ $data->order_status == 5 ? 'block' : 'none' }};">
+                            <div class="card bg-light border p-3 mb-0">
+                                <h5 class="font-14 mb-2"><i class="fe-truck text-primary me-1"></i> Courier Dispatch Settings</h5>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label for="courier_type" class="form-label">Courier Service</label>
+                                        <select name="courier_type" id="courier_type" class="form-select">
+                                            <option value="steadfast">Steadfast Courier</option>
+                                            <option value="pathao">Pathao Courier</option>
+                                            <option value="none">None (Update Status Only)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 pathao-fields" style="display: none;">
+                                        <label for="pathaostore" class="form-label">Pathao Store</label>
+                                        <select name="pathaostore" id="pathaostore" class="form-select">
+                                            <option value="">Select Store...</option>
+                                            @if (isset($pathaostore['data']['data']))
+                                                @foreach ($pathaostore['data']['data'] as $store)
+                                                    <option value="{{ $store['store_id'] }}">{{ $store['store_name'] }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 pathao-fields" style="display: none;">
+                                        <label for="pathaocity_process" class="form-label">City</label>
+                                        <select name="pathaocity" id="pathaocity_process" class="form-select">
+                                            <option value="">Select City...</option>
+                                            @if (isset($pathaocities['data']['data']))
+                                                @foreach ($pathaocities['data']['data'] as $city)
+                                                    <option value="{{ $city['city_id'] }}">{{ $city['city_name'] }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 pathao-fields" style="display: none;">
+                                        <label for="pathaozone_process" class="form-label">Zone</label>
+                                        <select name="pathaozone" id="pathaozone_process" class="form-select">
+                                            <option value="">Select City first...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 pathao-fields" style="display: none;">
+                                        <label for="pathaoarea_process" class="form-label">Area (Optional)</label>
+                                        <select name="pathaoarea" id="pathaoarea_process" class="form-select">
+                                            <option value="">Select Zone first...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12 mt-4 pt-2 border-top d-flex justify-content-end gap-2">
                             <a href="{{ route('admin.orders', ['slug' => 'all']) }}" class="btn btn-light">Cancel</a>
                             <button type="submit" class="btn btn-success px-4">
@@ -204,6 +255,72 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2();
+
+            $('#order_status_select').on('change', function() {
+                if ($(this).val() == '5') {
+                    $('#courier_config_box').slideDown();
+                } else {
+                    $('#courier_config_box').slideUp();
+                }
+            });
+
+            $('#courier_type').on('change', function() {
+                if ($(this).val() === 'pathao') {
+                    $('.pathao-fields').slideDown();
+                } else {
+                    $('.pathao-fields').slideUp();
+                }
+            });
+
+            $('#pathaocity_process').on('change', function() {
+                const id = $(this).val();
+                const zoneSelect = $('#pathaozone_process');
+                const areaSelect = $('#pathaoarea_process');
+
+                zoneSelect.empty().append('<option value="">Loading zones...</option>');
+                areaSelect.empty().append('<option value="">Select Zone first...</option>');
+
+                if (id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url('admin/pathao-city') }}?city_id=" + id,
+                        success: function(res) {
+                            zoneSelect.empty().append('<option value="">Select Zone...</option>');
+                            if (res && res.data && res.data.data) {
+                                $.each(res.data.data, function(index, zone) {
+                                    zoneSelect.append('<option value="' + zone.zone_id + '">' + zone.zone_name + '</option>');
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    zoneSelect.empty().append('<option value="">Select City first...</option>');
+                }
+            });
+
+            $('#pathaozone_process').on('change', function() {
+                const id = $(this).val();
+                const areaSelect = $('#pathaoarea_process');
+
+                areaSelect.empty().append('<option value="">Loading areas...</option>');
+
+                if (id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url('admin/pathao-zone') }}?zone_id=" + id,
+                        success: function(res) {
+                            areaSelect.empty().append('<option value="">Select Area (Optional)...</option>');
+                            if (res && res.data && res.data.data) {
+                                $.each(res.data.data, function(index, area) {
+                                    areaSelect.append('<option value="' + area.area_id + '">' + area.area_name + '</option>');
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    areaSelect.empty().append('<option value="">Select Zone first...</option>');
+                }
+            });
         });
     </script>
 @endsection

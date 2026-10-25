@@ -106,6 +106,28 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
+          @if(isset($pathaoTokenStatus))
+            @if(!empty($pathaoTokenStatus['is_expired']))
+              <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                <i class="fe-alert-triangle font-20 me-2"></i>
+                <div>
+                  <strong>Pathao Bearer Token Expired!</strong> {{ $pathaoTokenStatus['message'] }}<br>
+                  <small>Please log into your <a href="https://merchant.pathao.com" target="_blank" class="text-white text-decoration-underline fw-bold">Pathao Merchant Dashboard</a> &gt; Developer / API Settings, copy your new access token, and paste it below.</small>
+                </div>
+              </div>
+            @else
+              <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+                <i class="fe-check-circle font-20 me-2"></i>
+                <div>
+                  <strong>Pathao Token Active:</strong> {{ $pathaoTokenStatus['message'] }}
+                  @if(!empty($pathaoTokenStatus['merchant_id']))
+                    (Merchant ID: <code>{{ $pathaoTokenStatus['merchant_id'] }}</code>)
+                  @endif
+                </div>
+              </div>
+            @endif
+          @endif
+
           <form action="{{route('courierapi.update')}}" method="POST" class="row" data-parsley-validate="" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" value="{{ $pathao->id}}">
@@ -118,18 +140,20 @@
                   <strong>{{ $message }}</strong>
                 </span>
                 @enderror
+                <small class="text-muted">Production URL: <code>https://api-hermes.pathao.com/aladdin</code></small>
               </div>
             </div>
             <!-- col-end -->
             <div class="col-sm-6">
               <div class="form-group mb-3">
-                <label for="token" class="form-label">Token *</label>
-                <input type="text" class="form-control @error('token') is-invalid @enderror" name="token" value="{{ $pathao->token}}" id="token" required="" />
+                <label for="token" class="form-label">Bearer Token *</label>
+                <textarea rows="3" class="form-control @error('token') is-invalid @enderror" name="token" id="token" required="">{{ $pathao->token }}</textarea>
                 @error('token')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
                 </span>
                 @enderror
+                <small class="text-muted">Paste your full Bearer JWT token from Pathao Merchant Panel.</small>
               </div>
             </div>
             <!-- col-end -->

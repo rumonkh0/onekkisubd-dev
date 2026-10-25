@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\Courierapi;
 use App\Models\GeneralSetting;
 use App\Models\Contact;
+use App\Services\PathaoService;
 use Session;
 use Cart;
 use Toastr;
@@ -189,24 +190,10 @@ class OrderController extends Controller
         $orderstatuses = OrderStatus::get();
         $shippingcharges = ShippingCharge::get();
         $steadfast = Courierapi::where(['status' => 1, 'type' => 'steadfast'])->first();
-        $pathao_info = Courierapi::where(['status' => 1, 'type' => 'pathao'])->select('id', 'type', 'url', 'token', 'status')->first();
-
-        // pathao courier info
-        $pathaocities = [];
-        $pathaostore = [];
-        if ($pathao_info) {
-            try {
-                $response = Http::timeout(2)->get($pathao_info->url . '/api/v1/countries/1/city-list');
-                $pathaocities = $response->json();
-                $response2 = Http::timeout(2)->withHeaders([
-                    'Authorization' => 'Bearer ' . $pathao_info->token,
-                    'Content-Type' => 'application/json',
-                ])->get($pathao_info->url . '/api/v1/stores');
-                $pathaostore = $response2->json();
-            } catch (\Throwable $e) {
-                // Ignore API timeouts
-            }
-        }
+        $pathaoService = new PathaoService();
+        $pathao_info = $pathaoService->getCourier();
+        $pathaocities = $pathaoService->getCities();
+        $pathaostore = $pathaoService->getStores();
 
         return view('backEnd.order.index', compact(
             'show_data',
@@ -225,78 +212,62 @@ class OrderController extends Controller
 
     public function pathaocity(Request $request)
     {
-        $pathao_info = Courierapi::where(['status'=>1, 'type'=>'pathao'])->select('id', 'type', 'url', 'token', 'status')->first();
-        if($pathao_info) {
-            $response = Http::get($pathao_info->url . '/api/v1/cities/'.$request->city_id.'/zone-list');
-            $pathaozones = $response->json();
-            return response()->json($pathaozones);
-        } else {
-            return response()->json([]);
-        }
+        $pathaoService = new PathaoService();
+        return response()->json($pathaoService->getZones($request->city_id));
     }
+
     public function pathaozone(Request $request)
     {
-        $pathao_info = Courierapi::where(['status'=>1, 'type'=>'pathao'])->select('id', 'type', 'url', 'token', 'status')->first();
-        if($pathao_info) {
-            $response = Http::get($pathao_info->url . '/api/v1/zones/'.$request->zone_id.'/area-list');
-            $pathaoareas = $response->json();
-            return response()->json($pathaoareas);
-        } else {
-             return response()->json([]);
-        }
+        $pathaoService = new PathaoService();
+        return response()->json($pathaoService->getAreas($request->zone_id));
     }
 
     public function order_pathao(Request $request)
     {
         $order_id = $request->order_ids;
 
-        if(isset($order_id)){
-
-            $order = Order::with('shipping')->find($order_id);
-            $order_count = OrderDetails::select('order_id')->where('order_id', $order->id)->count();
-
-            $pathao_info = Courierapi::where(['status' => 1, 'type' => 'pathao'])->select('id', 'type', 'url', 'token', 'status')->first();
-            if ($pathao_info) {
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $pathao_info->token,
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])->post($pathao_info->url . '/api/v1/orders', [
-                    'store_id' => $request->pathaostore,
-                    'merchant_order_id' => $order->invoice_id,
-                    'sender_name' => 'Test',
-                    'sender_phone' => $order->shipping ? $order->shipping->phone : '',
-                    'recipient_name' => $order->shipping ? $order->shipping->name : '',
-                    'recipient_phone' => $order->shipping ? $order->shipping->phone : '',
-                    'recipient_address' => $order->shipping ? $order->shipping->address : '',
-                    'recipient_city' => $request->pathaocity,
-                    'recipient_zone' => $request->pathaozone,
-                    'recipient_area' => $request->pathaoarea,
-                    'delivery_type' => 48,
-                    'item_type' => 2,
-                    'special_instruction' => 'Special note- product must be check after delivery',
-                    'item_quantity' => 1,
-                    'item_weight' => 0.5,
-                    'amount_to_collect' => round($order->amount),
-                    'item_description' => 'Special note- product must be check after delivery',
-                ]);
+        if (empty($order_id)) {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Order ID is required.']);
             }
-            if ($response->status() == '200') {
-                Toastr::success($response['data']['consignment_id'], 'Courier Tracking ID');
-                return redirect()->back();
-            } else {
-                Toastr::error($response['message'], 'Courier Order Faild');
-                return response()->json(['status' => 'failed', 'message' => $response['message'], 'Courier Order Faild']);
-            }
-            return redirect()->back();
-        }else{
-            Toastr::error('Order Id should not be empty');
-
+            Toastr::error('Order ID should not be empty');
             return redirect()->back();
         }
 
+        $order = Order::with(['shipping', 'orderdetails'])->find($order_id);
+        if (!$order) {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Order not found.']);
+            }
+            Toastr::error('Order not found');
+            return redirect()->back();
+        }
 
+        $pathaoService = new PathaoService();
+        $res = $pathaoService->createOrder($order, [
+            'store_id' => $request->pathaostore,
+            'city_id' => $request->pathaocity,
+            'zone_id' => $request->pathaozone,
+            'area_id' => $request->pathaoarea,
+        ]);
 
+        if ($res['status']) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $res['message'],
+                    'consignment_id' => $res['consignment_id'] ?? null,
+                ]);
+            }
+            Toastr::success($res['message'], 'Courier Dispatched');
+            return redirect()->back();
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $res['message']]);
+            }
+            Toastr::error($res['message'], 'Courier Dispatch Failed');
+            return redirect()->back();
+        }
     }
 
     public function invoice($invoice_id){
@@ -304,25 +275,35 @@ class OrderController extends Controller
         return view('backEnd.order.invoice',compact('order'));
     }
 
-    public function process($invoice_id){
-        $data = Order::where(['invoice_id'=>$invoice_id])->select('id','invoice_id','order_status')->with('orderdetails')->first();
-        $shippingcharge = ShippingCharge::where('status',1)->get();
-        return view('backEnd.order.process',compact('data','shippingcharge'));
+    public function process($invoice_id)
+    {
+        $data = Order::where(['invoice_id' => $invoice_id])
+            ->select('id', 'invoice_id', 'order_status', 'amount', 'paid_partial_payment_amount', 'shipping_charge', 'order_type', 'created_at', 'admin_note')
+            ->with(['orderdetails', 'shipping'])
+            ->firstOrFail();
+        $shippingcharge = ShippingCharge::where('status', 1)->get();
+        $steadfast = Courierapi::where(['status' => 1, 'type' => 'steadfast'])->first();
+        $pathaoService = new PathaoService();
+        $pathao_info = $pathaoService->getCourier();
+        $pathaostore = $pathaoService->getStores();
+        $pathaocities = $pathaoService->getCities();
+        return view('backEnd.order.process', compact('data', 'shippingcharge', 'steadfast', 'pathao_info', 'pathaostore', 'pathaocities'));
     }
 
     public function order_process(Request $request)
     {
-
         $link = OrderStatus::find($request->status)->slug;
-        $order = Order::find($request->id);
+        $order = Order::with('shipping')->find($request->id);
         $courier = $order->order_status;
         $order->order_status = $request->status;
-        $order->admin_note = $request->admin_note;
+        if ($request->has('admin_note')) {
+            $order->admin_note = $request->admin_note;
+        }
         $order->save();
 
         $shipping_update = Shipping::where('order_id', $order->id)->first();
         $shippingfee = ShippingCharge::find($request->area);
-        if ($shippingfee->name != $request->area) {
+        if ($shippingfee && $shippingfee->name != $request->area) {
             if ($order->shipping_charge > $shippingfee->amount) {
                 $total = $order->amount + ($shippingfee->amount - $order->shipping_charge);
                 $order->shipping_charge = $shippingfee->amount;
@@ -336,39 +317,70 @@ class OrderController extends Controller
             }
         }
 
-        $shipping_update->name = $request->name;
-        $shipping_update->phone = $request->phone;
-        $shipping_update->address = $request->address;
-        $shipping_update->area = $shippingfee->name;
-        $shipping_update->save();
+        if ($shipping_update && $shippingfee) {
+            $shipping_update->name = $request->name;
+            $shipping_update->phone = $request->phone;
+            $shipping_update->address = $request->address;
+            $shipping_update->area = $shippingfee->name;
+            $shipping_update->save();
+        }
 
         if ($request->status == 5 && $courier != 5) {
-            $courier_info = Courierapi::where(['status' => 1, 'type' => 'steadfast'])->first();
-            if ($courier_info) {
-                $consignmentData = [
-                    'invoice' => $order->invoice_id,
-                    'recipient_name' => $order->shipping ? $order->shipping->name : 'InboxHat',
-                    'recipient_phone' => $order->shipping ? $order->shipping->phone : '01750578495',
-                    'recipient_address' => $order->shipping ? $order->shipping->address : '01750578495',
-                    'cod_amount' => $order->amount
-                ];
-                $client = new Client();
-                $response = $client->post($courier_info->url, [
-                    'json' => $consignmentData,
-                    'headers' => [
-                        'Api-Key' => $courier_info->api_key,
-                        'Secret-Key' => $courier_info->secret_key,
-                        'Accept' => 'application/json',
-                    ],
+            $courierType = $request->input('courier_type', 'steadfast');
+            if ($courierType == 'pathao') {
+                $pathaoService = new PathaoService();
+                $res = $pathaoService->createOrder($order, [
+                    'store_id' => $request->pathaostore,
+                    'city_id' => $request->pathaocity,
+                    'zone_id' => $request->pathaozone,
+                    'area_id' => $request->pathaoarea,
                 ]);
+                if ($res['status']) {
+                    Toastr::success($res['message'], 'Pathao Dispatch');
+                } else {
+                    Toastr::error($res['message'], 'Pathao Dispatch Failed');
+                }
+            } elseif ($courierType == 'steadfast') {
+                $courier_info = Courierapi::where(['status' => 1, 'type' => 'steadfast'])->first();
+                if ($courier_info) {
+                    $recipientName = $order->shipping && $order->shipping->name ? $order->shipping->name : 'Customer';
+                    $recipientPhone = $order->shipping && $order->shipping->phone ? $order->shipping->phone : '';
+                    $recipientAddress = $order->shipping && $order->shipping->address ? $order->shipping->address : '';
+                    $codAmount = round($order->amount - ($order->paid_partial_payment_amount ?? 0));
 
-                $responseData = json_decode($response->getBody(), true);
-            } else {
-                return "ok";
+                    $consignmentData = [
+                        'invoice' => $order->invoice_id,
+                        'recipient_name' => $recipientName,
+                        'recipient_phone' => $recipientPhone,
+                        'recipient_address' => $recipientAddress,
+                        'cod_amount' => $codAmount > 0 ? $codAmount : 0,
+                    ];
+                    try {
+                        $client = new Client();
+                        $response = $client->post($courier_info->url, [
+                            'json' => $consignmentData,
+                            'headers' => [
+                                'Api-Key' => $courier_info->api_key,
+                                'Secret-Key' => $courier_info->secret_key,
+                                'Accept' => 'application/json',
+                            ],
+                        ]);
+                        $responseData = json_decode($response->getBody(), true);
+                        if (isset($responseData['consignment']['consignment_id'])) {
+                            $cid = $responseData['consignment']['consignment_id'];
+                            $note = trim($order->admin_note ?? '');
+                            $order->admin_note = $note ? $note . " | Steadfast: {$cid}" : "Steadfast: {$cid}";
+                            $order->save();
+                        }
+                        Toastr::success('Success', 'Order dispatched to Steadfast successfully');
+                    } catch (\Exception $e) {
+                        Toastr::error('Steadfast dispatch error: ' . $e->getMessage());
+                    }
+                }
             }
-            Toastr::success('Success', 'Order status change successfully');
             return redirect('admin/order/' . $link);
         }
+
         Toastr::success('Success', 'Order status change successfully');
         return redirect('admin/order/' . $link);
     }
@@ -590,56 +602,80 @@ class OrderController extends Controller
         }
 
         if ($slug == 'pathao') {
-            $courier_info = Courierapi::where(['status' => 1, 'type' => $slug])->first();
-            if (!$courier_info) {
+            $pathaoService = new PathaoService();
+            if (!$pathaoService->isConfigured()) {
                 return response()->json(['status' => 'error', 'message' => 'Pathao courier is not configured or active']);
             }
 
+            $tokenStatus = $pathaoService->getTokenStatus();
+            if (!empty($tokenStatus['is_expired'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Pathao Bearer token has expired. Please update it in Courier API Settings.',
+                ]);
+            }
+
+            $cityId = $request->input('city_id');
+            $zoneId = $request->input('zone_id');
+            $storeId = $request->input('store_id');
+            $areaId = $request->input('area_id');
+
+            if (empty($cityId) || empty($zoneId)) {
+                return response()->json([
+                    'status' => 'error',
+                    'action' => 'open_modal',
+                    'message' => 'Pathao strictly requires destination City and Zone. Please dispatch using the Pathao modal.',
+                ]);
+            }
+
+            $success_count = 0;
+            $failed_count = 0;
+            $errors = [];
+
             foreach ($orders_id as $order_id) {
-                $order = Order::with('shipping')->find($order_id);
+                $order = Order::with(['shipping', 'orderdetails'])->find($order_id);
                 if (!$order) continue;
 
-                $firstDetail = OrderDetails::where('order_id', $order->id)->first();
-                $itemDesc = $firstDetail ? $firstDetail->product_name : 'Ecommerce parcel';
-
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $courier_info->token,
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])->post($courier_info->url . '/api/v1/orders', [
-                    'store_id' => '114665',
-                    'merchant_order_id' => $order->invoice_id,
-                    'sender_name' => 'Store',
-                    'sender_phone' => $order->shipping ? $order->shipping->phone : '',
-                    'recipient_name' => $order->shipping ? $order->shipping->name : '',
-                    'recipient_phone' => $order->shipping ? $order->shipping->phone : '',
-                    'recipient_address' => $order->shipping ? $order->shipping->address : '',
-                    'delivery_type' => 48,
-                    'item_type' => 2,
-                    'special_instruction' => '',
-                    'item_quantity' => 1,
-                    'item_weight' => 0.5,
-                    'amount_to_collect' => round($order->amount),
-                    'item_description' => $itemDesc,
+                $res = $pathaoService->createOrder($order, [
+                    'store_id' => $storeId,
+                    'city_id' => $cityId,
+                    'zone_id' => $zoneId,
+                    'area_id' => $areaId,
                 ]);
 
-                if ($response->status() == 200) {
-                    $order->order_status = 5;
-                    $order->update();
+                if ($res['status']) {
+                    $success_count++;
+                } else {
+                    $failed_count++;
+                    $errors[] = "Order #{$order->invoice_id}: " . $res['message'];
                 }
             }
 
-            return response()->json(['status' => 'success', 'message' => 'Orders dispatched to Pathao successfully']);
+            if ($success_count > 0 && $failed_count == 0) {
+                return response()->json(['status' => 'success', 'message' => "All {$success_count} orders dispatched to Pathao successfully!"]);
+            } elseif ($success_count > 0 && $failed_count > 0) {
+                return response()->json([
+                    'status' => 'warning',
+                    'message' => "{$success_count} orders dispatched, {$failed_count} failed: " . implode(' | ', array_slice($errors, 0, 2)),
+                ]);
+            } else {
+                $errMsg = count($errors) > 0 ? implode(' | ', array_slice($errors, 0, 2)) : 'Failed to dispatch orders to Pathao.';
+                return response()->json(['status' => 'error', 'message' => $errMsg]);
+            }
         } else {
             $courier_info = Courierapi::where(['status' => 1, 'type' => $slug])->first();
             if (!$courier_info) {
                 return response()->json(['status' => 'error', 'message' => 'Steadfast courier is not configured or active']);
             }
 
+            $success_count = 0;
+            $failed_count = 0;
+
             foreach ($orders_id as $order_id) {
-                $order = Order::find($order_id);
+                $order = Order::with('shipping')->find($order_id);
                 if (!$order) continue;
 
+                $codAmount = round($order->amount - ($order->paid_partial_payment_amount ?? 0));
                 $ress = Http::withHeaders([
                     'Api-Key' => $courier_info->api_key,
                     'Secret-Key' => $courier_info->secret_key,
@@ -649,18 +685,32 @@ class OrderController extends Controller
                     'recipient_name' => $order->shipping ? $order->shipping->name : 'Customer',
                     'recipient_address' => $order->shipping ? $order->shipping->address : '',
                     'recipient_phone' => $order->shipping ? $order->shipping->phone : '',
-                    'cod_amount' => $order->amount,
+                    'cod_amount' => $codAmount > 0 ? $codAmount : 0,
                     'note' => $order->note ? $order->note : 'as fast as possible',
                 ]);
 
                 $res = json_decode($ress->getBody()->getContents());
                 if (isset($res->consignment)) {
                     $order->order_status = 5;
+                    $cid = $res->consignment->consignment_id ?? null;
+                    if ($cid) {
+                        $note = trim($order->admin_note ?? '');
+                        $order->admin_note = $note ? $note . " | Steadfast: {$cid}" : "Steadfast: {$cid}";
+                    }
                     $order->update();
+                    $success_count++;
+                } else {
+                    $failed_count++;
                 }
             }
 
-            return response()->json(['status' => 'success', 'message' => 'Orders dispatched to Steadfast successfully']);
+            if ($success_count > 0 && $failed_count == 0) {
+                return response()->json(['status' => 'success', 'message' => "All {$success_count} orders dispatched to Steadfast successfully"]);
+            } elseif ($success_count > 0 && $failed_count > 0) {
+                return response()->json(['status' => 'warning', 'message' => "{$success_count} orders dispatched, {$failed_count} failed"]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Failed to dispatch orders to Steadfast']);
+            }
         }
     }
     

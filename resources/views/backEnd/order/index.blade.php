@@ -535,6 +535,16 @@
                                                 <a href="{{ route('admin.order.edit', ['invoice_id' => $value->invoice_id]) }}" title="Edit Order">
                                                     <i class="fe-edit text-warning"></i>
                                                 </a>
+                                                <button type="button" class="btn btn-xs p-0 border-0 bg-transparent btn-pathao-modal"
+                                                    title="Dispatch to Pathao Courier"
+                                                    data-id="{{ $value->id }}"
+                                                    data-invoice="{{ $value->invoice_id }}"
+                                                    data-name="{{ $value->shipping ? $value->shipping->name : '' }}"
+                                                    data-phone="{{ $value->shipping ? $value->shipping->phone : '' }}"
+                                                    data-address="{{ $value->shipping ? $value->shipping->address : '' }}"
+                                                    data-due="{{ number_format($dueAmount, 0, '', '') }}">
+                                                    <i class="fe-truck text-danger font-14"></i>
+                                                </button>
                                                 <form method="post" action="{{ route('admin.order.destroy') }}" class="d-inline">
                                                     @csrf
                                                     <input type="hidden" value="{{ $value->id }}" name="id">
@@ -707,16 +717,28 @@
 <div class="modal fade" id="pathao" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pathao Courier Dispatch</h5>
+            <div class="modal-header bg-light">
+                <h5 class="modal-title"><i class="fe-truck text-danger me-1"></i> Pathao Courier Dispatch</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.order.pathao') }}" id="order_sendto_pathao">
+            <form action="{{ route('admin.order.pathao') }}" method="POST" id="order_sendto_pathao">
+                @csrf
                 <div class="modal-body">
                     <input type="hidden" name="order_ids" id="orids">
+
+                    <div id="pathao_order_preview" class="p-2 mb-3 bg-light rounded border font-12" style="display: none;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <strong id="pathao_preview_inv" class="text-primary font-13">#---</strong>
+                            <span class="badge bg-danger font-12">COD Amount: ৳<span id="pathao_preview_due">0</span></span>
+                        </div>
+                        <div class="text-dark fw-bold" id="pathao_preview_name">Customer Name</div>
+                        <div class="text-muted" id="pathao_preview_phone">01xxxxxxxxx</div>
+                        <div class="text-muted" id="pathao_preview_address" style="white-space: pre-wrap;">Address...</div>
+                    </div>
+
                     <div class="form-group mb-2">
-                        <label for="pathaostore" class="form-label">Store</label>
-                        <select name="pathaostore" id="pathaostore" class="form-select">
+                        <label for="pathaostore" class="form-label">Store <span class="text-danger">*</span></label>
+                        <select name="pathaostore" id="pathaostore" class="form-select" required>
                             <option value="">Select Store...</option>
                             @if (isset($pathaostore['data']['data']))
                                 @foreach ($pathaostore['data']['data'] as $store)
@@ -726,8 +748,8 @@
                         </select>
                     </div>
                     <div class="form-group mb-2">
-                        <label for="pathaocity" class="form-label">City</label>
-                        <select name="pathaocity" id="pathaocity" class="form-select">
+                        <label for="pathaocity" class="form-label">City <span class="text-danger">*</span></label>
+                        <select name="pathaocity" id="pathaocity" class="form-select pathaocity" required>
                             <option value="">Select City...</option>
                             @if (isset($pathaocities['data']['data']))
                                 @foreach ($pathaocities['data']['data'] as $city)
@@ -737,17 +759,23 @@
                         </select>
                     </div>
                     <div class="form-group mb-2">
-                        <label class="form-label">Zone</label>
-                        <select name="pathaozone" id="pathaozone" class="form-select pathaozone"></select>
+                        <label for="pathaozone" class="form-label">Zone <span class="text-danger">*</span></label>
+                        <select name="pathaozone" id="pathaozone" class="form-select pathaozone" required>
+                            <option value="">Select City first...</option>
+                        </select>
                     </div>
                     <div class="form-group mb-2">
-                        <label class="form-label">Area</label>
-                        <select name="pathaoarea" id="pathaoarea" class="form-select pathaoarea"></select>
+                        <label for="pathaoarea" class="form-label">Area (Optional)</label>
+                        <select name="pathaoarea" id="pathaoarea" class="form-select pathaoarea">
+                            <option value="">Select Zone first...</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Dispatch to Pathao</button>
+                    <button type="submit" class="btn btn-danger" id="pathao_submit_btn">
+                        <i class="fe-send me-1"></i> Dispatch to Pathao
+                    </button>
                 </div>
             </form>
         </div>
@@ -1172,29 +1200,91 @@
             });
         });
 
-        // Bulk Pathao Courier
+        // Single Order Pathao Modal Open
+        $(document).on('click', '.btn-pathao-modal', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            const inv = $(this).data('invoice');
+            const name = $(this).data('name');
+            const phone = $(this).data('phone');
+            const address = $(this).data('address');
+            const due = $(this).data('due');
+
+            $('#orids').val(id);
+            $('#pathao_preview_inv').text('#' + inv);
+            $('#pathao_preview_name').text(name || 'Customer');
+            $('#pathao_preview_phone').text(phone || 'N/A');
+            $('#pathao_preview_address').text(address || 'N/A');
+            $('#pathao_preview_due').text(due || '0');
+            $('#pathao_order_preview').show();
+
+            $('#pathao').modal('show');
+        });
+
+        // Bulk Pathao Courier Action
         $(document).on('click', '.multi_pathao', function(e) {
             e.preventDefault();
             const payload = getActionPayload();
             payload.filter_slug = currentSlug;
 
             if (!isAllMatchingSelected && (!payload.order_ids || payload.order_ids.length === 0)) {
-                toastr.error('Please select at least one order first!');
+                toastr.error('Please select an order first!');
                 return;
             }
 
-            toastr.info('Sending orders to Pathao courier...');
+            if (!isAllMatchingSelected && payload.order_ids.length === 1) {
+                const targetBtn = $('.btn-pathao-modal[data-id="' + payload.order_ids[0] + '"]');
+                if (targetBtn.length) {
+                    targetBtn.trigger('click');
+                    return;
+                }
+                $('#orids').val(payload.order_ids[0]);
+                $('#pathao_order_preview').hide();
+                $('#pathao').modal('show');
+                return;
+            }
+
+            toastr.info('Pathao strictly requires individual City and Zone for routing. Please dispatch orders individually using the truck icon in the table.');
+        });
+
+        // Submit Single Order to Pathao
+        $('#order_sendto_pathao').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const submitBtn = $('#pathao_submit_btn');
+            const origHtml = submitBtn.html();
+
+            const store = $('#pathaostore').val();
+            const city = $('#pathaocity').val();
+            const zone = $('#pathaozone').val();
+
+            if (!store || !city || !zone) {
+                toastr.error('Please select Store, City, and Zone!');
+                return;
+            }
+
+            submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Dispatching...');
+
             $.ajax({
-                type: 'GET',
-                url: $(this).attr('href'),
-                data: payload,
+                type: 'POST',
+                url: form.attr('action'),
+                data: form.serialize(),
                 success: function(res) {
+                    submitBtn.prop('disabled', false).html(origHtml);
                     if (res.status === 'success') {
                         toastr.success(res.message);
-                        window.location.reload();
+                        $('#pathao').modal('hide');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 800);
                     } else {
-                        toastr.error(res.message || 'Failed to place orders to Pathao');
+                        toastr.error(res.message || 'Failed to dispatch order to Pathao');
                     }
+                },
+                error: function(xhr) {
+                    submitBtn.prop('disabled', false).html(origHtml);
+                    const errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Server error while dispatching to Pathao';
+                    toastr.error(errMsg);
                 }
             });
         });
@@ -1229,39 +1319,59 @@
         });
 
         // Pathao City / Zone Cascade
-        $('.pathaocity').change(function() {
+        $(document).on('change', '#pathaocity, .pathaocity', function() {
             const id = $(this).val();
+            const zoneSelect = $('.pathaozone');
+            const areaSelect = $('.pathaoarea');
+
+            zoneSelect.empty().append('<option value="">Loading zones...</option>');
+            areaSelect.empty().append('<option value="">Select Zone first...</option>');
+
             if (id) {
                 $.ajax({
                     type: "GET",
                     url: "{{ url('admin/pathao-city') }}?city_id=" + id,
                     success: function(res) {
+                        zoneSelect.empty().append('<option value="">Select Zone...</option>');
                         if (res && res.data && res.data.data) {
-                            $(".pathaozone").empty().append('<option value="">Select..</option>');
                             $.each(res.data.data, function(index, zone) {
-                                $(".pathaozone").append('<option value="' + zone.zone_id + '">' + zone.zone_name + '</option>');
+                                zoneSelect.append('<option value="' + zone.zone_id + '">' + zone.zone_name + '</option>');
                             });
                         }
+                    },
+                    error: function() {
+                        zoneSelect.empty().append('<option value="">Failed to load zones</option>');
                     }
                 });
+            } else {
+                zoneSelect.empty().append('<option value="">Select City first...</option>');
             }
         });
 
-        $('.pathaozone').change(function() {
+        $(document).on('change', '#pathaozone, .pathaozone', function() {
             const id = $(this).val();
+            const areaSelect = $('.pathaoarea');
+
+            areaSelect.empty().append('<option value="">Loading areas...</option>');
+
             if (id) {
                 $.ajax({
                     type: "GET",
                     url: "{{ url('admin/pathao-zone') }}?zone_id=" + id,
                     success: function(res) {
+                        areaSelect.empty().append('<option value="">Select Area (Optional)...</option>');
                         if (res && res.data && res.data.data) {
-                            $(".pathaoarea").empty().append('<option value="">Select..</option>');
                             $.each(res.data.data, function(index, area) {
-                                $(".pathaoarea").append('<option value="' + area.area_id + '">' + area.area_name + '</option>');
+                                areaSelect.append('<option value="' + area.area_id + '">' + area.area_name + '</option>');
                             });
                         }
+                    },
+                    error: function() {
+                        areaSelect.empty().append('<option value="">Failed to load areas</option>');
                     }
                 });
+            } else {
+                areaSelect.empty().append('<option value="">Select Zone first...</option>');
             }
         });
     });

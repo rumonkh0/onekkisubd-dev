@@ -470,7 +470,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     Route::get('bulk-courier/{slug}', [OrderController::class, 'bulk_courier'])->name('admin.bulk_courier');
     Route::get('stock-report', [OrderController::class, 'stock_report'])->name('admin.stock_report');
     Route::get('order-report', [OrderController::class, 'order_report'])->name('admin.order_report');
-    Route::get('order-pathao', [OrderController::class, 'order_pathao'])->name('admin.order.pathao');
+    Route::match(['get', 'post'], 'order-pathao', [OrderController::class, 'order_pathao'])->name('admin.order.pathao');
     Route::get('/pathao-city', [OrderController::class, 'pathaocity'])->name('pathaocity');
     Route::get('/pathao-zone', [OrderController::class, 'pathaozone'])->name('pathaozone');
 
