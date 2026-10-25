@@ -15,8 +15,10 @@
     <meta property="og:description"
         content="Handcrafted premium tea, collected from authentic sources to bring you a healthier and happier life." />
     <!-- Preload LCP Hero Banner for immediate discovery (Mobile & Desktop) -->
-    <link rel="preload" as="image" href="{{ asset('images/hero-mobile.webp') }}" type="image/webp" media="(max-width: 640px)" fetchpriority="high" />
-    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" media="(min-width: 641px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ asset('images/hero-mobile.webp') }}" type="image/webp"
+        media="(max-width: 640px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" media="(min-width: 641px)"
+        fetchpriority="high" />
 @endpush
 
 @section('content')
@@ -36,19 +38,16 @@
         @endphp
 
         <!-- ==========================================================================
-                 SECTION 1: HERO (Hero.tsx)
-                 ========================================================================== -->
+                     SECTION 1: HERO (Hero.tsx)
+                     ========================================================================== -->
         <section id="home" class="relative overflow-hidden bg-tea-900">
             <!-- Background image -->
             <picture>
                 <source media="(max-width: 640px)" srcset="{{ asset('images/hero-mobile.webp') }}" type="image/webp">
                 <source srcset="{{ asset('images/hero.webp') }}" type="image/webp">
                 <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
-                    class="absolute inset-0 h-full w-full object-cover object-[70%_center]"
-                    fetchpriority="high"
-                    decoding="async"
-                    width="1376"
-                    height="768" />
+                    class="absolute inset-0 h-full w-full object-cover object-[70%_center]" fetchpriority="high"
+                    decoding="async" width="1376" height="768" />
             </picture>
             <!-- Overlays for readability -->
             <div class="absolute inset-0 bg-[#f4f6ec]/80 lg:hidden"></div>
@@ -272,132 +271,195 @@
         </section>
 
         <!-- ==========================================================================
-             SECTION 2: FLASH SALES (topsale = 1)
-             ========================================================================== -->
+                 SECTION 2: FLASH SALES (topsale = 1)
+                 ========================================================================== -->
         @if(isset($hotdeal_top) && $hotdeal_top->count() > 0)
-        <section id="flash-sales" class="relative bg-cream py-12 lg:py-16">
-            <div class="mx-auto max-w-[1400px] px-4 sm:px-6">
-                <!-- Header -->
-                <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <h2 class="flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            FLASH <span class="text-tea-700">SALES</span>
-                            <svg class="h-7 w-7 fill-tea-500 text-tea-500" viewBox="0 0 24 24" fill="currentColor"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                            </svg>
-                        </h2>
-                        <p class="mt-1 text-sm text-tea-900/70">
-                            Premium Teas at Special Prices <span class="mx-2 text-tea-300">|</span> Limited Time Offer
-                        </p>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-5 sm:gap-8">
-                        <div class="flex items-center gap-3">
-                            <span class="flex h-10 w-10 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-700 shadow-sm">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="13" r="8" />
-                                    <path d="M12 9v4l2 2" />
-                                    <path d="m5 3 2 2" />
-                                    <path d="m19 3-2 2" />
-                                    <path d="m6 19-2 2" />
-                                    <path d="m18 19 2 2" />
+            <section id="flash-sales" class="relative bg-cream py-12 lg:py-16">
+                <div class="mx-auto max-w-[1400px] px-4 sm:px-6">
+                    <!-- Header -->
+                    <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div>
+                            <h2
+                                class="flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
+                                FLASH <span class="text-tea-700">SALES</span>
+                                <svg class="h-7 w-7 fill-tea-500 text-tea-500" viewBox="0 0 24 24" fill="currentColor"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                                 </svg>
-                            </span>
-                            <span class="text-sm font-medium text-tea-900/80">Deal Ends In</span>
-                            <div class="flex items-start gap-2">
-                                <div class="flex flex-col items-center">
-                                    <span id="flash-hours"
-                                        class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
-                                        11
-                                    </span>
-                                    <span class="mt-1 text-[10px] font-medium text-tea-900/70">Hours</span>
-                                </div>
-                                <div class="flex flex-col items-center">
-                                    <span id="flash-mins"
-                                        class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
-                                        56
-                                    </span>
-                                    <span class="mt-1 text-[10px] font-medium text-tea-900/70">Minutes</span>
-                                </div>
-                                <div class="flex flex-col items-center">
-                                    <span id="flash-secs"
-                                        class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
-                                        23
-                                    </span>
-                                    <span class="mt-1 text-[10px] font-medium text-tea-900/70">Seconds</span>
-                                </div>
-                            </div>
+                            </h2>
+                            <p class="mt-1 text-sm text-tea-900/70">
+                                Premium Teas at Special Prices <span class="mx-2 text-tea-300">|</span> Limited Time Offer
+                            </p>
                         </div>
-                        <a href="{{ route('hotdeals') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
-                            View All Deals
-                            <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M5 12h14" />
-                                <path d="m12 5 7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
 
-                <!-- Carousel Side Slide -->
-                <div class="relative">
-                    <button type="button" onclick="scrollFlash(-1)" aria-label="Previous slide"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <button type="button" onclick="scrollFlash(1)" aria-label="Next slide"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-
-                    <div id="flash-track"
-                        class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
-                        @foreach($hotdeal_top as $prod)
-                            <div data-card
-                                class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
-                                @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
+                        <div class="flex flex-wrap items-center gap-5 sm:gap-8">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="flex h-10 w-10 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-700 shadow-sm">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="13" r="8" />
+                                        <path d="M12 9v4l2 2" />
+                                        <path d="m5 3 2 2" />
+                                        <path d="m19 3-2 2" />
+                                        <path d="m6 19-2 2" />
+                                        <path d="m18 19 2 2" />
+                                    </svg>
+                                </span>
+                                <span class="text-sm font-medium text-tea-900/80">Deal Ends In</span>
+                                <div class="flex items-start gap-2">
+                                    <div class="flex flex-col items-center">
+                                        <span id="flash-hours"
+                                            class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
+                                            11
+                                        </span>
+                                        <span class="mt-1 text-[10px] font-medium text-tea-900/70">Hours</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <span id="flash-mins"
+                                            class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
+                                            56
+                                        </span>
+                                        <span class="mt-1 text-[10px] font-medium text-tea-900/70">Minutes</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <span id="flash-secs"
+                                            class="flex h-11 w-12 items-center justify-center rounded-lg bg-tea-700 font-serif text-lg font-bold text-white shadow-inner tabular-nums">
+                                            23
+                                        </span>
+                                        <span class="mt-1 text-[10px] font-medium text-tea-900/70">Seconds</span>
+                                    </div>
+                                </div>
                             </div>
-                        @endforeach
+                            <a href="{{ route('hotdeals') }}"
+                                class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
+                                View All Deals
+                                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Carousel Side Slide -->
+                    <div class="relative">
+                        <button type="button" onclick="scrollFlash(-1)" aria-label="Previous slide"
+                            class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <button type="button" onclick="scrollFlash(1)" aria-label="Next slide"
+                            class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <div id="flash-track"
+                            class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
+                            @foreach($hotdeal_top as $prod)
+                                <div data-card
+                                    class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
+                                    @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
         @endif
 
         <!-- ==========================================================================
              SECTION 3: TOP TRENDING (feature_product = 1)
              ========================================================================== -->
         @if(isset($feature_products) && $feature_products->count() > 0)
-        <section id="top-trending" class="relative overflow-hidden bg-white py-12 lg:py-16">
+        <section id="top-trending" class="relative overflow-hidden bg-gradient-to-b from-[#f8faf6] via-white to-[#f8faf6] py-12 lg:py-16 border-t border-tea-100/60">
+            <!-- Floating decorative leaves -->
+            <svg viewBox="0 0 64 64"
+                class="pointer-events-none absolute -left-4 top-14 h-20 w-20 rotate-[130deg] opacity-35 animate-float-slow"
+                fill="none" aria-hidden="true">
+                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad1)" />
+                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                <defs>
+                    <linearGradient id="trendLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#15803d" />
+                        <stop offset="1" stop-color="#86efac" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <svg viewBox="0 0 64 64"
+                class="pointer-events-none absolute -right-4 top-10 h-20 w-20 -rotate-45 opacity-35 animate-float-slow"
+                style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
+                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad2)" />
+                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                <defs>
+                    <linearGradient id="trendLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#2f6f37" />
+                        <stop offset="1" stop-color="#4ade80" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
             <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">Customer Favorites & Must-Haves</span>
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span> Connoisseurs' Favorites • সর্বাধিক প্রশংসিত
+                        </span>
                         <h2 class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
                             TOP <span class="text-tea-700">TRENDING</span>
-                            <svg class="h-8 w-8 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-                                <path d="M12 23c6.075 0 11-4.925 11-11 0-4.004-2.146-7.51-5.362-9.432a.5.5 0 0 0-.742.536C17.26 5.12 17.5 7.152 16.5 8.5c-.83 1.116-2.03 1.76-3.23 2.5C12.07 11.75 11 12.4 11 14a1 1 0 0 0 2 0c0-.85.74-1.29 1.54-1.78 1.16-.71 2.46-1.5 3.08-2.92C19.04 10.74 20 12.78 20 15c0 4.418-3.582 8-8 8s-8-3.582-8-8c0-3.66 2.05-6.84 5.06-8.44a.5.5 0 0 0 .19-.66C8.28 4.2 8 2.3 8 .5a.5.5 0 0 0-.85-.35C3.89 3.51 1 7.91 1 13c0 6.075 4.925 11 11 11z"/>
+                            <!-- Artisanal Trending Sprout SVG -->
+                            <svg class="h-8 w-8 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v8" />
+                                <path d="m4.93 10.93 1.41 1.41" />
+                                <path d="M2 18h2" />
+                                <path d="M20 18h2" />
+                                <path d="m19.07 10.93-1.41 1.41" />
+                                <path d="M22 22H2" />
+                                <path d="m16 6-4-4-4 4" />
+                                <path d="M16 18a4 4 0 0 0-8 0" />
                             </svg>
                         </h2>
                         <p class="mt-1 text-sm text-tea-900/70">
-                            Most popular picks loved by tea enthusiasts this season
+                            Our most requested artisanal harvests and beloved customer favorites
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                        <ul class="hidden sm:flex items-center gap-5">
+                            <li class="flex items-center gap-2">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                                    <svg class="h-4 w-4 fill-emerald-700 text-emerald-700" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </span>
+                                <span class="text-left text-[12px] leading-tight">
+                                    <span class="block font-semibold text-tea-950">Top Rated 4.9★</span>
+                                    <span class="text-tea-800/80">Customer Approved</span>
+                                </span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                    </svg>
+                                </span>
+                                <span class="text-left text-[12px] leading-tight">
+                                    <span class="block font-semibold text-tea-950">100% Estate Fresh</span>
+                                    <span class="text-tea-800/80">Pure Harvest</span>
+                                </span>
+                            </li>
+                        </ul>
                         <a href="{{ url('shop') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
+                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 bg-white px-5 py-2 text-sm font-semibold text-tea-800 shadow-sm transition-colors hover:bg-tea-700 hover:text-white">
                             View All Trending
                             <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -443,26 +505,58 @@
              SECTION 4: DEAL OF THE DAY (deal_of_theday = 1)
              ========================================================================== -->
         @if(isset($dealofthe_products) && $dealofthe_products->count() > 0)
-        <section id="deal-of-the-day" class="relative overflow-hidden bg-cream/60 py-12 lg:py-16 border-t border-tea-100/60">
+        <section id="deal-of-the-day" class="relative overflow-hidden bg-[#faf5ea] py-12 lg:py-16 border-y border-amber-200/70">
+            <!-- Warm decorative tea sunbeam watermark -->
+            <svg viewBox="0 0 64 64"
+                class="pointer-events-none absolute -right-5 top-8 h-24 w-24 rotate-[25deg] opacity-25 animate-float-slow"
+                fill="none" aria-hidden="true">
+                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#dealLeafGrad)" />
+                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                <defs>
+                    <linearGradient id="dealLeafGrad" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#b45309" />
+                        <stop offset="1" stop-color="#fbbf24" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
             <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">Special Daily Selection</span>
-                        <h2 class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            DEAL OF THE <span class="text-tea-700">DAY</span>
-                            <svg class="h-7 w-7 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100/90 px-3 py-0.5 text-[10px] font-bold tracking-[0.2em] text-amber-900 uppercase border border-amber-300/60 shadow-xs">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
+                            </span>
+                            DAILY SPECIAL HARVEST • আজকের বিশেষ অফার
+                        </span>
+                        <h2 class="mt-2 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-amber-950 sm:text-4xl">
+                            DEAL OF THE <span class="text-amber-800">DAY</span>
+                            <svg class="h-7 w-7 fill-amber-500 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                         </h2>
-                        <p class="mt-1 text-sm text-tea-900/70">
-                            Handpicked signature deals refreshed daily with extra savings
+                        <p class="mt-1 text-sm text-amber-900/80">
+                            Handpicked signature blends refreshed daily with exclusive limited savings
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                        <div class="hidden sm:flex items-center gap-2.5 rounded-full border border-amber-300 bg-white/95 px-4 py-2 shadow-xs backdrop-blur">
+                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white">
+                                <svg class="h-4 w-4 stroke-white text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                            </span>
+                            <span class="text-left text-[12px] leading-tight">
+                                <span class="block font-bold text-amber-950">Refreshed Daily</span>
+                                <span class="text-amber-900/70">Valid Till Midnight</span>
+                            </span>
+                        </div>
                         <a href="{{ route('hotdeals') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
+                            class="group inline-flex items-center gap-1.5 rounded-full border border-amber-800 bg-amber-800 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-900">
                             View All Deals
                             <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -477,14 +571,14 @@
                 <!-- Carousel Slider -->
                 <div class="relative">
                     <button type="button" onclick="scrollDeals(-1)" aria-label="Previous slide"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
+                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-left-5">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m15 18-6-6 6-6" />
                         </svg>
                     </button>
                     <button type="button" onclick="scrollDeals(1)" aria-label="Next slide"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
+                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-right-5">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="m9 18 6-6-6-6" />
@@ -505,153 +599,154 @@
         @endif
 
         <!-- ==========================================================================
-             SECTION 5: NEW ARRIVALS (latest products)
-             ========================================================================== -->
+                 SECTION 5: NEW ARRIVALS (latest products)
+                 ========================================================================== -->
         @if(isset($new_products) && $new_products->count() > 0)
-        <section id="new-arrivals" class="relative overflow-hidden bg-white py-12 lg:py-16">
-            <!-- Floating decorative leaves -->
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -left-6 top-10 h-24 w-24 rotate-[150deg] opacity-40 animate-float-slow"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#newLeafGrad1)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="newLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
+            <section id="new-arrivals" class="relative overflow-hidden bg-white py-12 lg:py-16">
+                <!-- Floating decorative leaves -->
+                <svg viewBox="0 0 64 64"
+                    class="pointer-events-none absolute -left-6 top-10 h-24 w-24 rotate-[150deg] opacity-40 animate-float-slow"
+                    fill="none" aria-hidden="true">
+                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#newLeafGrad1)" />
+                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="newLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2f6f37" />
+                            <stop offset="1" stop-color="#6ba367" />
+                        </linearGradient>
+                    </defs>
+                </svg>
 
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -right-6 top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow"
-                style="animation-delay: 3s;" fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#newLeafGrad2)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="newLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
+                <svg viewBox="0 0 64 64"
+                    class="pointer-events-none absolute -right-6 top-6 h-24 w-24 -rotate-12 opacity-40 animate-float-slow"
+                    style="animation-delay: 3s;" fill="none" aria-hidden="true">
+                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#newLeafGrad2)" />
+                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="newLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2f6f37" />
+                            <stop offset="1" stop-color="#6ba367" />
+                        </linearGradient>
+                    </defs>
+                </svg>
 
-            <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
-                <!-- Header -->
-                <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">New Blends & Fresh
-                            Harvests</span>
-                        <h2
-                            class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            NEW <span class="text-tea-700">ARRIVALS</span>
-                            <!-- Sprig Leaf SVG -->
-                            <svg viewBox="0 0 64 64" class="h-8 w-8 rotate-45" fill="none" aria-hidden="true">
-                                <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2"
-                                    stroke-linecap="round" />
-                                <path d="M33 22c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#468a47" />
-                                <path d="M34 36c9-1 15-7 16-16-9 1-15 7-16 16z" fill="#2f6f37" />
-                                <path d="M32 50c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#6ba367" />
-                                <path d="M33 22l-9-9M34 36l9-9M32 50l-9-9" stroke="#e5efe2" stroke-width="1"
-                                    stroke-linecap="round" />
-                            </svg>
-                        </h2>
+                <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
+                    <!-- Header -->
+                    <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div>
+                            <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/50 uppercase">New Blends &
+                                Fresh
+                                Harvests</span>
+                            <h2
+                                class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
+                                NEW <span class="text-tea-700">ARRIVALS</span>
+                                <!-- Sprig Leaf SVG -->
+                                <svg viewBox="0 0 64 64" class="h-8 w-8 rotate-45" fill="none" aria-hidden="true">
+                                    <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2"
+                                        stroke-linecap="round" />
+                                    <path d="M33 22c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#468a47" />
+                                    <path d="M34 36c9-1 15-7 16-16-9 1-15 7-16 16z" fill="#2f6f37" />
+                                    <path d="M32 50c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#6ba367" />
+                                    <path d="M33 22l-9-9M34 36l9-9M32 50l-9-9" stroke="#e5efe2" stroke-width="1"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </h2>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-6 lg:gap-8">
+                            <ul class="flex flex-wrap items-center gap-6">
+                                <li class="flex items-center gap-2.5">
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                                            <path d="M12 8v13" />
+                                            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
+                                            <path
+                                                d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-[12px] leading-tight">
+                                        <span class="block font-semibold text-tea-950">Fast Delivery</span>
+                                        <span class="text-tea-800">Across Bangladesh</span>
+                                    </span>
+                                </li>
+                                <li class="flex items-center gap-2.5">
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path
+                                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-[12px] leading-tight">
+                                        <span class="block font-semibold text-tea-950">100% Organic</span>
+                                        <span class="text-tea-800">Pure & Natural</span>
+                                    </span>
+                                </li>
+                                <li class="flex items-center gap-2.5">
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path
+                                                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                                            <path d="m9 12 2 2 4-4" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-[12px] leading-tight">
+                                        <span class="block font-semibold text-tea-950">Trusted Quality</span>
+                                        <span class="text-tea-800">Loved by Tea Lovers</span>
+                                    </span>
+                                </li>
+                            </ul>
+                            <a href="{{ url('shop') }}"
+                                class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
+                                View All
+                                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-6 lg:gap-8">
-                        <ul class="flex flex-wrap items-center gap-6">
-                            <li class="flex items-center gap-2.5">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="8" width="18" height="4" rx="1" />
-                                        <path d="M12 8v13" />
-                                        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
-                                        <path
-                                            d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] leading-tight">
-                                    <span class="block font-semibold text-tea-950">Fast Delivery</span>
-                                    <span class="text-tea-800">Across Bangladesh</span>
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] leading-tight">
-                                    <span class="block font-semibold text-tea-950">100% Organic</span>
-                                    <span class="text-tea-800">Pure & Natural</span>
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-tea-700 text-white">
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                                        <path d="m9 12 2 2 4-4" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] leading-tight">
-                                    <span class="block font-semibold text-tea-950">Trusted Quality</span>
-                                    <span class="text-tea-800">Loved by Tea Lovers</span>
-                                </span>
-                            </li>
-                        </ul>
-                        <a href="{{ url('shop') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 px-5 py-2 text-sm font-semibold text-tea-800 transition-colors hover:bg-tea-700 hover:text-white">
-                            View All
-                            <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M5 12h14" />
-                                <path d="m12 5 7 7-7 7" />
+                    <!-- Carousel -->
+                    <div class="relative">
+                        <button type="button" onclick="scrollNewArrivals(-1)" aria-label="Previous slide"
+                            class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6" />
                             </svg>
-                        </a>
+                        </button>
+                        <button type="button" onclick="scrollNewArrivals(1)" aria-label="Next slide"
+                            class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <div id="new-arrivals-track"
+                            class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
+                            @foreach($new_products as $prod)
+                                <div data-card
+                                    class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
+                                    @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-
-                <!-- Carousel -->
-                <div class="relative">
-                    <button type="button" onclick="scrollNewArrivals(-1)" aria-label="Previous slide"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <button type="button" onclick="scrollNewArrivals(1)" aria-label="Next slide"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-
-                    <div id="new-arrivals-track"
-                        class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
-                        @foreach($new_products as $prod)
-                            <div data-card
-                                class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
-                                @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
         @endif
 
         <!-- ==========================================================================
-                 SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
-                 ========================================================================== -->
+                     SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
+                     ========================================================================== -->
         <section id="features" class="border-y border-tea-100 bg-tea-50">
             <div class="mx-auto grid max-w-[1400px] grid-cols-2 gap-y-6 px-4 py-6 sm:px-6 lg:grid-cols-4">
                 <!-- 100% Natural Ingredients -->
@@ -727,8 +822,8 @@
         </section>
 
         <!-- ==========================================================================
-                 SECTION 5: TOP CATEGORIES (TopCategories.tsx)
-                 ========================================================================== -->
+                     SECTION 5: TOP CATEGORIES (TopCategories.tsx)
+                     ========================================================================== -->
         <section id="categories" class="relative overflow-hidden bg-sand py-16 lg:py-20">
             <!-- Background texture -->
             <div class="pointer-events-none absolute inset-0 opacity-70"
@@ -948,12 +1043,29 @@
                             border: 2px solid #ffffff;
                         }
 
-                        .openai-category-icon.pink { background: #edaaa8; }
-                        .openai-category-icon.sand { background: #d9c49e; }
-                        .openai-category-icon.sage { background: #879f7b; }
-                        .openai-category-icon.rose { background: #c97878; }
-                        .openai-category-icon.ochre { background: #d5ad65; }
-                        .openai-category-icon.olive { background: #8c9c67; }
+                        .openai-category-icon.pink {
+                            background: #edaaa8;
+                        }
+
+                        .openai-category-icon.sand {
+                            background: #d9c49e;
+                        }
+
+                        .openai-category-icon.sage {
+                            background: #879f7b;
+                        }
+
+                        .openai-category-icon.rose {
+                            background: #c97878;
+                        }
+
+                        .openai-category-icon.ochre {
+                            background: #d5ad65;
+                        }
+
+                        .openai-category-icon.olive {
+                            background: #8c9c67;
+                        }
 
                         .openai-category-item strong {
                             font-family: var(--serif, "Playfair Display", Georgia, serif);
@@ -991,7 +1103,8 @@
                         @php
                             $dbCategory = isset($frontcategory) ? $frontcategory->firstWhere('slug', $cat['slug']) : null;
                             if (!$dbCategory) {
-                                $dbCategory = \App\Models\Category::where('slug', $cat['slug'])->withCount(['products' => function($q) { $q->where('status', 1); }])->first();
+                                $dbCategory = \App\Models\Category::where('slug', $cat['slug'])->withCount(['products' => function ($q) {
+                                    $q->where('status', 1); }])->first();
                             }
                             $catUrl = $dbCategory ? route('category', $dbCategory->slug) : url('category/' . $cat['slug']);
                             $prodCount = $dbCategory ? ($dbCategory->products_count ?? $dbCategory->products()->where('status', 1)->count()) : 0;
@@ -1059,8 +1172,8 @@
         </section>
 
         <!-- ==========================================================================
-                 SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
-                 ========================================================================== -->
+                     SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
+                     ========================================================================== -->
         <section id="blog" class="relative overflow-hidden bg-white py-16 lg:py-20">
             <!-- Floating decorative leaves -->
             <svg viewBox="0 0 64 64"
