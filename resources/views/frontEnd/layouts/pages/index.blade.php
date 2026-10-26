@@ -277,7 +277,7 @@
             <section id="flash-sales" class="relative overflow-hidden bg-cream py-12 lg:py-16">
                 <!-- Floating decorative leaf -->
                 <svg viewBox="0 0 64 64"
-                    class="pointer-events-none absolute -left-6 top-8 h-20 w-20 rotate-45 opacity-30 animate-float-slow"
+                    class="pointer-events-none absolute -left-6 bottom-10 h-20 w-20 rotate-45 opacity-30 animate-float-slow"
                     fill="none" aria-hidden="true">
                     <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#flashLeafGrad)" />
                     <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -410,7 +410,7 @@
         <section id="top-trending" class="relative overflow-hidden bg-gradient-to-b from-[#f8faf6] via-white to-[#f8faf6] py-12 lg:py-16 border-t border-tea-100/60">
             <!-- Floating decorative leaves -->
             <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -left-4 top-14 h-20 w-20 rotate-[130deg] opacity-35 animate-float-slow"
+                class="pointer-events-none absolute -left-4 bottom-10 h-20 w-20 rotate-[130deg] opacity-35 animate-float-slow"
                 fill="none" aria-hidden="true">
                 <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad1)" />
                 <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -661,7 +661,7 @@
             <section id="new-arrivals" class="relative overflow-hidden bg-white py-12 lg:py-16">
                 <!-- Floating decorative leaves -->
                 <svg viewBox="0 0 64 64"
-                    class="pointer-events-none absolute -left-6 top-10 h-24 w-24 rotate-[150deg] opacity-40 animate-float-slow"
+                    class="pointer-events-none absolute -left-6 bottom-10 h-24 w-24 rotate-[150deg] opacity-40 animate-float-slow"
                     fill="none" aria-hidden="true">
                     <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#newLeafGrad1)" />
                     <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
@@ -902,7 +902,7 @@
 
             <!-- Decorative leaves -->
             <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute left-6 top-12 h-16 w-16 rotate-[140deg] opacity-60 animate-float-slow"
+                class="pointer-events-none absolute -left-4 top-40 h-16 w-16 rotate-[140deg] opacity-50 animate-float-slow"
                 fill="none" aria-hidden="true">
                 <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#catLeafGrad1)" />
                 <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />

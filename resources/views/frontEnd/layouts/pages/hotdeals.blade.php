@@ -616,17 +616,7 @@
                                     {{ number_format($discount, 0) }}% ছাড়
                                 </span>
                             @endif
-                            @if(!empty($value->deal_of_theday) && $value->deal_of_theday == 1)
-                                <span class="tea-badge-deal">
-                                    <svg class="tea-badge-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    Deal of the Day
-                                </span>
-                            @elseif(!empty($value->feature_product) && $value->feature_product == 1)
-                                <span class="tea-badge-trending">
-                                    <svg class="tea-badge-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c6.075 0 11-4.925 11-11 0-4.004-2.146-7.51-5.362-9.432a.5.5 0 0 0-.742.536C17.26 5.12 17.5 7.152 16.5 8.5c-.83 1.116-2.03 1.76-3.23 2.5C12.07 11.75 11 12.4 11 14a1 1 0 0 0 2 0c0-.85.74-1.29 1.54-1.78 1.16-.71 2.46-1.5 3.08-2.92C19.04 10.74 20 12.78 20 15c0 4.418-3.582 8-8 8s-8-3.582-8-8c0-3.66 2.05-6.84 5.06-8.44a.5.5 0 0 0 .19-.66C8.28 4.2 8 2.3 8 .5a.5.5 0 0 0-.85-.35C3.89 3.51 1 7.91 1 13c0 6.075 4.925 11 11 11z"/></svg>
-                                    Trending
-                                </span>
-                            @endif
+
                             @if(isset($value->stock) && $value->stock <= 0)
                                 <span class="tea-stockout-badge">স্টক শেষ</span>
                             @endif
