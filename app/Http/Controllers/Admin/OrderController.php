@@ -607,11 +607,10 @@ class OrderController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Pathao courier is not configured or active']);
             }
 
-            $tokenStatus = $pathaoService->getTokenStatus();
-            if (!empty($tokenStatus['is_expired'])) {
+            if (!$pathaoService->ensureValidToken()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Pathao Bearer token has expired. Please update it in Courier API Settings.',
+                    'message' => 'Pathao access token is missing or expired. Please connect your credentials in Courier API Settings.',
                 ]);
             }
 

@@ -70,14 +70,59 @@ class ApiIntegrationController extends Controller
         $update_data = Courierapi::find($request->id);
         $input = $request->all();
         $input['status'] = $request->status ? 1 : 0;
+        
         if (isset($input['token'])) {
             $input['token'] = trim($input['token']);
         }
+        
+        // Preserve password for Pathao if left blank
+        if ($update_data && $update_data->type === 'pathao' && empty($input['password'])) {
+            unset($input['password']);
+        }
+
         $update_data->update($input);
         
         \Illuminate\Support\Facades\Cache::flush();
         
         Toastr::success('Success', 'Courier API configuration updated successfully');
+        return redirect()->back();
+    }
+
+    public function pathao_issue_token(Request $request)
+    {
+        $pathaoService = new \App\Services\PathaoService();
+
+        // If credentials are submitted via form, persist them first
+        $clientId = trim($request->input('client_id') ?? $request->input('api_key') ?? '');
+        $clientSecret = trim($request->input('client_secret') ?? $request->input('secret_key') ?? '');
+        $username = trim($request->input('username') ?? '');
+        $password = trim($request->input('password') ?? '');
+        $url = trim($request->input('url') ?? '');
+
+        $updateData = [];
+        if (!empty($clientId)) $updateData['api_key'] = $clientId;
+        if (!empty($clientSecret)) $updateData['secret_key'] = $clientSecret;
+        if (!empty($username)) $updateData['username'] = $username;
+        if (!empty($password)) $updateData['password'] = $password;
+        if (!empty($url)) $updateData['url'] = $url;
+
+        if (!empty($updateData)) {
+            Courierapi::where('type', 'pathao')->update($updateData);
+            $pathaoService->reloadConfig();
+        }
+
+        $res = $pathaoService->issueToken($clientId, $clientSecret, $username, $password);
+
+        if ($request->ajax()) {
+            return response()->json($res);
+        }
+
+        if ($res['status']) {
+            Toastr::success($res['message'], 'Pathao Connected');
+        } else {
+            Toastr::error($res['message'], 'Token Generation Failed');
+        }
+
         return redirect()->back();
     }
 }

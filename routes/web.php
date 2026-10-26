@@ -270,6 +270,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     // courierapi
     Route::get('courierapi/manage', [ApiIntegrationController::class, 'courier_manage'])->name('courierapi.manage');
     Route::post('courierapi/save', [ApiIntegrationController::class, 'courier_update'])->name('courierapi.update');
+    Route::post('courierapi/pathao/token', [ApiIntegrationController::class, 'pathao_issue_token'])->name('courierapi.pathao.token');
 
     // attribute
     Route::get('orderstatus/manage', [OrderStatusController::class, 'index'])->name('orderstatus.index');
