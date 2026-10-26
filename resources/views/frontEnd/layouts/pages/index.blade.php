@@ -274,35 +274,7 @@
                  SECTION 2: FLASH SALES (topsale = 1)
                  ========================================================================== -->
         @if(isset($hotdeal_top) && $hotdeal_top->count() > 0)
-            <section id="flash-sales" class="relative overflow-hidden bg-cream py-12 lg:py-16">
-                <!-- Floating decorative leaf -->
-                <svg viewBox="0 0 64 64"
-                    class="pointer-events-none absolute -left-6 top-8 h-20 w-20 rotate-45 opacity-30 animate-float-slow"
-                    fill="none" aria-hidden="true">
-                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#flashLeafGrad)" />
-                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                    <defs>
-                        <linearGradient id="flashLeafGrad" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#2f6f37" />
-                            <stop offset="1" stop-color="#6ba367" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-
-                <!-- Side scripts -->
-                <div
-                    class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
-                    <p>Limited</p>
-                    <p class="mt-1">Fresh</p>
-                    <p class="mt-1">Special</p>
-                </div>
-                <p
-                    class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
-                    Brew Fast
-                    <br />
-                    Sip Slow
-                </p>
-
+            <section id="flash-sales" class="relative bg-cream py-12 lg:py-16">
                 <div class="mx-auto max-w-[1400px] px-4 sm:px-6">
                     <!-- Header -->
                     <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -435,31 +407,17 @@
                 </defs>
             </svg>
 
-            <!-- Side scripts -->
-            <div
-                class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
-                <p>Artisan</p>
-                <p class="mt-1">Beloved</p>
-                <p class="mt-1">Choice</p>
-            </div>
-            <p
-                class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
-                Pure Taste
-                <br />
-                Pure Bliss
-            </p>
-
             <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
-                            <span class="h-1.5 w-1.5 rounded-full bg-tea-600"></span> Connoisseurs' Favorites • সর্বাধিক প্রশংসিত
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span> Connoisseurs' Favorites • সর্বাধিক প্রশংসিত
                         </span>
                         <h2 class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
                             TOP <span class="text-tea-700">TRENDING</span>
                             <!-- Artisanal Trending Sprout SVG -->
-                            <svg class="h-8 w-8 text-tea-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-8 w-8 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 2v8" />
                                 <path d="m4.93 10.93 1.41 1.41" />
                                 <path d="M2 18h2" />
@@ -478,8 +436,8 @@
                     <div class="flex flex-wrap items-center gap-4 sm:gap-6">
                         <ul class="hidden sm:flex items-center gap-5">
                             <li class="flex items-center gap-2">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
-                                    <svg class="h-4 w-4 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                                    <svg class="h-4 w-4 fill-emerald-700 text-emerald-700" viewBox="0 0 24 24" fill="currentColor">
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                     </svg>
                                 </span>
@@ -489,8 +447,8 @@
                                 </span>
                             </li>
                             <li class="flex items-center gap-2">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
-                                    <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                                     </svg>
                                 </span>
@@ -562,53 +520,39 @@
                 </defs>
             </svg>
 
-            <!-- Side scripts -->
-            <div
-                class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-amber-900/40 uppercase xl:block">
-                <p>Daily</p>
-                <p class="mt-1">Golden</p>
-                <p class="mt-1">Harvest</p>
-            </div>
-            <p
-                class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
-                Golden Brew
-                <br />
-                Daily Joy
-            </p>
-
             <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-gold-300/40 px-3 py-0.5 text-[10px] font-bold tracking-[0.2em] text-tea-900 uppercase border border-gold-500/60 shadow-xs">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100/90 px-3 py-0.5 text-[10px] font-bold tracking-[0.2em] text-amber-900 uppercase border border-amber-300/60 shadow-xs">
                             <span class="relative flex h-2 w-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-gold-500"></span>
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
                             </span>
                             DAILY SPECIAL HARVEST • আজকের বিশেষ অফার
                         </span>
-                        <h2 class="mt-2 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            DEAL OF THE <span class="text-gold-500">DAY</span>
-                            <svg class="h-7 w-7 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                        <h2 class="mt-2 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-amber-950 sm:text-4xl">
+                            DEAL OF THE <span class="text-amber-800">DAY</span>
+                            <svg class="h-7 w-7 fill-amber-500 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                         </h2>
-                        <p class="mt-1 text-sm text-tea-900/80">
+                        <p class="mt-1 text-sm text-amber-900/80">
                             Handpicked signature blends refreshed daily with exclusive limited savings
                         </p>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-4 sm:gap-6">
-                        <div class="hidden sm:flex items-center gap-2.5 rounded-full border border-gold-500/60 bg-white/95 px-4 py-2 shadow-xs backdrop-blur">
-                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-white shadow-xs">
+                        <div class="hidden sm:flex items-center gap-2.5 rounded-full border border-amber-300 bg-white/95 px-4 py-2 shadow-xs backdrop-blur">
+                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white">
                                 <svg class="h-4 w-4 stroke-white text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10" />
                                     <polyline points="12 6 12 12 16 14" />
                                 </svg>
                             </span>
                             <span class="text-left text-[12px] leading-tight">
-                                <span class="block font-bold text-tea-950">Refreshed Daily</span>
-                                <span class="text-tea-800/80">Valid Till Midnight</span>
+                                <span class="block font-bold text-amber-950">Refreshed Daily</span>
+                                <span class="text-amber-900/70">Valid Till Midnight</span>
                             </span>
                         </div>
                         <a href="{{ route('hotdeals') }}"
@@ -685,20 +629,6 @@
                         </linearGradient>
                     </defs>
                 </svg>
-
-                <!-- Side scripts -->
-                <div
-                    class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
-                    <p>Fresh</p>
-                    <p class="mt-1">Estate</p>
-                    <p class="mt-1">Direct</p>
-                </div>
-                <p
-                    class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
-                    Fresh Picked
-                    <br />
-                    Pure Aroma
-                </p>
 
                 <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
                     <!-- Header -->
