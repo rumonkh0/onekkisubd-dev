@@ -291,13 +291,13 @@
 
                 <!-- Side scripts -->
                 <div
-                    class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
+                    class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase">
                     <p>Limited</p>
                     <p class="mt-1">Fresh</p>
                     <p class="mt-1">Special</p>
                 </div>
                 <p
-                    class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
+                    class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
                     Brew Fast
                     <br />
                     Sip Slow
@@ -437,13 +437,13 @@
 
             <!-- Side scripts -->
             <div
-                class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
+                class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase">
                 <p>Artisan</p>
                 <p class="mt-1">Beloved</p>
                 <p class="mt-1">Choice</p>
             </div>
             <p
-                class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
+                class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
                 Pure Taste
                 <br />
                 Pure Bliss
@@ -453,13 +453,13 @@
                 <!-- Header -->
                 <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
-                            <span class="h-1.5 w-1.5 rounded-full bg-tea-600"></span> Connoisseurs' Favorites • সর্বাধিক প্রশংসিত
+                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
+                            Connoisseurs' Favorites <span class="mx-1 text-tea-400 font-normal">|</span> <span class="font-bengali tracking-normal text-tea-800/80">সর্বাধিক প্রশংসিত</span>
                         </span>
                         <h2 class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
                             TOP <span class="text-tea-700">TRENDING</span>
                             <!-- Artisanal Trending Sprout SVG -->
-                            <svg class="h-8 w-8 text-tea-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-7 w-7 text-tea-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 2v8" />
                                 <path d="m4.93 10.93 1.41 1.41" />
                                 <path d="M2 18h2" />
@@ -564,13 +564,13 @@
 
             <!-- Side scripts -->
             <div
-                class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-amber-900/40 uppercase xl:block">
+                class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-amber-900/40 uppercase">
                 <p>Daily</p>
                 <p class="mt-1">Golden</p>
                 <p class="mt-1">Harvest</p>
             </div>
             <p
-                class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
+                class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
                 Golden Brew
                 <br />
                 Daily Joy
@@ -688,13 +688,13 @@
 
                 <!-- Side scripts -->
                 <div
-                    class="pointer-events-none absolute left-6 top-14 hidden text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase xl:block">
+                    class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase">
                     <p>Fresh</p>
                     <p class="mt-1">Estate</p>
                     <p class="mt-1">Direct</p>
                 </div>
                 <p
-                    class="pointer-events-none absolute right-10 top-12 hidden -rotate-6 font-script text-3xl leading-tight text-tea-900/30 xl:block">
+                    class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
                     Fresh Picked
                     <br />
                     Pure Aroma

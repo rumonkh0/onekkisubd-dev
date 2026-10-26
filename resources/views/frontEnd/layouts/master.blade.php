@@ -135,6 +135,20 @@
         }
 
         /* ========================================================
+           SIDE WATERMARK LABELS & SCRIPT QUOTES
+           Only display when screen width >= 1700px so they sit
+           safely in the outer gutters and NEVER overlap container content.
+           ======================================================== */
+        .tea-side-watermark {
+            display: none !important;
+        }
+        @media (min-width: 1700px) {
+            .tea-side-watermark {
+                display: block !important;
+            }
+        }
+
+        /* ========================================================
            RESPONSIVE BRAND LOGO SIZING
            ======================================================== */
         .tea-header-logo {
