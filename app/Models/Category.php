@@ -46,16 +46,16 @@ class Category extends Model
     
     public function homeproducts()
     {
-        return $this->hasMany(Product::class, 'category_id');
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1);
     }
     public function menuproducts()
     {
-        return $this->hasMany(Product::class, 'category_id')->limit(8);
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->limit(8);
     }
 
     public function products()
     {
-        return $this->hasMany(Product::class, 'category_id')->select('id', 'name', 'slug', 'category_id', 'new_price', 'old_price')->orderBy('id','DESC');
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->select('id', 'name', 'slug', 'category_id', 'new_price', 'old_price')->orderBy('id','DESC');
     }
     
     

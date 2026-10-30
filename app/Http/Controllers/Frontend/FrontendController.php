@@ -175,10 +175,17 @@ class FrontendController extends Controller
 
         $homeproducts = Category::where(['front_view' => 1, 'status' => 1])
             ->orderBy('id', 'ASC')
-            ->with(['products', 'products.image', 'products.prosize', 'products.procolor'])
+            ->with([
+                'products' => function ($q) {
+                    $q->where('status', 1);
+                },
+                'products.image',
+                'products.prosize',
+                'products.procolor'
+            ])
             ->get()
             ->map(function ($query) {
-                $query->setRelation('products', $query->products->take(12));
+                $query->setRelation('products', $query->products->where('status', 1)->take(12));
                 return $query;
             });
         //  return $frontcategory;
@@ -190,10 +197,17 @@ class FrontendController extends Controller
 
         $homeproducts = Category::where(['front_view' => 1, 'status' => 1])
             ->orderBy('id', 'ASC')
-            ->with(['products', 'products.image', 'products.prosize', 'products.procolor'])
+            ->with([
+                'products' => function ($q) {
+                    $q->where('status', 1);
+                },
+                'products.image',
+                'products.prosize',
+                'products.procolor'
+            ])
             ->get()
             ->map(function ($query) {
-                $query->setRelation('products', $query->products->take(12));
+                $query->setRelation('products', $query->products->where('status', 1)->take(12));
                 return $query;
             });
         return view('frontEnd.layouts.pages.shop', compact('homeproducts'));
