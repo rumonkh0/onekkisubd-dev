@@ -742,13 +742,31 @@
             formData.append('stock', stock.val());
             formData.append('pro_unit', pro_unit.val());
             formData.append('pro_video', pro_video.val());
-            formData.append('description', description.val());
+            var descVal = description.val();
+            if ($('#description').summernote) {
+                try {
+                    var sCode = $('#description').summernote('code');
+                    if (sCode && sCode !== '<p><br></p>') {
+                        descVal = sCode;
+                    }
+                } catch(e) {}
+            }
+            formData.append('description', descVal);
             formData.append('status', status.val());
             formData.append('topsale', topsale.val());
             formData.append('deal_of_theday', deal_of_theday.val());
             formData.append('feature_product', feature_product.val());
             formData.append('type', type.val());
-            formData.append('short_des', short_des.val());
+            var shortDesVal = short_des.val();
+            if ($('#short_des').summernote) {
+                try {
+                    var sCodeShort = $('#short_des').summernote('code');
+                    if (sCodeShort && sCodeShort !== '<p><br></p>') {
+                        shortDesVal = sCodeShort;
+                    }
+                } catch(e) {}
+            }
+            formData.append('short_des', shortDesVal);
             formData.append('prebooking', prebooking.val());
             if ($('#productimage')[0] && $('#productimage')[0].files && $('#productimage')[0].files[0]) {
                 formData.append('image', $('#productimage')[0].files[0]);
@@ -790,25 +808,31 @@
 
             formData.append('_token', token);
             formData.append('product_id', $("#product_id").val());
+            var $submitBtn = $("#submit");
+            $submitBtn.prop('disabled', true).val('Updating...');
+
             $.ajax({
                 type: "POST",
-                url: '{{ url('admin/products/update') }}',
+                url: '{{ route('products.update', [], false) }}',
                 data: formData,
                 contentType: false,
                 processData: false,
 
                 success: function(response) {
-                    var data = JSON.parse(response);
+                    var data = typeof response === 'string' ? JSON.parse(response) : response;
                     if (data["status"] === "success") {
                         toastr.success(data["message"]);
-                        window.location.href = "{{ url('admin/products/manage') }}";
+                        window.location.href = "{{ route('products.index', [], false) }}";
 
                     } else {
-                        toastr.error(data["message"])
+                        toastr.error(data["message"]);
+                        $submitBtn.prop('disabled', false).val('Update');
                     }
                 },
                 error: function(xhr) {
-                    toastr.error('Error occurred while updating product. ' + (xhr.responseJSON?.message || 'Server error (' + xhr.status + ')'));
+                    $submitBtn.prop('disabled', false).val('Update');
+                    var errMsg = xhr.responseJSON?.message || (xhr.responseText && xhr.responseText.length < 200 ? xhr.responseText : ('Server error (' + xhr.status + ')'));
+                    toastr.error('Error occurred while updating product. ' + errMsg);
                 }
             });
         });
@@ -829,7 +853,7 @@
             },
             ajax: {
                 type: 'GET',
-                url: '{{ url('admin/product/color') }}',
+                url: '/admin/product/color',
                 processResults: function(data) {
                     var data = $.parseJSON(data);
                     return {
@@ -867,7 +891,7 @@
             },
             ajax: {
                 type: 'GET',
-                url: '{{ url('admin/product/size-weight') }}',
+                url: '/admin/product/size-weight',
                 processResults: function(data) {
                     var data = $.parseJSON(data);
                     return {
@@ -929,19 +953,21 @@
         $(document).on("click", ".mdelete-btn", function() {
             var mID = $(this).closest("tr").find("#mID").val();
             $(this).closest("tr").remove();
-            $.ajax({
-                type: "GET",
-                url: '{{ url('admin/remove-varient/') }}' + '/' + mID,
+            if (mID) {
+                $.ajax({
+                    type: "GET",
+                    url: '/admin/remove-varient/' + mID,
 
-                success: function(response) {
-                    var data = JSON.parse(response);
-                    if (data["status"] === "success") {
-                        toastr.success(data["message"]);
-                    } else {
-                        toastr.error(data["message"])
+                    success: function(response) {
+                        var data = JSON.parse(response);
+                        if (data["status"] === "success") {
+                            toastr.success(data["message"]);
+                        } else {
+                            toastr.error(data["message"])
+                        }
                     }
-                }
-            });
+                });
+            }
         });
         $(document).on("click", ".sdelete-btn", function() {
             var sID = $(this).closest("tr").find("#sID").val();
@@ -950,7 +976,7 @@
             if (sID) {
                 $.ajax({
                     type: "GET",
-                    url: '{{ url('admin/remove-size/') }}' + '/' + sID,
+                    url: '/admin/remove-size/' + sID,
 
                     success: function(response) {
                         var data = JSON.parse(response);
@@ -1130,7 +1156,7 @@
         if (ajaxId) {
             $.ajax({
                 type: "GET",
-                url: "{{ url('ajax-product-subcategory') }}?category_id=" + ajaxId,
+                url: "/ajax-product-subcategory?category_id=" + ajaxId,
                 success: function(res) {
                     if (res) {
                         $("#subcategory_id").empty();
@@ -1155,7 +1181,7 @@
         if (ajaxId) {
             $.ajax({
                 type: "GET",
-                url: "{{ url('ajax-product-childcategory') }}?subcategory_id=" + ajaxId,
+                url: "/ajax-product-childcategory?subcategory_id=" + ajaxId,
                 success: function(res) {
                     if (res) {
                         $("#childcategory_id").empty();

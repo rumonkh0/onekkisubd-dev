@@ -41,6 +41,10 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
+        if (config('app.env') === 'production' || env('APP_ENV') === 'production' || request()->header('X-Forwarded-Proto') === 'https' || request()->isSecure()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         try {
             $shurjopay = \Illuminate\Support\Facades\Cache::remember('global_shurjopay', 3600, function () {
                 return PaymentGateway::where(['status' => 1, 'type' => 'shurjopay'])->first();

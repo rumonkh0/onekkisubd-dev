@@ -180,22 +180,23 @@ class ProductController extends Controller
                 foreach ($sizes as $si) {
                     $size = new Productsize();
                     $size->product_id = $product->id;
-                    // $size->size_id = $si['sizeID'];
                     $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
-                    $size->size = $si['size'];
-                    $size->quantity = $si['quantity'];
-                    $size->RegularPrice = $si['RegularPrice'];
-                    $size->Discount = $si['Discount'];
-                    $size->SalePrice = $si['RegularPrice'] - $si['Discount'];
+                    $size->size = $si['size'] ?? '';
+                    $regularPrice = isset($si['RegularPrice']) && is_numeric($si['RegularPrice']) ? (float)$si['RegularPrice'] : 0;
+                    $discount = isset($si['Discount']) && is_numeric($si['Discount']) ? (float)$si['Discount'] : 0;
+                    $size->quantity = isset($si['quantity']) && is_numeric($si['quantity']) ? (int)$si['quantity'] : 0;
+                    $size->RegularPrice = $regularPrice;
+                    $size->Discount = $discount;
+                    $size->SalePrice = $regularPrice - $discount;
                     $size->save();
                 }
             }
         }
 
-        $response['status'] = 'success';
-        $response['message'] = 'Product Create Sucessfully';
-        return json_encode($response);
-        die();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Product Created Successfully'
+        ]);
     }
 
     public function edit($id)
@@ -508,37 +509,43 @@ class ProductController extends Controller
             }
             if (!empty($sizes)) {
                 foreach ($sizes as $si) {
+                    $regularPrice = isset($si['RegularPrice']) && is_numeric($si['RegularPrice']) ? (float)$si['RegularPrice'] : 0;
+                    $discount = isset($si['Discount']) && is_numeric($si['Discount']) ? (float)$si['Discount'] : 0;
+                    $quantity = isset($si['quantity']) && is_numeric($si['quantity']) ? (int)$si['quantity'] : 0;
+                    $sizeName = $si['size'] ?? '';
+                    $sizeId = !empty($si['sizeID']) ? $si['sizeID'] : 0;
+
                     if (isset($si['sID'])) {
                         $size = Productsize::where('id', $si['sID'])->first();
-                        $size->product_id = $product->id;
-                        // $size->size_id = $si['sizeID'];
-                        $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
-                        $size->size = $si['size'];
-                        $size->quantity = $si['quantity'];
-                        $size->RegularPrice = $si['RegularPrice'];
-                        $size->Discount = $si['Discount'];
-                        $size->SalePrice = $si['RegularPrice'] - $si['Discount'];
-                        $size->update();
+                        if ($size) {
+                            $size->product_id = $product->id;
+                            $size->size_id = $sizeId;
+                            $size->size = $sizeName;
+                            $size->quantity = $quantity;
+                            $size->RegularPrice = $regularPrice;
+                            $size->Discount = $discount;
+                            $size->SalePrice = $regularPrice - $discount;
+                            $size->update();
+                        }
                     } else {
                         $size = new Productsize();
                         $size->product_id = $product->id;
-                        // $size->size_id = $si['sizeID'];
-                        $size->size_id = !empty($si['sizeID']) ? $si['sizeID'] : 0;
-                        $size->size = $si['size'];
-                        $size->quantity = $si['quantity'];
-                        $size->RegularPrice = $si['RegularPrice'];
-                        $size->Discount = $si['Discount'];
-                        $size->SalePrice = $si['RegularPrice'] - $si['Discount'];
+                        $size->size_id = $sizeId;
+                        $size->size = $sizeName;
+                        $size->quantity = $quantity;
+                        $size->RegularPrice = $regularPrice;
+                        $size->Discount = $discount;
+                        $size->SalePrice = $regularPrice - $discount;
                         $size->save();
                     }
                 }
             }
         }
 
-        $response['status'] = 'success';
-        $response['message'] = 'Product Updated Sucessfully';
-        return json_encode($response);
-        die();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Product Updated Successfully'
+        ]);
     }
 
     public function inactive(Request $request)
