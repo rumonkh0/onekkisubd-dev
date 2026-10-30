@@ -437,7 +437,7 @@
                         <!-- col end -->
                         <div class="col-sm-3 mb-3">
                             <div class="form-group">
-                                <label for="deal_of_theday" class="d-block">Top Trending</label>
+                                <label for="deal_of_theday" class="d-block">Deal Of The Day</label>
                                 <label class="switch">
                                     <input type="checkbox" value="1" id="deal_of_theday"
                                         name="deal_of_theday" />
