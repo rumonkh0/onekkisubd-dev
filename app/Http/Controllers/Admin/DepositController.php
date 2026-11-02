@@ -82,6 +82,7 @@ class DepositController extends Controller
         $deposit->date = $request->date ? $request->date : Carbon::now()->toDateString();
         $deposit->status = $request->status ? 1 : 0;
 
+        $deposit->file = '';
         if ($request->file('file')) {
             $image = $request->file('file');
 
@@ -155,7 +156,7 @@ class DepositController extends Controller
         if ($request->file('file')) {
             $image = $request->file('file');
 
-            if (!is_null($deposit->file) && file_exists($deposit->file)) {
+            if (!empty($deposit->file) && file_exists($deposit->file)) {
                 unlink($deposit->file);
             }
 

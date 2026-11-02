@@ -100,9 +100,11 @@
                         <div class="form-group">
                             <label for="file" class="form-label">Image </label>
                             <input type="file" class="form-control @error('file') is-invalid @enderror " name="file" id="file">
+                            @if(!empty($deposit->file))
                             <div class="mt-2">
                                 <img src="{{ asset($deposit->file) }}" alt="" width="70">
                             </div>
+                            @endif
                             @error('file')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

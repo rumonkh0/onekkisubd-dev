@@ -82,6 +82,7 @@ class ExpenseController extends Controller
         $expense->date = $request->date ? $request->date : Carbon::now()->toDateString();
         $expense->status = $request->status ? 1 : 0;
 
+        $expense->file = '';
         if ($request->file('file')) {
             $image = $request->file('file');
 
@@ -155,7 +156,7 @@ class ExpenseController extends Controller
         if ($request->file('file')) {
             $image = $request->file('file');
 
-            if (!is_null($expense->file) && file_exists($expense->file)) {
+            if (!empty($expense->file) && file_exists($expense->file)) {
                 unlink($expense->file);
             }
 
