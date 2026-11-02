@@ -32,9 +32,21 @@ class DashboardController extends Controller
         $latest_customer = Customer::latest()->limit(5)->get();
         $today_delivery = Order::whereIn('order_status', ['5', '6'])->where('created_at', '>=', Carbon::today())->count();
         $total_delivery = Order::whereIn('order_status', ['5', '6'])->count();
-        $last_week = Order::whereIn('order_status', ['5', '6'])->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-        $last_month = Order::whereIn('order_status', ['5', '6'])->whereMonth('created_at', '=', Carbon::now()->subMonth()->month)->count();
-        $monthly_sale = Order::select(DB::raw('DATE(created_at) as date','created_at'))->selectRaw("SUM(amount) as amount")->whereIn('order_status', ['5', '6'])->groupBy('date')->orderBy('date', 'asc')->limit(30)->get();
+        $last_week = Order::whereIn('order_status', ['5', '6'])->whereBetween('created_at', [
+            Carbon::now()->subWeek()->startOfWeek(),
+            Carbon::now()->subWeek()->endOfWeek(),
+        ])->count();
+        $lastMonth = Carbon::now()->subMonth();
+        $last_month = Order::whereIn('order_status', ['5', '6'])
+            ->whereYear('created_at', $lastMonth->year)
+            ->whereMonth('created_at', $lastMonth->month)
+            ->count();
+        $monthly_sale = Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
+            ->whereIn('order_status', ['5', '6'])
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
         // order
         $pending_order = Order::where(['order_status' => '1'])->count();

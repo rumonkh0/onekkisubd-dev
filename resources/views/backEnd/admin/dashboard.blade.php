@@ -336,7 +336,7 @@
                     <h4 class="header-title m-0">
                         <i class="fe-download text-success"></i> Deposits & Inflow Breakdown
                     </h4>
-                    <span class="badge bg-success">৳{{ number_format($total_payment, 0) }} Total</span>
+                    <span class="badge bg-success">৳{{ number_format($total_payment, 2) }} Total</span>
                 </div>
                 <div class="card-body">
                     <div class="breakdown-row">
@@ -366,7 +366,7 @@
                     <h4 class="header-title m-0">
                         <i class="fe-upload text-danger"></i> Operating Expenses Breakdown
                     </h4>
-                    <span class="badge bg-danger">৳{{ number_format($total_cost, 0) }} Total</span>
+                    <span class="badge bg-danger">৳{{ number_format($total_cost, 2) }} Total</span>
                 </div>
                 <div class="card-body">
                     <div class="row">

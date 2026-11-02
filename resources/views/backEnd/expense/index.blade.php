@@ -210,9 +210,9 @@
                             </div>
                             <div class="col-8">
                                 <div class="text-end">
-                                    <h3 class="text-dark mt-1">৳ {{ number_format($total_amount, 2) }}</h3>
+                                    <h3 class="text-dark mt-1">৳ {{ number_format($active_amount, 2) }}</h3>
                                     <p class="text-muted mb-1 text-truncate">
-                                        Total Expenses
+                                        Active Expenses ({{ $active_count }})
                                         @if(request()->filled('start_date') || request()->filled('end_date') || request()->filled('expense_type') || request()->filled('payment_type') || request()->filled('status'))
                                             <span class="badge bg-soft-info text-info font-11">Filtered</span>
                                         @endif
@@ -234,8 +234,8 @@
                             </div>
                             <div class="col-8">
                                 <div class="text-end">
-                                    <h3 class="text-dark mt-1">৳ {{ number_format($active_amount, 2) }}</h3>
-                                    <p class="text-muted mb-1 text-truncate">Active Expenses ({{ $active_count }})</p>
+                                    <h3 class="text-dark mt-1">৳ {{ number_format($total_amount, 2) }}</h3>
+                                    <p class="text-muted mb-1 text-truncate">Total (All {{ $total_count }} Entries)</p>
                                 </div>
                             </div>
                         </div>

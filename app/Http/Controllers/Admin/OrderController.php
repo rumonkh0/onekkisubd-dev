@@ -805,11 +805,12 @@ class OrderController extends Controller
 
         // Apply date range filter if provided
         if ($request->start_date && $request->end_date) {
-            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+            $query->whereDate('created_at', '>=', $request->start_date)
+                  ->whereDate('created_at', '<=', $request->end_date);
         } elseif ($request->start_date) {
-            $query->whereDate('updated_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '>=', $request->start_date);
         } elseif ($request->end_date) {
-            $query->whereDate('updated_at', '<=', $request->end_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
         // Calculate totals over entire matched dataset
