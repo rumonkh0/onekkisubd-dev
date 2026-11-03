@@ -38,9 +38,9 @@ class OrderController extends Controller
             $statusIds = (array) $request->status_id;
             $query->whereIn('order_status', $statusIds);
         } elseif ($slug !== 'all') {
-            $statusModel = OrderStatus::where('slug', $slug)->first();
-            if ($statusModel) {
-                $query->where('order_status', $statusModel->id);
+            $statusIds = OrderStatus::where('slug', $slug)->pluck('id')->toArray();
+            if (!empty($statusIds)) {
+                $query->whereIn('order_status', $statusIds);
             }
         }
 
@@ -165,11 +165,17 @@ class OrderController extends Controller
                 'orders_count' => Order::count(),
             ];
         } else {
-            $order_status = OrderStatus::where('slug', $slug)->withCount('orders')->first();
-            if (!$order_status) {
+            $statuses = OrderStatus::where('slug', $slug)->withCount('orders')->get();
+            if ($statuses->isNotEmpty()) {
+                $order_status = (object) [
+                    'id' => $statuses->first()->id,
+                    'name' => $statuses->first()->name,
+                    'orders_count' => $statuses->sum('orders_count'),
+                ];
+            } else {
                 $order_status = (object) [
                     'id' => null,
-                    'name' => ucfirst($slug),
+                    'name' => ucfirst(str_replace('-', ' ', $slug)),
                     'orders_count' => 0,
                 ];
             }

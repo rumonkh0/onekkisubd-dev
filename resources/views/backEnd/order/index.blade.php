@@ -617,6 +617,8 @@
                                                 $stClass = 'badge-status-pending';
                                                 if (stripos($stName, 'process') !== false || stripos($stName, 'confirm') !== false) {
                                                     $stClass = 'badge-status-processing';
+                                                } elseif (stripos($stName, 'pickup') !== false || stripos($stName, 'assign') !== false) {
+                                                    $stClass = 'badge-status-processing';
                                                 } elseif (stripos($stName, 'courier') !== false || stripos($stName, 'ship') !== false) {
                                                     $stClass = 'badge-status-courier';
                                                 } elseif (stripos($stName, 'deliver') !== false || stripos($stName, 'complete') !== false) {

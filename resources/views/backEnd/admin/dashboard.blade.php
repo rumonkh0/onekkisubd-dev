@@ -181,104 +181,103 @@
             <span class="badge bg-light text-dark">{{ $total_order }} Total Orders</span>
         </div>
         <div class="card-body">
-            <div class="row g-3">
-                <!-- Pending -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'pending']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-clock text-warning"></i> Pending
-                            </span>
-                            <span class="pipeline-card-badge bg-warning bg-opacity-10 text-warning">
-                                {{ $pending_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Processing -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'processing']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-loader text-info"></i> Processing
-                            </span>
-                            <span class="pipeline-card-badge bg-info bg-opacity-10 text-info">
-                                {{ $confirm_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- In Courier -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'in-courier']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-truck text-purple"></i> In Courier
-                            </span>
-                            <span class="pipeline-card-badge bg-purple bg-opacity-10 text-purple" style="color: #8b5cf6;">
-                                {{ $shipped_courier }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Delivery Done -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'completed']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-check-circle text-success"></i> Delivered
-                            </span>
-                            <span class="pipeline-card-badge bg-success bg-opacity-10 text-success">
-                                {{ $delivery_done_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Pre-Order -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'on-the-way']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-calendar text-secondary"></i> Pre Order
-                            </span>
-                            <span class="pipeline-card-badge bg-secondary bg-opacity-10 text-secondary">
-                                {{ $pre_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Return -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'return']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-rotate-ccw text-warning"></i> Return
-                            </span>
-                            <span class="pipeline-card-badge bg-warning bg-opacity-10 text-warning">
-                                {{ $return_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Cancel -->
-                <div class="col-6 col-md-4 col-xl">
-                    <a href="{{ route('admin.orders', ['slug' => 'on-hold']) }}" class="pipeline-card">
-                        <div class="pipeline-card-inner">
-                            <span class="pipeline-card-title">
-                                <i class="fe-x-circle text-danger"></i> Cancelled
-                            </span>
-                            <span class="pipeline-card-badge bg-danger bg-opacity-10 text-danger">
-                                {{ $total_cancel_order }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
+            @php
+                $statusMeta = [
+                    'pending' => [
+                        'icon' => 'fe-clock',
+                        'color' => 'text-warning',
+                        'badge' => 'bg-warning bg-opacity-10 text-warning',
+                    ],
+                    'processing' => [
+                        'icon' => 'fe-loader',
+                        'color' => 'text-info',
+                        'badge' => 'bg-info bg-opacity-10 text-info',
+                    ],
+                    'pickup' => [
+                        'icon' => 'fe-package',
+                        'color' => 'text-primary',
+                        'badge' => 'bg-primary bg-opacity-10 text-primary',
+                    ],
+                    'in-courier' => [
+                        'icon' => 'fe-truck',
+                        'color' => 'text-purple',
+                        'badge' => 'bg-purple bg-opacity-10 text-purple',
+                        'style' => 'color: #8b5cf6;',
+                    ],
+                    'assigned-for-delivery' => [
+                        'icon' => 'fe-navigation',
+                        'color' => 'text-primary',
+                        'badge' => 'bg-primary bg-opacity-10 text-primary',
+                    ],
+                    'delivered' => [
+                        'icon' => 'fe-check-circle',
+                        'color' => 'text-success',
+                        'badge' => 'bg-success bg-opacity-10 text-success',
+                    ],
+                    'completed' => [
+                        'icon' => 'fe-check-square',
+                        'color' => 'text-success',
+                        'badge' => 'bg-success bg-opacity-10 text-success',
+                    ],
+                    'partial-delivery' => [
+                        'icon' => 'fe-pie-chart',
+                        'color' => 'text-warning',
+                        'badge' => 'bg-warning bg-opacity-10 text-warning',
+                    ],
+                    'on-the-way' => [
+                        'icon' => 'fe-calendar',
+                        'color' => 'text-secondary',
+                        'badge' => 'bg-secondary bg-opacity-10 text-secondary',
+                    ],
+                    'pre-order-shorif' => [
+                        'icon' => 'fe-calendar',
+                        'color' => 'text-secondary',
+                        'badge' => 'bg-secondary bg-opacity-10 text-secondary',
+                    ],
+                    'delivery-failed' => [
+                        'icon' => 'fe-alert-triangle',
+                        'color' => 'text-danger',
+                        'badge' => 'bg-danger bg-opacity-10 text-danger',
+                    ],
+                    'return' => [
+                        'icon' => 'fe-rotate-ccw',
+                        'color' => 'text-warning',
+                        'badge' => 'bg-warning bg-opacity-10 text-warning',
+                    ],
+                    'paid-return' => [
+                        'icon' => 'fe-dollar-sign',
+                        'color' => 'text-warning',
+                        'badge' => 'bg-warning bg-opacity-10 text-warning',
+                    ],
+                    'on-hold' => [
+                        'icon' => 'fe-x-circle',
+                        'color' => 'text-danger',
+                        'badge' => 'bg-danger bg-opacity-10 text-danger',
+                    ],
+                ];
+            @endphp
+            <div class="row g-2">
+                @foreach ($pipeline_statuses as $st)
+                    @php
+                        $meta = $statusMeta[$st->slug] ?? [
+                            'icon' => 'fe-tag',
+                            'color' => 'text-secondary',
+                            'badge' => 'bg-secondary bg-opacity-10 text-secondary',
+                        ];
+                    @endphp
+                    <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                        <a href="{{ route('admin.orders', ['slug' => $st->slug]) }}" class="pipeline-card d-block h-100 mb-0">
+                            <div class="pipeline-card-inner">
+                                <span class="pipeline-card-title text-truncate" title="{{ $st->name }}">
+                                    <i class="{{ $meta['icon'] }} {{ $meta['color'] }}"></i> {{ $st->name }}
+                                </span>
+                                <span class="pipeline-card-badge {{ $meta['badge'] }}" @if(isset($meta['style'])) style="{{ $meta['style'] }}" @endif>
+                                    {{ $st->orders_count }}
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -480,6 +479,8 @@
                                                 $statusName = $order->status ? $order->status->name : 'Status ' . $order->order_status;
                                                 $statusClass = 'badge-status-pending';
                                                 if (stripos($statusName, 'process') !== false || stripos($statusName, 'confirm') !== false) {
+                                                    $statusClass = 'badge-status-processing';
+                                                } elseif (stripos($statusName, 'pickup') !== false || stripos($statusName, 'assign') !== false) {
                                                     $statusClass = 'badge-status-processing';
                                                 } elseif (stripos($statusName, 'courier') !== false || stripos($statusName, 'ship') !== false) {
                                                     $statusClass = 'badge-status-courier';

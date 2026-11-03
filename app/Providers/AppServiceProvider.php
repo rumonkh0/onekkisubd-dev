@@ -114,7 +114,7 @@ class AppServiceProvider extends ServiceProvider
             view()->share('pendingorder', $pendingorder);
 
             $orderstatus = \Illuminate\Support\Facades\Cache::remember('global_orderstatus', 3600, function () {
-                return OrderStatus::get();
+                return OrderStatus::where('status', 1)->get()->unique('slug');
             });
             view()->share('orderstatus', $orderstatus);
 

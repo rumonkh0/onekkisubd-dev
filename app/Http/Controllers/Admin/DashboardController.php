@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Customer;
@@ -30,31 +31,67 @@ class DashboardController extends Controller
         $total_customer = Customer::count();
         $latest_order = Order::latest()->limit(5)->with('customer','product','product.image','status')->get();
         $latest_customer = Customer::latest()->limit(5)->get();
-        $today_delivery = Order::whereIn('order_status', ['5', '6'])->where('created_at', '>=', Carbon::today())->count();
-        $total_delivery = Order::whereIn('order_status', ['5', '6'])->count();
-        $last_week = Order::whereIn('order_status', ['5', '6'])->whereBetween('created_at', [
+
+        // Successful delivered / completed statuses (Completed = 6, Delivered = 12, Partial Delivery = 13)
+        $delivery_statuses = ['6', '12', '13'];
+
+        $today_delivery = Order::whereIn('order_status', $delivery_statuses)->where('created_at', '>=', Carbon::today())->count();
+        $total_delivery = Order::whereIn('order_status', $delivery_statuses)->count();
+        $last_week = Order::whereIn('order_status', $delivery_statuses)->whereBetween('created_at', [
             Carbon::now()->subWeek()->startOfWeek(),
             Carbon::now()->subWeek()->endOfWeek(),
         ])->count();
         $lastMonth = Carbon::now()->subMonth();
-        $last_month = Order::whereIn('order_status', ['5', '6'])
+        $last_month = Order::whereIn('order_status', $delivery_statuses)
             ->whereYear('created_at', $lastMonth->year)
             ->whereMonth('created_at', $lastMonth->month)
             ->count();
         $monthly_sale = Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
-            ->whereIn('order_status', ['5', '6'])
+            ->whereIn('order_status', $delivery_statuses)
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get();
 
-        // order
+        // Dynamic Pipeline statuses (aggregated by slug so duplicates like 'return' merge counts)
+        $sortOrder = [
+            'pending' => 1,
+            'processing' => 2,
+            'pickup' => 3,
+            'in-courier' => 4,
+            'assigned-for-delivery' => 5,
+            'delivered' => 6,
+            'completed' => 7,
+            'partial-delivery' => 8,
+            'on-the-way' => 9,
+            'pre-order-shorif' => 10,
+            'delivery-failed' => 11,
+            'return' => 12,
+            'paid-return' => 13,
+            'on-hold' => 14,
+        ];
+
+        $pipeline_statuses = OrderStatus::where('status', 1)
+            ->withCount('orders')
+            ->get()
+            ->groupBy('slug')
+            ->map(function ($group) {
+                $first = $group->first();
+                $first->orders_count = $group->sum('orders_count');
+                return $first;
+            })
+            ->sortBy(function ($item) use ($sortOrder) {
+                return $sortOrder[$item->slug] ?? 99;
+            })
+            ->values();
+
+        // Legacy individual order status counts (kept for backward compatibility)
         $pending_order = Order::where(['order_status' => '1'])->count();
         $confirm_order = Order::where(['order_status' => '2'])->count();
-        $pre_order = Order::where(['order_status' => '3'])->count();
+        $pre_order = Order::whereIn('order_status', ['3', '9'])->count();
         $shipped_courier = Order::where(['order_status' => '5'])->count();
-        $return_order = Order::where(['order_status' => '8'])->count();
-        $delivery_done_order = Order::where(['order_status' => '6'])->count();
+        $return_order = Order::whereIn('order_status', ['8', '15'])->count();
+        $delivery_done_order = Order::whereIn('order_status', ['6', '12'])->count();
         $total_cancel_order = Order::where(['order_status' => '4'])->count();
 
         // inventory
@@ -92,7 +129,7 @@ class DashboardController extends Controller
         // Net balance for the filtered period
         $account_balance = $total_payment - $total_cost;
 
-        return view('backEnd.admin.dashboard',compact('total_order','today_order','total_product','total_customer','latest_order','latest_customer','today_delivery','total_delivery','last_week','last_month','monthly_sale', 'pending_order', 'pre_order', 'confirm_order', 'shipped_courier', 'return_order', 'delivery_done_order', 'total_cancel_order','categories', 'courier_payment', 'officesale_payment', 'expense_others', 'total_payment', 'boost_cost', 'office_cost', 'bank_deposit', 'packaging_cost', 'transport_cost', 'others_expense_cost', 'total_cost', 'account_balance', 'lifetime_balance'));
+        return view('backEnd.admin.dashboard',compact('total_order','today_order','total_product','total_customer','latest_order','latest_customer','today_delivery','total_delivery','last_week','last_month','monthly_sale', 'pipeline_statuses', 'pending_order', 'pre_order', 'confirm_order', 'shipped_courier', 'return_order', 'delivery_done_order', 'total_cancel_order','categories', 'courier_payment', 'officesale_payment', 'expense_others', 'total_payment', 'boost_cost', 'office_cost', 'bank_deposit', 'packaging_cost', 'transport_cost', 'others_expense_cost', 'total_cost', 'account_balance', 'lifetime_balance'));
     }
     public function changepassword(){
         return view('backEnd.admin.changepassword');
