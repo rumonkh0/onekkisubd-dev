@@ -141,13 +141,13 @@ class BlogController extends Controller
 
         // front blog
         public function blog($id){
-            $blog = Blog::find($id);
+            $blog = is_numeric($id) ? Blog::find($id) : null;
             if (!$blog) {
                 abort(404, 'Blog article not found');
             }
-            $resentpost = Blog::where('status', 1)->where('id', '!=', $id)->latest()->take(5)->get();
-            $prevPost = Blog::where('status', 1)->where('id', '<', $id)->orderBy('id', 'desc')->first();
-            $nextPost = Blog::where('status', 1)->where('id', '>', $id)->orderBy('id', 'asc')->first();
+            $resentpost = Blog::where('status', 1)->where('id', '!=', $blog->id)->latest()->take(5)->get();
+            $prevPost = Blog::where('status', 1)->where('id', '<', $blog->id)->orderBy('id', 'desc')->first();
+            $nextPost = Blog::where('status', 1)->where('id', '>', $blog->id)->orderBy('id', 'asc')->first();
 
             return view('frontEnd.blog.blog', compact('blog', 'resentpost', 'prevPost', 'nextPost'));
         }

@@ -1380,7 +1380,7 @@
                             @php
                                 $tag = $blogCategoryTags[$idx % count($blogCategoryTags)];
                                 $blogImgNum = ($idx % 5) + 1;
-                                $blogImg = asset('images/blogs/blog-' . $blogImgNum . '.webp');
+                                $blogImg = !empty($b->b_image) ? asset($b->b_image) : asset('images/blogs/blog-' . $blogImgNum . '.webp');
                                 $bTitle = !empty($b->b_title) ? $b->b_title : 'রোজেলা চায়ের স্বাস্থ্য উপকারিতা (Health Benefits of Hibiscus Roselle)';
                                 $bExcerpt = !empty($b->b_short_des)
                                     ? Str::limit(strip_tags($b->b_short_des), 110)
@@ -1388,7 +1388,8 @@
                                         ? Str::limit(strip_tags($b->b_long_des), 110)
                                         : 'রোজেলা চা শুধু সুস্বাদু নয়, এটি স্বাস্থ্যের জন্যও অত্যন্ত উপকারী। এতে রয়েছে প্রাকৃতিক অ্যান্টিঅক্সিডেন্ট...');
                                 $bDate = !empty($b->b_date) ? date('d M Y', strtotime($b->b_date)) : '12 Sep 2026';
-                                $bUrl = url('blog-details/' . ($b->b_slug ?? $b->id));
+                                $bAuthor = !empty($b->b_author) ? $b->b_author : 'Admin';
+                                $bUrl = route('blog_details', $b->id);
                             @endphp
 
                             <article data-card
@@ -1422,7 +1423,7 @@
                                                 </svg>
                                             </span>
                                             <span class="leading-tight">
-                                                <span class="block text-[11.5px] font-semibold text-tea-950">Admin</span>
+                                                <span class="block text-[11.5px] font-semibold text-tea-950">{{ $bAuthor }}</span>
                                                 <span class="text-[10px] text-tea-800">{{ $bDate }}</span>
                                             </span>
                                         </div>

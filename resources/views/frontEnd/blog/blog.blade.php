@@ -519,7 +519,7 @@
                 @if($prevPost || $nextPost)
                     <div class="tea-post-navigation">
                         @if($prevPost)
-                            <a href="{{ route('single_blog', $prevPost->id) }}" class="tea-nav-post tea-nav-prev">
+                            <a href="{{ route('blog_details', $prevPost->id) }}" class="tea-nav-post tea-nav-prev">
                                 <span class="tea-nav-direction"><i class="fas fa-arrow-left"></i> পূর্ববর্তী আর্টিকেল</span>
                                 <span class="tea-nav-title">{{ Str::limit($prevPost->b_title, 45) }}</span>
                             </a>
@@ -528,7 +528,7 @@
                         @endif
 
                         @if($nextPost)
-                            <a href="{{ route('single_blog', $nextPost->id) }}" class="tea-nav-post tea-nav-next">
+                            <a href="{{ route('blog_details', $nextPost->id) }}" class="tea-nav-post tea-nav-next">
                                 <span class="tea-nav-direction">পরবর্তী আর্টিকেল <i class="fas fa-arrow-right"></i></span>
                                 <span class="tea-nav-title">{{ Str::limit($nextPost->b_title, 45) }}</span>
                             </a>
@@ -546,7 +546,7 @@
                     </h3>
                     <div class="tea-recent-list">
                         @foreach($resentpost as $post)
-                            <a href="{{ route('single_blog', $post->id) }}" class="tea-recent-item">
+                            <a href="{{ route('blog_details', $post->id) }}" class="tea-recent-item">
                                 <div class="tea-recent-thumb">
                                     <img src="{{ asset($post->b_image ? $post->b_image : 'public/uploads/default.png') }}"
                                          alt="{{ $post->b_title }}" />

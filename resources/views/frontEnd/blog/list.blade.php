@@ -659,12 +659,12 @@
                         @endif
                     </div>
                     <h2 class="tea-feat-title">
-                        <a href="{{ route('single_blog', $featured->id) }}">{{ $featured->b_title }}</a>
+                        <a href="{{ route('blog_details', $featured->id) }}">{{ $featured->b_title }}</a>
                     </h2>
                     <p class="tea-feat-excerpt">
                         {{ $featured->b_short_des ?: Str::limit(strip_tags($featured->b_long_des), 180) }}
                     </p>
-                    <a href="{{ route('single_blog', $featured->id) }}" class="tea-read-btn">
+                    <a href="{{ route('blog_details', $featured->id) }}" class="tea-read-btn">
                         <span>সম্পূর্ণ পড়ুন</span> <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -692,7 +692,7 @@
                 @foreach($blogs as $blog)
                     <article class="tea-blog-card">
                         <div class="tea-card-thumb-wrap">
-                            <a href="{{ route('single_blog', $blog->id) }}" class="d-block h-100">
+                            <a href="{{ route('blog_details', $blog->id) }}" class="d-block h-100">
                                 <img src="{{ asset($blog->b_image ? $blog->b_image : 'public/uploads/default.png') }}"
                                      alt="{{ $blog->b_title }}" loading="lazy" />
                             </a>
@@ -705,7 +705,7 @@
                         <div class="tea-card-body">
                             <span class="tea-card-tag">চা ও স্বাস্থ্য</span>
                             <h3 class="tea-card-title">
-                                <a href="{{ route('single_blog', $blog->id) }}" title="{{ $blog->b_title }}">
+                                <a href="{{ route('blog_details', $blog->id) }}" title="{{ $blog->b_title }}">
                                     {{ $blog->b_title }}
                                 </a>
                             </h3>
@@ -718,7 +718,7 @@
                                     <i class="far fa-user"></i>
                                     <span>{{ $blog->b_author ?? 'OnekkisuBD' }}</span>
                                 </div>
-                                <a href="{{ route('single_blog', $blog->id) }}" class="tea-card-link">
+                                <a href="{{ route('blog_details', $blog->id) }}" class="tea-card-link">
                                     <span>পড়ুন</span> <i class="fas fa-chevron-right"></i>
                                 </a>
                             </div>
