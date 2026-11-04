@@ -1824,11 +1824,13 @@
                 }
             });
 
-            // Related Products Slider
+            // Related Products Slider (never duplicate cards if count <= visible items)
+            var relatedTotal = {{ $products->count() }};
             $(".related_slider").owlCarousel({
                 margin: 16,
                 items: 5,
-                loop: true,
+                loop: relatedTotal > 5,
+                rewind: true,
                 dots: true,
                 nav: true,
                 navText: [
@@ -1839,9 +1841,9 @@
                 autoplayTimeout: 5000,
                 autoplayHoverPause: true,
                 responsive: {
-                    0: { items: 2, margin: 10 },
-                    600: { items: 3, margin: 14 },
-                    1024: { items: 5, margin: 16 }
+                    0: { items: 2, margin: 10, loop: relatedTotal > 2 },
+                    600: { items: 3, margin: 14, loop: relatedTotal > 3 },
+                    1024: { items: 5, margin: 16, loop: relatedTotal > 5 }
                 }
             });
 

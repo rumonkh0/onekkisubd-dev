@@ -368,10 +368,31 @@ class FrontendController extends Controller
         $details = Product::where(['slug' => $slug, 'status' => 1])
             ->with('image', 'images', 'category', 'subcategory', 'childcategory')
             ->firstOrFail();
+        // 1. Fetch related products from the same category (excluding current product)
+        $targetCount = 10;
         $products = Product::where(['category_id' => $details->category_id, 'status' => 1])
+            ->where('id', '!=', $details->id)
             ->with('image')
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
+            ->take($targetCount)
             ->get();
+
+        // 2. If category has fewer than targetCount, backfill with unique products from other categories
+        if ($products->count() < $targetCount) {
+            $needed = $targetCount - $products->count();
+            $alreadyIncludedIds = $products->pluck('id')->push($details->id)->all();
+
+            $otherProducts = Product::where('status', 1)
+                ->whereNotIn('id', $alreadyIncludedIds)
+                ->with('image')
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock', 'topsale', 'feature_product', 'deal_of_theday')
+                ->orderByDesc('topsale')
+                ->orderByDesc('id')
+                ->take($needed)
+                ->get();
+
+            $products = $products->concat($otherProducts);
+        }
         $shippingcharge = ShippingCharge::where('status', 1)->get();
         $reviews = Review::where(['product_id'=> $details->id, 'status' => 'active'])->get();
         $productcolors = Productcolor::where('product_id', $details->id)->get();
