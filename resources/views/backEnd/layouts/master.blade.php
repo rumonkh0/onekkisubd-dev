@@ -168,7 +168,7 @@
                             <img src="{{ asset($generalsetting->favicon ?? $generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" height="36" />
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name }}" height="45" />
+                            <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" height="45" />
                         </span>
                     </a>
 

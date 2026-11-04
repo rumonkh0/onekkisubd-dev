@@ -957,30 +957,136 @@ body.sidebar-enable .sidebar-backdrop {
 }
 
 @media (max-width: 991.98px) {
-    /* Topbar & Logo adjustments */
-    .logo-box {
-        width: 60px !important;
-        padding-right: 0 !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        float: left;
+    /* Topbar & Logo: Hamburger FIRST, Full-size Logo SECOND, Actions THIRD */
+    .navbar-custom .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        height: 70px !important;
+        padding: 0 10px !important;
     }
-    .logo-box .logo {
-        line-height: 70px;
+
+    /* 1. Hamburger menu button FIRST on the left */
+    .navbar-custom .topnav-menu-left {
+        order: 1 !important;
+        float: none !important;
+        display: flex !important;
+        align-items: center !important;
+        margin: 0 8px 0 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
     }
-    .logo-box .logo-sm img {
-        max-height: 36px;
-        width: auto;
-        object-fit: contain;
+
+    .navbar-custom .topnav-menu-left > li {
+        display: flex !important;
+        align-items: center !important;
     }
+
     .navbar-custom .button-menu-mobile {
-        width: 48px;
-        height: 70px;
-        line-height: 70px;
-        text-align: center;
-        padding: 0;
-        margin: 0;
+        width: 38px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        color: #334155 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .navbar-custom .button-menu-mobile i {
+        font-size: 24px !important;
+        color: #334155 !important;
+        line-height: 1 !important;
+    }
+
+    /* 2. Full-size Brand Logo SECOND */
+    .navbar-custom .logo-box {
+        order: 2 !important;
+        float: none !important;
+        width: auto !important;
+        max-width: 170px !important;
+        height: 70px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 0 !important;
+        margin: 0 auto 0 0 !important;
+        background: transparent !important;
+    }
+
+    .navbar-custom .logo-box .logo {
+        line-height: normal !important;
+        display: flex !important;
+        align-items: center !important;
+        text-align: left !important;
+        height: 100% !important;
+    }
+
+    /* Hide the small favicon logo-sm on mobile so full logo is visible */
+    .navbar-custom .logo-box .logo-sm {
+        display: none !important;
+    }
+
+    /* Show the full-size brand logo (logo-lg) on mobile */
+    body[data-topbar-color="light"] .navbar-custom .logo-box .logo-dark,
+    .navbar-custom .logo-box .logo-dark {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .navbar-custom .logo-box .logo-lg {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .navbar-custom .logo-box .logo-lg img {
+        height: 38px !important;
+        max-height: 42px !important;
+        width: auto !important;
+        max-width: 155px !important;
+        object-fit: contain !important;
+        display: block !important;
+    }
+
+    /* 3. Right side navigation items (Search, Notifications, Profile) */
+    .navbar-custom .topnav-menu.float-end {
+        order: 3 !important;
+        float: none !important;
+        display: flex !important;
+        align-items: center !important;
+        margin-left: auto !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+        gap: 2px;
+    }
+
+    .navbar-custom .topnav-menu.float-end > li {
+        display: flex !important;
+        align-items: center !important;
+        float: none !important;
+    }
+
+    .navbar-custom .topnav-menu.float-end .nav-link {
+        padding: 0 6px !important;
+        min-width: 34px !important;
+        height: 70px !important;
+        line-height: 70px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .navbar-custom .topnav-menu.float-end .nav-user {
+        padding: 0 4px !important;
+    }
+
+    .navbar-custom .clearfix {
+        display: none !important;
     }
 
     /* Prevent body scroll when drawer is open */

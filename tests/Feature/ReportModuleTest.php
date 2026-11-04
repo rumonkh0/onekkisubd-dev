@@ -97,7 +97,7 @@ class ReportModuleTest extends TestCase
             ->post(route('customers.ipblock.store'), []);
         $response->assertSessionHasErrors(['ip_no', 'reason']);
 
-        $testIp = '198.51.100.' . rand(1, 250);
+        $testIp = '198.51.' . rand(1, 254) . '.' . rand(1, 254);
         $response = $this->actingAs($this->admin)
             ->from(route('customers.ip_block'))
             ->post(route('customers.ipblock.store'), [
@@ -113,7 +113,7 @@ class ReportModuleTest extends TestCase
 
     public function test_ip_block_update_and_delete()
     {
-        $testIp = '198.51.100.' . rand(1, 250);
+        $testIp = '198.51.' . rand(1, 254) . '.' . rand(1, 254);
         $ip = IpBlock::create([
             'ip_no' => $testIp,
             'reason' => 'Initial reason',
