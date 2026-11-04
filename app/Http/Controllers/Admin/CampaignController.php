@@ -53,7 +53,7 @@ class CampaignController extends Controller
             }
         }
 
-        $input['slug'] = strtolower(Str::slug($request->name));
+        $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $campaign = Campaign::create($input);
 
         // Main campaign image (optional single)
@@ -201,7 +201,7 @@ class CampaignController extends Controller
             $input['image'] = $imageUrl;
         }
         // image four
-        $input['slug'] = strtolower(Str::slug($request->name));
+        $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $update_data = Campaign::find($request->hidden_id);
         $update_data->update($input);
 

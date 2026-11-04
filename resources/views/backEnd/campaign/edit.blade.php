@@ -45,6 +45,21 @@
                             </div>
                             <!-- col-end -->
 
+                            <div class="col-sm-12">
+                                <div class="form-group mb-3">
+                                    <label for="slug" class="form-label">URL Slug (e.g. rosella-tea)</label>
+                                    <input type="text" class="form-control @error('slug') is-invalid @enderror"
+                                        name="slug" value="{{ old('slug', $edit_data->slug) }}" id="slug" placeholder="e.g. rosella-tea">
+                                    <small class="text-muted">ঐচ্ছিক — ক্যাম্পেইনের URL পরিবর্তন করতে চাইলে এখানে লিখুন (যেমন: rosella-tea)।</small>
+                                    @error('slug')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col-end -->
+
                             {{-- <div class="col-sm-12 mb-3">
                                 <div class="form-group">
                                     <label for="banner" class="form-label">Banner Image</label>

@@ -41,6 +41,19 @@
                                 </div>
                             </div>
 
+                            <div class="col-sm-12">
+                                <div class="form-group mb-3">
+                                    <label for="slug" class="form-label">URL Slug (e.g. rosella-tea)</label>
+                                    <input type="text" class="form-control @error('slug') is-invalid @enderror" name="slug" value="{{ old('slug') }}" id="slug" placeholder="e.g. rosella-tea">
+                                    <small class="text-muted">ঐচ্ছিক — ফাঁকা রাখলে টাইটেল অনুযায়ী অটোমেটিক তৈরি হবে।</small>
+                                    @error('slug')
+                                    <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- <div class="col-sm-12">
                                 <div class="form-group mb-3">
                                     <label for="banner_title" class="form-label">Banner Title *</label>

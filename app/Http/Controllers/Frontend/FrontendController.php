@@ -466,6 +466,25 @@ class FrontendController extends Controller
     public function campaign($slug)
     {
         $campaign_data = Campaign::where('slug', $slug)->with('images')->first();
+
+        // Fallback: If exact slug not found, match by slug tokens/alias (e.g. 'rosella-tea' -> 'pahari-red-roselle-pahari-rojela')
+        if (!$campaign_data) {
+            $cleanSlug = str_replace(['-', '_'], ' ', $slug);
+            $words = array_filter(explode(' ', $cleanSlug), function ($w) {
+                return strlen($w) > 3 && !in_array(strtolower($w), ['tea', 'special', 'organic', 'offer']);
+            });
+
+            if (!empty($words)) {
+                $campaign_data = Campaign::where(function ($q) use ($words) {
+                    foreach ($words as $w) {
+                        $root = rtrim(strtolower($w), 'aeiou');
+                        $q->orWhere('slug', 'LIKE', "%{$root}%")
+                          ->orWhere('name', 'LIKE', "%{$root}%");
+                    }
+                })->with('images')->first();
+            }
+        }
+
         if (!$campaign_data) {
             abort(404);
         }
