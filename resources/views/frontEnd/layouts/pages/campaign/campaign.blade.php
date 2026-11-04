@@ -1769,78 +1769,56 @@
             </div>
         </section>
 
-        <!-- ==================== HOW TO PREPARE / STEPS ==================== -->
+        <!-- ==================== HOW TO PREPARE / 4 STEPS ==================== -->
+        @php
+            $defaultTitle = $isRoselle ? 'রোজেলা চা তৈরির সহজ ৪টি ধাপ' : ($isTea ? 'সেরা স্বাদের চা তৈরির সহজ ৪টি ধাপ' : 'ঘরে বসে অর্ডার করার সহজ ৪টি ধাপ');
+            $recipeTitle = !empty(trim($campaign_data->step_title ?? '')) ? $campaign_data->step_title : $defaultTitle;
+
+            $defaultStep1 = $isRoselle
+                ? 'এক কাপ ফুটন্ত গরম পানিতে ৪ থেকে ৫টি শুকনো রোজেলা পাপড়ি দিন।'
+                : ($isTea ? 'প্রথমে পরিচ্ছন্ন পাত্রে প্রয়োজনীয় পরিমাণ পানি ভালো করে ফুটিয়ে নিন।' : 'নিচের ফর্ম থেকে আপনার পছন্দসই প্যাকেজটি নির্বাচন করুন।');
+
+            $defaultStep2 = $isRoselle
+                ? '৫-১০ মিনিট ঢেকে রাখুন যাতে সম্পূর্ণ লাল লিকার ও পুষ্টিগুণ পানিতে মিশে যায়।'
+                : ($isTea ? 'ফুটন্ত পানিতে পরিমাণমতো চা পাতা দিন এবং ২-৩ মিনিট ফুটান কড়া লিকারের জন্য।' : 'আপনার নাম, মোবাইল নাম্বার এবং পূর্ণ ডেলিভারি ঠিকানা দিন।');
+
+            $defaultStep3 = $isRoselle
+                ? 'স্বাদ বাড়াতে এক চামচ খাঁটি মধু, সামান্য লেবুর রস বা বিট লবণ মেশাতে পারেন।'
+                : ($isTea ? 'দুধ চা করতে ঘন দুধ ও পরিমাণমতো চিনি মেশান, অথবা লাল চা হিসেবে উপভোগ করুন।' : '\'অর্ডার সম্পন্ন করুন\' বাটনে ক্লিক করে অর্ডারটি কনফার্ম করুন।');
+
+            $defaultStep4 = $isRoselle
+                ? 'গরম গরম অথবা বরফ কুচি দিয়ে রিফ্রেশিং আইসড চা হিসেবে উপভোগ করুন!'
+                : ($isTea ? 'ছাঁকনি দিয়ে কাপে ঢেলে পরিবেশন করুন ধোঁয়া ওঠা অতুলনীয় স্বাদের চা!' : 'পণ্য হাতে পেয়ে চেক করে সম্পূর্ণ নিশ্চিত হয়ে মূল্য পরিশোধ করুন।');
+
+            $step1 = !empty(trim($campaign_data->step_one ?? '')) ? $campaign_data->step_one : $defaultStep1;
+            $step2 = !empty(trim($campaign_data->step_two ?? '')) ? $campaign_data->step_two : $defaultStep2;
+            $step3 = !empty(trim($campaign_data->step_three ?? '')) ? $campaign_data->step_three : $defaultStep3;
+            $step4 = !empty(trim($campaign_data->step_four ?? '')) ? $campaign_data->step_four : $defaultStep4;
+        @endphp
+
         <section class="camp-recipe-section">
-            @if($isRoselle)
-                <h2 class="camp-recipe-title">
-                    <i class="fas fa-mug-hot text-warning"></i> রোজেলা চা তৈরির সহজ ৪টি ধাপ
-                </h2>
+            <h2 class="camp-recipe-title">
+                <i class="fas fa-mug-hot text-warning"></i> {{ $recipeTitle }}
+            </h2>
 
-                <div class="camp-recipe-grid">
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">১</div>
-                        <p class="camp-step-desc">এক কাপ ফুটন্ত গরম পানিতে ৪ থেকে ৫টি শুকনো রোজেলা পাপড়ি দিন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">২</div>
-                        <p class="camp-step-desc">৫-১০ মিনিট ঢেকে রাখুন যাতে সম্পূর্ণ লাল লিকার ও পুষ্টিগুণ পানিতে মিশে যায়।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৩</div>
-                        <p class="camp-step-desc">স্বাদ বাড়াতে এক চামচ খাঁটি মধু, সামান্য লেবুর রস বা বিট লবণ মেশাতে পারেন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৪</div>
-                        <p class="camp-step-desc">গরম গরম অথবা বরফ কুচি দিয়ে রিফ্রেশিং আইসড চা হিসেবে উপভোগ করুন!</p>
-                    </div>
+            <div class="camp-recipe-grid">
+                <div class="camp-recipe-step">
+                    <div class="camp-step-num">১</div>
+                    <p class="camp-step-desc">{{ $step1 }}</p>
                 </div>
-            @elseif($isTea)
-                <h2 class="camp-recipe-title">
-                    <i class="fas fa-mug-hot text-warning"></i> সেরা স্বাদের চা তৈরির সহজ ৪টি ধাপ
-                </h2>
-
-                <div class="camp-recipe-grid">
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">১</div>
-                        <p class="camp-step-desc">প্রথমে পরিচ্ছন্ন পাত্রে প্রয়োজনীয় পরিমাণ পানি ভালো করে ফুটিয়ে নিন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">২</div>
-                        <p class="camp-step-desc">ফুটন্ত পানিতে পরিমাণমতো চা পাতা দিন এবং ২-৩ মিনিট ফুটান কড়া লিকারের জন্য।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৩</div>
-                        <p class="camp-step-desc">দুধ চা করতে ঘন দুধ ও পরিমাণমতো চিনি মেশান, অথবা লাল চা হিসেবে উপভোগ করুন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৪</div>
-                        <p class="camp-step-desc">ছাঁকনি দিয়ে কাপে ঢেলে পরিবেশন করুন ধোঁয়া ওঠা অতুলনীয় স্বাদের চা!</p>
-                    </div>
+                <div class="camp-recipe-step">
+                    <div class="camp-step-num">২</div>
+                    <p class="camp-step-desc">{{ $step2 }}</p>
                 </div>
-            @else
-                <h2 class="camp-recipe-title">
-                    <i class="fas fa-shield-alt text-warning"></i> ঘরে বসে অর্ডার করার সহজ ৪টি ধাপ
-                </h2>
-
-                <div class="camp-recipe-grid">
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">১</div>
-                        <p class="camp-step-desc">নিচের ফর্ম থেকে আপনার পছন্দসই প্যাকেজটি নির্বাচন করুন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">২</div>
-                        <p class="camp-step-desc">আপনার নাম, মোবাইল নাম্বার এবং পূর্ণ ডেলিভারি ঠিকানা দিন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৩</div>
-                        <p class="camp-step-desc">'অর্ডার সম্পন্ন করুন' বাটনে ক্লিক করে অর্ডারটি কনফার্ম করুন।</p>
-                    </div>
-                    <div class="camp-recipe-step">
-                        <div class="camp-step-num">৪</div>
-                        <p class="camp-step-desc">পণ্য হাতে পেয়ে চেক করে সম্পূর্ণ নিশ্চিত হয়ে মূল্য পরিশোধ করুন।</p>
-                    </div>
+                <div class="camp-recipe-step">
+                    <div class="camp-step-num">৩</div>
+                    <p class="camp-step-desc">{{ $step3 }}</p>
                 </div>
-            @endif
+                <div class="camp-recipe-step">
+                    <div class="camp-step-num">৪</div>
+                    <p class="camp-step-desc">{{ $step4 }}</p>
+                </div>
+            </div>
         </section>
 
         <!-- ==================== CUSTOMER REVIEWS ==================== -->

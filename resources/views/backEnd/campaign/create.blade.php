@@ -214,6 +214,48 @@
                                     @enderror
                                 </div>
                             </div> --}}
+                            <!-- 4 Steps Section -->
+                            <div class="col-sm-12 my-3">
+                                <div class="card border border-primary border-opacity-25 bg-light p-3 rounded">
+                                    <h5 class="text-primary mb-2"><i class="fe-list me-1"></i> তৈরির সহজ ৪টি ধাপ (4-Step Recipe / Usage Section)</h5>
+                                    <p class="text-muted fs-13 mb-3">ক্যাম্পেইন ল্যান্ডিং পেজে ৪টি ধাপের সেকশন কাস্টমাইজ করুন। ফাঁকা রাখলে ডিফল্ট লেখা দেখাবে।</p>
+
+                                    <div class="mb-3">
+                                        <label for="step_title" class="form-label fw-bold">সেকশন টাইটেল (Section Title)</label>
+                                        <input type="text" class="form-control @error('step_title') is-invalid @enderror" 
+                                               name="step_title" id="step_title" 
+                                               value="{{ old('step_title') }}" 
+                                               placeholder="সেরা স্বাদের চা তৈরির সহজ ৪টি ধাপ">
+                                        @error('step_title')
+                                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-md-6 mb-2">
+                                            <label for="step_one" class="form-label fw-semibold">ধাপ ১ (Step 1)</label>
+                                            <textarea name="step_one" id="step_one" rows="2" class="form-control" 
+                                                      placeholder="প্রথমে পরিচ্ছন্ন পাত্রে প্রয়োজনীয় পরিমাণ পানি ভালো করে ফুটিয়ে নিন।">{{ old('step_one') }}</textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="step_two" class="form-label fw-semibold">ধাপ ২ (Step 2)</label>
+                                            <textarea name="step_two" id="step_two" rows="2" class="form-control" 
+                                                      placeholder="ফুটন্ত পানিতে পরিমাণমতো চা পাতা দিন এবং ২-৩ মিনিট ফুটান কড়া লিকারের জন্য।">{{ old('step_two') }}</textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="step_three" class="form-label fw-semibold">ধাপ ৩ (Step 3)</label>
+                                            <textarea name="step_three" id="step_three" rows="2" class="form-control" 
+                                                      placeholder="দুধ চা করতে ঘন দুধ ও পরিমাণমতো চিনি মেশান, অথবা লাল চা হিসেবে উপভোগ করুন।">{{ old('step_three') }}</textarea>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="step_four" class="form-label fw-semibold">ধাপ ৪ (Step 4)</label>
+                                            <textarea name="step_four" id="step_four" rows="2" class="form-control" 
+                                                      placeholder="ছাঁকনি দিয়ে কাপে ঢেলে পরিবেশন করুন ধোঁয়া ওঠা অতুলনীয় স্বাদের চা!">{{ old('step_four') }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
                                     <label for="faq_question_one" class="form-label">Faq 1 Question</label>

@@ -115,4 +115,42 @@ class CampaignBannerTest extends TestCase
             'id' => $banner->id,
         ]);
     }
+
+    public function test_campaign_dynamic_recipe_steps(): void
+    {
+        $campaign = Campaign::first();
+        if (!$campaign) {
+            $this->markTestSkipped('No campaign found');
+        }
+
+        // Test with custom steps and title
+        $campaign->update([
+            'step_title' => 'কাস্টম চা বানানোর ৪ ধাপ',
+            'step_one' => 'কাস্টম প্রথম ধাপ বিবরণ',
+            'step_two' => 'কাস্টম দ্বিতীয় ধাপ বিবরণ',
+            'step_three' => 'কাস্টম তৃতীয় ধাপ বিবরণ',
+            'step_four' => 'কাস্টম চতুর্থ ধাপ বিবরণ',
+        ]);
+
+        $response = $this->get('/campaign/' . $campaign->slug);
+        $response->assertStatus(200);
+        $response->assertSee('কাস্টম চা বানানোর ৪ ধাপ');
+        $response->assertSee('কাস্টম প্রথম ধাপ বিবরণ');
+        $response->assertSee('কাস্টম দ্বিতীয় ধাপ বিবরণ');
+        $response->assertSee('কাস্টম তৃতীয় ধাপ বিবরণ');
+        $response->assertSee('কাস্টম চতুর্থ ধাপ বিবরণ');
+
+        // Test fallback to default when steps are null
+        $campaign->update([
+            'step_title' => null,
+            'step_one' => null,
+            'step_two' => null,
+            'step_three' => null,
+            'step_four' => null,
+        ]);
+
+        $response = $this->get('/campaign/' . $campaign->slug);
+        $response->assertStatus(200);
+        $response->assertSee('camp-recipe-section');
+    }
 }
