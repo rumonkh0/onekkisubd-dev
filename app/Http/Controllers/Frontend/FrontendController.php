@@ -469,10 +469,42 @@ class FrontendController extends Controller
         if (!$campaign_data) {
             abort(404);
         }
-        $product = Product::where('id', $campaign_data->product_id)
-            ->where('status', 1)
-            ->with('image')
-            ->first();
+        $product = null;
+        if ($campaign_data->product_id) {
+            $product = Product::where('id', $campaign_data->product_id)
+                ->where('status', 1)
+                ->with('image')
+                ->first();
+        }
+
+        // Self-healing fallback: match active product by name if product_id is mismatched or orphaned
+        if (!$product) {
+            $cleanName = trim(explode('(', $campaign_data->name)[0]);
+            $product = Product::where('status', 1)
+                ->where('name', 'LIKE', '%' . $cleanName . '%')
+                ->with('image')
+                ->first();
+
+            if (!$product && $campaign_data->name) {
+                $words = array_filter(explode(' ', $cleanName), function ($w) {
+                    return mb_strlen($w) >= 4;
+                });
+                foreach ($words as $word) {
+                    $product = Product::where('status', 1)
+                        ->where('name', 'LIKE', "%{$word}%")
+                        ->with('image')
+                        ->first();
+                    if ($product) {
+                        break;
+                    }
+                }
+            }
+
+            // Auto-heal the campaign record so subsequent visits use direct product_id
+            if ($product) {
+                $campaign_data->update(['product_id' => $product->id]);
+            }
+        }
         if (!$product) {
             abort(404);
         }
