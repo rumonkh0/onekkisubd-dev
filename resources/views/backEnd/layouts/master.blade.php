@@ -165,21 +165,19 @@
                 <div class="logo-box">
                     <a href="{{ url('admin/dashboard') }}" class="logo logo-dark text-center">
                         <span class="logo-sm">
-                            <img src="{{ asset($generalsetting->white_logo) }}" alt="" height="50" />
-                            <!-- <span class="logo-lg-text-light">UBold</span> -->
+                            <img src="{{ asset($generalsetting->favicon ?? $generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" height="36" />
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ asset($generalsetting->dark_logo) }}" alt="" height="50" />
-                            <!-- <span class="logo-lg-text-light">U</span> -->
+                            <img src="{{ asset($generalsetting->dark_logo) }}" alt="{{ $generalsetting->name }}" height="45" />
                         </span>
                     </a>
 
                     <a href="{{ url('admin/dashboard') }}" class="logo logo-light text-center">
                         <span class="logo-sm">
-                            <img src="{{ asset($generalsetting->white_logo) }}" alt="" height="50" />
+                            <img src="{{ asset($generalsetting->favicon ?? $generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" height="36" />
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ asset($generalsetting->white_logo) }}" alt="" height="50" />
+                            <img src="{{ asset($generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" height="45" />
                         </span>
                     </a>
                 </div>
@@ -216,6 +214,16 @@
 
         <!-- ========== Left Sidebar Start ========== -->
         <div class="left-side-menu">
+            <!-- Mobile sidebar header with close button -->
+            <div class="mobile-sidebar-header d-lg-none d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                <a href="{{ url('admin/dashboard') }}" class="d-inline-flex align-items-center">
+                    <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" alt="{{ $generalsetting->name }}" style="max-height: 38px; max-width: 170px; object-fit: contain;">
+                </a>
+                <button type="button" class="btn btn-sm btn-light rounded-circle mobile-sidebar-close" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; color: #334155;" aria-label="Close menu">
+                    <i class="fe-x" style="font-size: 18px;"></i>
+                </button>
+            </div>
+
             <div class="h-100" data-simplebar>
                 <!-- User box -->
                 <div class="user-box text-center">
@@ -791,6 +799,8 @@
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
+    <!-- Sidebar backdrop for mobile -->
+    <div class="sidebar-backdrop"></div>
 
     <!-- Vendor js -->
     <script src="{{ asset('public/backEnd/') }}/assets/js/vendor.min.js"></script>
@@ -888,6 +898,51 @@
                     });
                 } else {
                     $(".pathaoarea").empty();
+                }
+            });
+        });
+    </script>
+    <!-- Mobile drawer script -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            function syncMobileSidebar() {
+                if (window.innerWidth < 992) {
+                    $('body').attr('data-leftbar-size', 'default');
+                }
+            }
+
+            // Keep default size on mobile so condensed 70px icon-mode is never applied
+            syncMobileSidebar();
+
+            $('.button-menu-mobile').on('click', function() {
+                if (window.innerWidth < 992) {
+                    setTimeout(function() {
+                        $('body').attr('data-leftbar-size', 'default');
+                    }, 0);
+                }
+            });
+
+            $('.sidebar-backdrop, .mobile-sidebar-close').on('click', function(e) {
+                e.preventDefault();
+                $('body').removeClass('sidebar-enable');
+                syncMobileSidebar();
+            });
+
+            $(window).on('resize orientationchange', function() {
+                if (window.innerWidth >= 992) {
+                    $('body').removeClass('sidebar-enable');
+                } else {
+                    syncMobileSidebar();
+                }
+            });
+
+            // Close mobile sidebar when clicking a non-collapsible nav link
+            $('#sidebar-menu a').on('click', function() {
+                var href = $(this).attr('href');
+                var hasCollapse = $(this).attr('data-bs-toggle') === 'collapse';
+                if (!hasCollapse && href && href !== '#' && !href.startsWith('#') && window.innerWidth < 992) {
+                    $('body').removeClass('sidebar-enable');
+                    syncMobileSidebar();
                 }
             });
         });
