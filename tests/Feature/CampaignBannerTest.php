@@ -153,4 +153,55 @@ class CampaignBannerTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('camp-recipe-section');
     }
+
+    public function test_campaign_dynamic_comparison_section(): void
+    {
+        $campaign = Campaign::first();
+        if (!$campaign) {
+            $this->markTestSkipped('No campaign found');
+        }
+
+        // Test with custom comparison fields
+        $campaign->update([
+            'compare_tag' => 'আসল নকল চেনার উপায়',
+            'compare_title' => 'কাস্টম রোজেলা বনাম বাজারজাত পণ্য',
+            'compare_subtitle' => 'কেন আমাদের পণ্যটি শতভাগ আসল ও বিশুদ্ধ',
+            'compare_good_title' => 'আমাদের প্রিমিয়াম চা',
+            'compare_good_1' => '১০০% আস্ত পাতা: কোনো গুঁড়া নেই।',
+            'compare_good_2' => 'কড়া লিকার: দারুণ সুবাস।',
+            'compare_bad_title' => 'বাজারের সাধারণ চা',
+            'compare_bad_1' => 'ভাঙা পাতা: রঙ মেশানো।',
+            'compare_bad_2' => 'স্বাদহীন: কৃত্রিম ফ্লেভার।',
+        ]);
+
+        $response = $this->get('/campaign/' . $campaign->slug);
+        $response->assertStatus(200);
+        $response->assertSee('আসল নকল চেনার উপায়');
+        $response->assertSee('কাস্টম রোজেলা বনাম বাজারজাত পণ্য');
+        $response->assertSee('কেন আমাদের পণ্যটি শতভাগ আসল ও বিশুদ্ধ');
+        $response->assertSee('আমাদের প্রিমিয়াম চা');
+        $response->assertSee('১০০% আস্ত পাতা:');
+        $response->assertSee('কোনো গুঁড়া নেই।');
+        $response->assertSee('বাজারের সাধারণ চা');
+        $response->assertSee('ভাঙা পাতা:');
+        $response->assertSee('রঙ মেশানো।');
+
+        // Test fallback when comparison fields are null
+        $campaign->update([
+            'compare_tag' => null,
+            'compare_title' => null,
+            'compare_subtitle' => null,
+            'compare_good_title' => null,
+            'compare_good_1' => null,
+            'compare_good_2' => null,
+            'compare_bad_title' => null,
+            'compare_bad_1' => null,
+            'compare_bad_2' => null,
+        ]);
+
+        $response = $this->get('/campaign/' . $campaign->slug);
+        $response->assertStatus(200);
+        $response->assertSee('সঠিক পণ্য চিনুন');
+        $response->assertSee('camp-compare-card');
+    }
 }

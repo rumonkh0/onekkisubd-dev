@@ -307,6 +307,107 @@
                                 </div>
                             </div>
 
+                            <!-- Product Comparison Section -->
+                            <div class="col-sm-12 my-3">
+                                <div class="card border border-success border-opacity-25 bg-light p-3 rounded">
+                                    <h5 class="text-success mb-2"><i class="fe-check-square me-1"></i> সঠিক পণ্য চিনুন (Product Comparison Section)</h5>
+                                    <p class="text-muted fs-13 mb-3">ক্যাম্পেইন ল্যান্ডিং পেজে সঠিক পণ্য চেনার তুলনা সেকশন কাস্টমাইজ করুন। ফাঁকা রাখলে ডিফল্ট রোজেলা/পণ্য তুলনা দেখাবে।</p>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-md-3">
+                                            <label for="compare_tag" class="form-label fw-bold">ব্যাজ / ট্যাগ (Section Badge)</label>
+                                            <input type="text" class="form-control" name="compare_tag" id="compare_tag" 
+                                                   value="{{ old('compare_tag', $edit_data->compare_tag) }}" 
+                                                   placeholder="সঠিক পণ্য চিনুন">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label for="compare_title" class="form-label fw-bold">সেকশন টাইটেল (Main Title)</label>
+                                            <input type="text" class="form-control" name="compare_title" id="compare_title" 
+                                                   value="{{ old('compare_title', $edit_data->compare_title) }}" 
+                                                   placeholder="পাহাড়ি রোজেলা বনাম সাধারণ / ইন্ডিয়ান রোজেলা">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="compare_subtitle" class="form-label fw-bold">সাব-টাইটেল / বিবরণ (Subtitle)</label>
+                                            <input type="text" class="form-control" name="compare_subtitle" id="compare_subtitle" 
+                                                   value="{{ old('compare_subtitle', $edit_data->compare_subtitle) }}" 
+                                                   placeholder="কেন আমাদের পার্বত্য চট্টগ্রামের রোজেলা বাজারে সেরা ও অনন্য">
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <!-- Left Side: Good / Our Product -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 bg-white border border-success border-opacity-50 rounded h-100">
+                                                <div class="mb-3">
+                                                    <label for="compare_good_title" class="form-label fw-bold text-success">
+                                                        <i class="fe-check-circle me-1"></i> আমাদের পণ্যের নাম / শিরোনাম (Our Product Title)
+                                                    </label>
+                                                    <input type="text" class="form-control" name="compare_good_title" id="compare_good_title" 
+                                                           value="{{ old('compare_good_title', $edit_data->compare_good_title) }}" 
+                                                           placeholder="আমাদের পাহাড়ি রোজেলা">
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <label for="compare_good_1" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ১ (Point 1)</label>
+                                                    <textarea name="compare_good_1" id="compare_good_1" rows="2" class="form-control" 
+                                                              placeholder="১০০% আস্ত পাপড়ি: ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।">{{ old('compare_good_1', $edit_data->compare_good_1) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_good_2" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ২ (Point 2)</label>
+                                                    <textarea name="compare_good_2" id="compare_good_2" rows="2" class="form-control" 
+                                                              placeholder="টাটকা নতুন হার্ভেস্ট: এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।">{{ old('compare_good_2', $edit_data->compare_good_2) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_good_3" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৩ (Point 3)</label>
+                                                    <textarea name="compare_good_3" id="compare_good_3" rows="2" class="form-control" 
+                                                              placeholder="লাল টকটকে লিকার: প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।">{{ old('compare_good_3', $edit_data->compare_good_3) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_good_4" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৪ (Point 4)</label>
+                                                    <textarea name="compare_good_4" id="compare_good_4" rows="2" class="form-control" 
+                                                              placeholder="বিষমুক্ত পাহাড়ি চাষ: বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।">{{ old('compare_good_4', $edit_data->compare_good_4) }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Side: Bad / Market Product -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 bg-white border border-danger border-opacity-50 rounded h-100">
+                                                <div class="mb-3">
+                                                    <label for="compare_bad_title" class="form-label fw-bold text-danger">
+                                                        <i class="fe-x-circle me-1"></i> সাধারণ পণ্যের নাম / শিরোনাম (Ordinary / Competitor Title)
+                                                    </label>
+                                                    <input type="text" class="form-control" name="compare_bad_title" id="compare_bad_title" 
+                                                           value="{{ old('compare_bad_title', $edit_data->compare_bad_title) }}" 
+                                                           placeholder="সাধারণ / ইন্ডিয়ান রোজেলা">
+                                                </div>
+
+                                                <div class="mb-2">
+                                                    <label for="compare_bad_1" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ১ (Point 1)</label>
+                                                    <textarea name="compare_bad_1" id="compare_bad_1" rows="2" class="form-control" 
+                                                              placeholder="কাটা ও ভাঙা পাপড়ি: বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।">{{ old('compare_bad_1', $edit_data->compare_bad_1) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_bad_2" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ২ (Point 2)</label>
+                                                    <textarea name="compare_bad_2" id="compare_bad_2" rows="2" class="form-control" 
+                                                              placeholder="কালচে লালচে লিকার: ফুটানোর পর লিকার কালচে হয়ে যায়।">{{ old('compare_bad_2', $edit_data->compare_bad_2) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_bad_3" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৩ (Point 3)</label>
+                                                    <textarea name="compare_bad_3" id="compare_bad_3" rows="2" class="form-control" 
+                                                              placeholder="কম ফ্লেভার ও কম স্বাদ: প্রাকৃতিক সতেজতার অভাব থাকে।">{{ old('compare_bad_3', $edit_data->compare_bad_3) }}</textarea>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="compare_bad_4" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৪ (Point 4)</label>
+                                                    <textarea name="compare_bad_4" id="compare_bad_4" rows="2" class="form-control" 
+                                                              placeholder="পুরানো স্টকের ঝুঁকি: কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।">{{ old('compare_bad_4', $edit_data->compare_bad_4) }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12 mb-3">
                                 <div class="form-group">
                                     <label for="faq_question_one" class="form-label">Faq 1 Question</label>

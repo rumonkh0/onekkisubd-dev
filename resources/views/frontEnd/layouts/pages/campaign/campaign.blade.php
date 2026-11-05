@@ -1667,103 +1667,114 @@
         @endif
 
         <!-- ==================== COMPARISON SECTION ==================== -->
+        @php
+            // Helper function to format points nicely with bold before colon or markdown
+            $formatComparePoint = function($text) {
+                $text = trim($text ?? '');
+                if ($text === '') return '';
+                if (preg_match('/<[a-z][\s\S]*>/i', $text)) {
+                    return strip_tags($text, '<strong><b><em><span>');
+                }
+                if (preg_match('/\*\*(.+?)\*\*(.*)/', $text, $matches)) {
+                    return '<strong>' . e($matches[1]) . '</strong>' . e($matches[2]);
+                }
+                if (str_contains($text, ':')) {
+                    $parts = explode(':', $text, 2);
+                    return '<strong>' . e(trim($parts[0])) . ':</strong> ' . e(trim($parts[1]));
+                }
+                return e($text);
+            };
+
+            $compTag = !empty(trim($campaign_data->compare_tag ?? '')) ? $campaign_data->compare_tag : 'সঠিক পণ্য চিনুন';
+
+            $defaultCompTitle = $isRoselle ? 'পাহাড়ি রোজেলা বনাম সাধারণ / ইন্ডিয়ান রোজেলা' : ('আমাদের ' . $campaign_data->name . ' বনাম সাধারণ বাজারজাত পণ্য');
+            $compTitle = !empty(trim($campaign_data->compare_title ?? '')) ? $campaign_data->compare_title : $defaultCompTitle;
+
+            $defaultCompDesc = $isRoselle ? 'কেন আমাদের পার্বত্য চট্টগ্রামের রোজেলা বাজারে সেরা ও অনন্য' : 'কেন আমাদের পণ্যটি বাজারের সাধারণ পণ্যের চেয়ে সেরা ও সম্পূর্ণ আলাদা';
+            $compDesc = !empty(trim($campaign_data->compare_subtitle ?? '')) ? $campaign_data->compare_subtitle : $defaultCompDesc;
+
+            // Good / Our Product
+            $defaultGoodTitle = $isRoselle ? 'আমাদের পাহাড়ি রোজেলা' : ('আমাদের ' . $campaign_data->name);
+            $goodTitle = !empty(trim($campaign_data->compare_good_title ?? '')) ? $campaign_data->compare_good_title : $defaultGoodTitle;
+
+            $defaultGoodPoints = $isRoselle ? [
+                '১০০% আস্ত পাপড়ি: ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।',
+                'টাটকা নতুন হার্ভেস্ট: এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।',
+                'লাল টকটকে লিকার: প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।',
+                'বিষমুক্ত পাহাড়ি চাষ: বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।'
+            ] : [
+                '১০০% খাঁটি ও নির্ভেজাল: কৃত্রিম রঙ বা কেমিক্যাল ছাড়া সম্পূর্ণ প্রাকৃতিক ও নিরাপদ।',
+                'বাছাইকৃত সেরা গ্রেড: সেরা বাগান ও উৎস থেকে সংগৃহীত শতভাগ তাজা পণ্য।',
+                'কড়া লিকার ও মন মাতানো সুবাস: প্রতিটি কাপে দারুণ স্বাদ ও পরিপূর্ণ তৃপ্তি।',
+                'ফুড-গ্রেড প্যাকেজিং: সতেজতা ও গুণাগুণ অটুট রাখতে উন্নত হাইজিনিক প্যাক।'
+            ];
+
+            $good1 = !empty(trim($campaign_data->compare_good_1 ?? '')) ? $campaign_data->compare_good_1 : $defaultGoodPoints[0];
+            $good2 = !empty(trim($campaign_data->compare_good_2 ?? '')) ? $campaign_data->compare_good_2 : $defaultGoodPoints[1];
+            $good3 = !empty(trim($campaign_data->compare_good_3 ?? '')) ? $campaign_data->compare_good_3 : $defaultGoodPoints[2];
+            $good4 = !empty(trim($campaign_data->compare_good_4 ?? '')) ? $campaign_data->compare_good_4 : $defaultGoodPoints[3];
+
+            // Bad / Market Product
+            $defaultBadTitle = $isRoselle ? 'সাধারণ / ইন্ডিয়ান রোজেলা' : 'সাধারণ বা নিম্নমানের খোলা পণ্য';
+            $badTitle = !empty(trim($campaign_data->compare_bad_title ?? '')) ? $campaign_data->compare_bad_title : $defaultBadTitle;
+
+            $defaultBadPoints = $isRoselle ? [
+                'কাটা ও ভাঙা পাপড়ি: বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।',
+                'কালচে লালচে লিকার: ফুটানোর পর লিকার কালচে হয়ে যায়।',
+                'কম ফ্লেভার ও কম স্বাদ: প্রাকৃতিক সতেজতার অভাব থাকে।',
+                'পুরানো স্টকের ঝুঁকি: কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।'
+            ] : [
+                'ভেজাল ও ডাস্ট মিশ্রিত: নিম্নমানের উপাদান ও ধুলোবালি মেশানো থাকে।',
+                'পুরানো ও বাসি স্টক: গুদামে দীর্ঘদিন পড়ে থেকে স্বাভাবিক স্বাদ নষ্ট হয়ে যায়।',
+                'কৃত্রিম রঙ ও ফ্লেভার: কেমিক্যাল দিয়ে কৃত্রিম রঙ ও গন্ধ তৈরির চেষ্টা করা হয়।',
+                'খোলা ও অস্বাস্থ্যকর প্যাক: ধুলাবালি এবং ক্ষতিকর জীবাণুর ঝুঁকি থাকে।'
+            ];
+
+            $bad1 = !empty(trim($campaign_data->compare_bad_1 ?? '')) ? $campaign_data->compare_bad_1 : $defaultBadPoints[0];
+            $bad2 = !empty(trim($campaign_data->compare_bad_2 ?? '')) ? $campaign_data->compare_bad_2 : $defaultBadPoints[1];
+            $bad3 = !empty(trim($campaign_data->compare_bad_3 ?? '')) ? $campaign_data->compare_bad_3 : $defaultBadPoints[2];
+            $bad4 = !empty(trim($campaign_data->compare_bad_4 ?? '')) ? $campaign_data->compare_bad_4 : $defaultBadPoints[3];
+        @endphp
+
         <section class="camp-compare-card">
             <div class="camp-section-header">
-                <span class="camp-section-tag">সঠিক পণ্য চিনুন</span>
-                <h2 class="camp-section-title">
-                    {{ $isRoselle ? 'পাহাড়ি রোজেলা বনাম সাধারণ / ইন্ডিয়ান রোজেলা' : 'আমাদের ' . $campaign_data->name . ' বনাম সাধারণ বাজারজাত পণ্য' }}
-                </h2>
-                <p class="camp-section-desc">
-                    {{ $isRoselle ? 'কেন আমাদের পার্বত্য চট্টগ্রামের রোজেলা বাজারে সেরা ও অনন্য' : 'কেন আমাদের পণ্যটি বাজারের সাধারণ পণ্যের চেয়ে সেরা ও সম্পূর্ণ আলাদা' }}
-                </p>
+                <span class="camp-section-tag">{{ $compTag }}</span>
+                <h2 class="camp-section-title">{{ $compTitle }}</h2>
+                <p class="camp-section-desc">{{ $compDesc }}</p>
             </div>
 
             <div class="camp-compare-grid">
-                <!-- Good -->
+                <!-- Good / Our Product -->
                 <div class="camp-compare-col camp-compare-good">
                     <div class="camp-compare-header">
-                        <i class="fas fa-check-circle"></i> {{ $isRoselle ? 'আমাদের পাহাড়ি রোজেলা' : 'আমাদের ' . $campaign_data->name }}
+                        <i class="fas fa-check-circle"></i> {{ $goodTitle }}
                     </div>
                     <ul class="camp-compare-list">
-                        @if($isRoselle)
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>১০০% আস্ত পাপড়ি:</strong> ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>টাটকা নতুন হার্ভেস্ট:</strong> এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>লাল টকটকে লিকার:</strong> প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>বিষমুক্ত পাহাড়ি চাষ:</strong> বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।</span>
-                            </li>
-                        @else
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>১০০% খাঁটি ও নির্ভেজাল:</strong> কৃত্রিম রঙ বা কেমিক্যাল ছাড়া সম্পূর্ণ প্রাকৃতিক ও নিরাপদ।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>বাছাইকৃত সেরা গ্রেড:</strong> সেরা বাগান ও উৎস থেকে সংগৃহীত শতভাগ তাজা পণ্য।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>কড়া লিকার ও মন মাতানো সুবাস:</strong> প্রতিটি কাপে দারুণ স্বাদ ও পরিপূর্ণ তৃপ্তি।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span><strong>ফুড-গ্রেড প্যাকেজিং:</strong> সতেজতা ও গুণাগুণ অটুট রাখতে উন্নত হাইজিনিক প্যাক।</span>
-                            </li>
-                        @endif
+                        @foreach([$good1, $good2, $good3, $good4] as $gp)
+                            @if(!empty(trim($gp)))
+                                <li>
+                                    <i class="fas fa-check"></i>
+                                    <span>{!! $formatComparePoint($gp) !!}</span>
+                                </li>
+                            @endif
+                        @endforeach
                     </ul>
                 </div>
 
-                <!-- Bad -->
+                <!-- Bad / Market Product -->
                 <div class="camp-compare-col camp-compare-bad">
                     <div class="camp-compare-header">
-                        <i class="fas fa-times-circle"></i> {{ $isRoselle ? 'সাধারণ / ইন্ডিয়ান রোজেলা' : 'সাধারণ বা নিম্নমানের খোলা পণ্য' }}
+                        <i class="fas fa-times-circle"></i> {{ $badTitle }}
                     </div>
                     <ul class="camp-compare-list">
-                        @if($isRoselle)
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>কাটা ও ভাঙা পাপড়ি:</strong> বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>কালচে লালচে লিকার:</strong> ফুটানোর পর লিকার কালচে হয়ে যায়।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>কম ফ্লেভার ও কম স্বাদ:</strong> প্রাকৃতিক সতেজতার অভাব থাকে।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>পুরানো স্টকের ঝুঁকি:</strong> কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।</span>
-                            </li>
-                        @else
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>ভেজাল ও ডাস্ট মিশ্রিত:</strong> নিম্নমানের উপাদান ও ধুলোবালি মেশানো থাকে।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>পুরানো ও বাসি স্টক:</strong> গুদামে দীর্ঘদিন পড়ে থেকে স্বাভাবিক স্বাদ নষ্ট হয়ে যায়।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>কৃত্রিম রঙ ও ফ্লেভার:</strong> কেমিক্যাল দিয়ে কৃত্রিম রঙ ও গন্ধ তৈরির চেষ্টা করা হয়।</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-times"></i>
-                                <span><strong>খোলা ও অস্বাস্থ্যকর প্যাক:</strong> ধুলাবালি এবং ক্ষতিকর জীবাণুর ঝুঁকি থাকে।</span>
-                            </li>
-                        @endif
+                        @foreach([$bad1, $bad2, $bad3, $bad4] as $bp)
+                            @if(!empty(trim($bp)))
+                                <li>
+                                    <i class="fas fa-times"></i>
+                                    <span>{!! $formatComparePoint($bp) !!}</span>
+                                </li>
+                            @endif
+                        @endforeach
                     </ul>
                 </div>
             </div>

@@ -53,3 +53,4 @@ class ProductDetailRelatedTest extends TestCase
         $this->assertCount(count(array_unique($ids)), $ids, 'Related products must not contain duplicates.');
     }
 }
+
