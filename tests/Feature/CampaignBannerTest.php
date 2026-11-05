@@ -186,6 +186,37 @@ class CampaignBannerTest extends TestCase
         $response->assertSee('ভাঙা পাতা:');
         $response->assertSee('রঙ মেশানো।');
 
+        // Test flexible points: fewer than 4 points (e.g. 2 points)
+        $campaign->update([
+            'compare_good_points' => json_encode(['পয়েন্ট এক: প্রথম ভালো দিক।', 'পয়েন্ট দুই: দ্বিতীয় ভালো দিক।'], JSON_UNESCAPED_UNICODE),
+            'compare_bad_points' => json_encode(['খারাপ এক: প্রথম খারাপ দিক।', 'খারাপ দুই: দ্বিতীয় খারাপ দিক।'], JSON_UNESCAPED_UNICODE),
+        ]);
+
+        $responseFewer = $this->get('/campaign/' . $campaign->slug);
+        $responseFewer->assertStatus(200);
+        $responseFewer->assertSee('পয়েন্ট এক:');
+        $responseFewer->assertSee('প্রথম ভালো দিক।');
+        $responseFewer->assertSee('খারাপ এক:');
+        $responseFewer->assertSee('প্রথম খারাপ দিক।');
+
+        // Test flexible points: more than 4 points (e.g. 6 points)
+        $sixGood = [
+            'পয়েন্ট ১: এক নম্বর ভালো দিক।',
+            'পয়েন্ট ২: দুই নম্বর ভালো দিক।',
+            'পয়েন্ট ৩: তিন নম্বর ভালো দিক।',
+            'পয়েন্ট ৪: চার নম্বর ভালো দিক।',
+            'পয়েন্ট ৫: পাঁচ নম্বর ভালো দিক।',
+            'পয়েন্ট ৬: ছয় নম্বর ভালো দিক।',
+        ];
+        $campaign->update([
+            'compare_good_points' => json_encode($sixGood, JSON_UNESCAPED_UNICODE),
+        ]);
+
+        $responseMore = $this->get('/campaign/' . $campaign->slug);
+        $responseMore->assertStatus(200);
+        $responseMore->assertSee('পাঁচ নম্বর ভালো দিক।');
+        $responseMore->assertSee('ছয় নম্বর ভালো দিক।');
+
         // Test fallback when comparison fields are null
         $campaign->update([
             'compare_tag' => null,
@@ -197,6 +228,8 @@ class CampaignBannerTest extends TestCase
             'compare_bad_title' => null,
             'compare_bad_1' => null,
             'compare_bad_2' => null,
+            'compare_good_points' => null,
+            'compare_bad_points' => null,
         ]);
 
         $response = $this->get('/campaign/' . $campaign->slug);

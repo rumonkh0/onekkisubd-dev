@@ -348,24 +348,31 @@
                                                 </div>
 
                                                 <div class="mb-2">
-                                                    <label for="compare_good_1" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ১ (Point 1)</label>
-                                                    <textarea name="compare_good_1" id="compare_good_1" rows="2" class="form-control" 
-                                                              placeholder="১০০% আস্ত পাপড়ি: ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।">{{ old('compare_good_1', $edit_data->compare_good_1) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_good_2" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ২ (Point 2)</label>
-                                                    <textarea name="compare_good_2" id="compare_good_2" rows="2" class="form-control" 
-                                                              placeholder="টাটকা নতুন হার্ভেস্ট: এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।">{{ old('compare_good_2', $edit_data->compare_good_2) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_good_3" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৩ (Point 3)</label>
-                                                    <textarea name="compare_good_3" id="compare_good_3" rows="2" class="form-control" 
-                                                              placeholder="লাল টকটকে লিকার: প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।">{{ old('compare_good_3', $edit_data->compare_good_3) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_good_4" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৪ (Point 4)</label>
-                                                    <textarea name="compare_good_4" id="compare_good_4" rows="2" class="form-control" 
-                                                              placeholder="বিষমুক্ত পাহাড়ি চাষ: বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।">{{ old('compare_good_4', $edit_data->compare_good_4) }}</textarea>
+                                                    <label class="form-label fw-semibold text-muted fs-13 d-flex justify-content-between align-items-center mb-1">
+                                                        <span>তুলনামূলক ভালো দিকসমূহ (পয়েন্ট)</span>
+                                                        <small class="text-primary">পয়েন্ট সংখ্যা কম বা বেশি করতে পারবেন</small>
+                                                    </label>
+                                                    <div id="good-points-wrapper">
+                                                        @php
+                                                            $savedGood = old('compare_good_points', $edit_data->good_points ?? [
+                                                                '১০০% আস্ত পাপড়ি: ভাঙা গুঁড়া নয়, আস্ত সুন্দর পাপড়ি পাওয়া যায়।',
+                                                                'টাটকা নতুন হার্ভেস্ট: এই বছরের তাজা ফসল, তাই দারুণ সুবাস ও ফ্লেভার।',
+                                                                'লাল টকটকে লিকার: প্রাকৃতিক গাঢ় লাল ও আকর্ষণীয় রুবিরঙা লিকার।',
+                                                                'বিষমুক্ত পাহাড়ি চাষ: বান্দরবান ও খাগড়াছড়ির প্রাকৃতিকভাবে বেড়ে ওঠা ফসল।'
+                                                            ]);
+                                                            if (!is_array($savedGood)) $savedGood = (array)$savedGood;
+                                                        @endphp
+                                                        @foreach($savedGood as $gPoint)
+                                                            <div class="input-group mb-2 point-row">
+                                                                <span class="input-group-text bg-white text-success fw-bold">✓</span>
+                                                                <input type="text" name="compare_good_points[]" class="form-control" value="{{ $gPoint }}" placeholder="পয়েন্ট বিবরণ...">
+                                                                <button type="button" class="btn btn-outline-danger remove-point-btn" title="মুছে ফেলুন"><i class="fe-trash-2"></i></button>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-success mt-1 add-point-btn" data-target="#good-points-wrapper" data-name="compare_good_points[]" data-icon="✓" data-color="text-success" data-placeholder="পয়েন্ট বিবরণ...">
+                                                        <i class="fe-plus-circle me-1"></i> আরও পয়েন্ট যোগ করুন (+ Add Point)
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -383,24 +390,31 @@
                                                 </div>
 
                                                 <div class="mb-2">
-                                                    <label for="compare_bad_1" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ১ (Point 1)</label>
-                                                    <textarea name="compare_bad_1" id="compare_bad_1" rows="2" class="form-control" 
-                                                              placeholder="কাটা ও ভাঙা পাপড়ি: বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।">{{ old('compare_bad_1', $edit_data->compare_bad_1) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_bad_2" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ২ (Point 2)</label>
-                                                    <textarea name="compare_bad_2" id="compare_bad_2" rows="2" class="form-control" 
-                                                              placeholder="কালচে লালচে লিকার: ফুটানোর পর লিকার কালচে হয়ে যায়।">{{ old('compare_bad_2', $edit_data->compare_bad_2) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_bad_3" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৩ (Point 3)</label>
-                                                    <textarea name="compare_bad_3" id="compare_bad_3" rows="2" class="form-control" 
-                                                              placeholder="কম ফ্লেভার ও কম স্বাদ: প্রাকৃতিক সতেজতার অভাব থাকে।">{{ old('compare_bad_3', $edit_data->compare_bad_3) }}</textarea>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label for="compare_bad_4" class="form-label fw-semibold text-muted fs-13">পয়েন্ট ৪ (Point 4)</label>
-                                                    <textarea name="compare_bad_4" id="compare_bad_4" rows="2" class="form-control" 
-                                                              placeholder="পুরানো স্টকের ঝুঁকি: কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।">{{ old('compare_bad_4', $edit_data->compare_bad_4) }}</textarea>
+                                                    <label class="form-label fw-semibold text-muted fs-13 d-flex justify-content-between align-items-center mb-1">
+                                                        <span>সাধারণ পণ্যের খারাপ দিকসমূহ (পয়েন্ট)</span>
+                                                        <small class="text-danger">পয়েন্ট সংখ্যা কম বা বেশি করতে পারবেন</small>
+                                                    </label>
+                                                    <div id="bad-points-wrapper">
+                                                        @php
+                                                            $savedBad = old('compare_bad_points', $edit_data->bad_points ?? [
+                                                                'কাটা ও ভাঙা পাপড়ি: বেশিরভাগ ক্ষেত্রে ভাঙাচোরা পাপড়ি পাওয়া যায়।',
+                                                                'কালচে লালচে লিকার: ফুটানোর পর লিকার কালচে হয়ে যায়।',
+                                                                'কম ফ্লেভার ও কম স্বাদ: প্রাকৃতিক সতেজতার অভাব থাকে।',
+                                                                'পুরানো স্টকের ঝুঁকি: কেমিক্যাল ও দীর্ঘদিনের সংরক্ষণের আশঙ্কা।'
+                                                            ]);
+                                                            if (!is_array($savedBad)) $savedBad = (array)$savedBad;
+                                                        @endphp
+                                                        @foreach($savedBad as $bPoint)
+                                                            <div class="input-group mb-2 point-row">
+                                                                <span class="input-group-text bg-white text-danger fw-bold">✕</span>
+                                                                <input type="text" name="compare_bad_points[]" class="form-control" value="{{ $bPoint }}" placeholder="পয়েন্ট বিবরণ...">
+                                                                <button type="button" class="btn btn-outline-danger remove-point-btn" title="মুছে ফেলুন"><i class="fe-trash-2"></i></button>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger mt-1 add-point-btn" data-target="#bad-points-wrapper" data-name="compare_bad_points[]" data-icon="✕" data-color="text-danger" data-placeholder="পয়েন্ট বিবরণ...">
+                                                        <i class="fe-plus-circle me-1"></i> আরও পয়েন্ট যোগ করুন (+ Add Point)
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -697,5 +711,29 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // Comparison Section Dynamic Points Repeater
+        $(document).on('click', '.add-point-btn', function() {
+            var target = $(this).data('target');
+            var name = $(this).data('name');
+            var icon = $(this).data('icon');
+            var color = $(this).data('color');
+            var placeholder = $(this).data('placeholder');
+            var html = '<div class="input-group mb-2 point-row">' +
+                '<span class="input-group-text bg-white ' + color + ' fw-bold">' + icon + '</span>' +
+                '<input type="text" name="' + name + '" class="form-control" placeholder="' + placeholder + '">' +
+                '<button type="button" class="btn btn-outline-danger remove-point-btn" title="মুছে ফেলুন"><i class="fe-trash-2"></i></button>' +
+                '</div>';
+            $(target).append(html);
+        });
+
+        $(document).on('click', '.remove-point-btn', function() {
+            var wrapper = $(this).closest('.point-row').parent();
+            if (wrapper.find('.point-row').length > 1) {
+                $(this).closest('.point-row').remove();
+            } else {
+                $(this).closest('.point-row').find('input').val('');
+            }
+        });
     </script>
 @endsection

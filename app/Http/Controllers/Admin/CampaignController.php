@@ -53,6 +53,27 @@ class CampaignController extends Controller
             }
         }
 
+        // Flexible comparison points
+        if ($request->has('compare_good_points')) {
+            $goodPoints = is_array($request->compare_good_points) ? $request->compare_good_points : explode("\n", $request->compare_good_points);
+            $filteredGood = array_values(array_filter(array_map('trim', $goodPoints), fn($v) => !empty($v)));
+            $input['compare_good_points'] = json_encode($filteredGood, JSON_UNESCAPED_UNICODE);
+            $input['compare_good_1'] = $filteredGood[0] ?? null;
+            $input['compare_good_2'] = $filteredGood[1] ?? null;
+            $input['compare_good_3'] = $filteredGood[2] ?? null;
+            $input['compare_good_4'] = $filteredGood[3] ?? null;
+        }
+
+        if ($request->has('compare_bad_points')) {
+            $badPoints = is_array($request->compare_bad_points) ? $request->compare_bad_points : explode("\n", $request->compare_bad_points);
+            $filteredBad = array_values(array_filter(array_map('trim', $badPoints), fn($v) => !empty($v)));
+            $input['compare_bad_points'] = json_encode($filteredBad, JSON_UNESCAPED_UNICODE);
+            $input['compare_bad_1'] = $filteredBad[0] ?? null;
+            $input['compare_bad_2'] = $filteredBad[1] ?? null;
+            $input['compare_bad_3'] = $filteredBad[2] ?? null;
+            $input['compare_bad_4'] = $filteredBad[3] ?? null;
+        }
+
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $campaign = Campaign::create($input);
 
@@ -201,6 +222,27 @@ class CampaignController extends Controller
             $input['image'] = $imageUrl;
         }
         // image four
+        // Flexible comparison points
+        if ($request->has('compare_good_points')) {
+            $goodPoints = is_array($request->compare_good_points) ? $request->compare_good_points : explode("\n", $request->compare_good_points);
+            $filteredGood = array_values(array_filter(array_map('trim', $goodPoints), fn($v) => !empty($v)));
+            $input['compare_good_points'] = json_encode($filteredGood, JSON_UNESCAPED_UNICODE);
+            $input['compare_good_1'] = $filteredGood[0] ?? null;
+            $input['compare_good_2'] = $filteredGood[1] ?? null;
+            $input['compare_good_3'] = $filteredGood[2] ?? null;
+            $input['compare_good_4'] = $filteredGood[3] ?? null;
+        }
+
+        if ($request->has('compare_bad_points')) {
+            $badPoints = is_array($request->compare_bad_points) ? $request->compare_bad_points : explode("\n", $request->compare_bad_points);
+            $filteredBad = array_values(array_filter(array_map('trim', $badPoints), fn($v) => !empty($v)));
+            $input['compare_bad_points'] = json_encode($filteredBad, JSON_UNESCAPED_UNICODE);
+            $input['compare_bad_1'] = $filteredBad[0] ?? null;
+            $input['compare_bad_2'] = $filteredBad[1] ?? null;
+            $input['compare_bad_3'] = $filteredBad[2] ?? null;
+            $input['compare_bad_4'] = $filteredBad[3] ?? null;
+        }
+
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $update_data = Campaign::find($request->hidden_id);
         $update_data->update($input);

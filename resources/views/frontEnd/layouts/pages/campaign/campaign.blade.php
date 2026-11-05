@@ -1709,10 +1709,7 @@
                 'ফুড-গ্রেড প্যাকেজিং: সতেজতা ও গুণাগুণ অটুট রাখতে উন্নত হাইজিনিক প্যাক।'
             ];
 
-            $good1 = !empty(trim($campaign_data->compare_good_1 ?? '')) ? $campaign_data->compare_good_1 : $defaultGoodPoints[0];
-            $good2 = !empty(trim($campaign_data->compare_good_2 ?? '')) ? $campaign_data->compare_good_2 : $defaultGoodPoints[1];
-            $good3 = !empty(trim($campaign_data->compare_good_3 ?? '')) ? $campaign_data->compare_good_3 : $defaultGoodPoints[2];
-            $good4 = !empty(trim($campaign_data->compare_good_4 ?? '')) ? $campaign_data->compare_good_4 : $defaultGoodPoints[3];
+            $goodPoints = $campaign_data->good_points ?? $defaultGoodPoints;
 
             // Bad / Market Product
             $defaultBadTitle = $isRoselle ? 'সাধারণ / ইন্ডিয়ান রোজেলা' : 'সাধারণ বা নিম্নমানের খোলা পণ্য';
@@ -1730,10 +1727,7 @@
                 'খোলা ও অস্বাস্থ্যকর প্যাক: ধুলাবালি এবং ক্ষতিকর জীবাণুর ঝুঁকি থাকে।'
             ];
 
-            $bad1 = !empty(trim($campaign_data->compare_bad_1 ?? '')) ? $campaign_data->compare_bad_1 : $defaultBadPoints[0];
-            $bad2 = !empty(trim($campaign_data->compare_bad_2 ?? '')) ? $campaign_data->compare_bad_2 : $defaultBadPoints[1];
-            $bad3 = !empty(trim($campaign_data->compare_bad_3 ?? '')) ? $campaign_data->compare_bad_3 : $defaultBadPoints[2];
-            $bad4 = !empty(trim($campaign_data->compare_bad_4 ?? '')) ? $campaign_data->compare_bad_4 : $defaultBadPoints[3];
+            $badPoints = $campaign_data->bad_points ?? $defaultBadPoints;
         @endphp
 
         <section class="camp-compare-card">
@@ -1750,7 +1744,7 @@
                         <i class="fas fa-check-circle"></i> {{ $goodTitle }}
                     </div>
                     <ul class="camp-compare-list">
-                        @foreach([$good1, $good2, $good3, $good4] as $gp)
+                        @foreach($goodPoints as $gp)
                             @if(!empty(trim($gp)))
                                 <li>
                                     <i class="fas fa-check"></i>
@@ -1767,7 +1761,7 @@
                         <i class="fas fa-times-circle"></i> {{ $badTitle }}
                     </div>
                     <ul class="camp-compare-list">
-                        @foreach([$bad1, $bad2, $bad3, $bad4] as $bp)
+                        @foreach($badPoints as $bp)
                             @if(!empty(trim($bp)))
                                 <li>
                                     <i class="fas fa-times"></i>
