@@ -5,6 +5,7 @@
 
     <link href="{{asset('public/backEnd')}}/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <link href="{{asset('public/backEnd')}}/assets/libs/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 @endsection
 @section('content')
     <div class="container-fluid">
@@ -96,13 +97,29 @@
 
                             <div class="col-sm-12">
                                 <div class="form-group mb-3">
-                                    <label for="video" class="form-label">Video </label>
-                                    <input type="text" class="form-control @error('video') is-invalid @enderror" name="video" value="{{ old('video') }}"  id="video">
+                                    <label for="video" class="form-label fw-bold">ভিডিও (YouTube Video Link বা ID)</label>
+                                    <input type="text" class="form-control @error('video') is-invalid @enderror"
+                                        name="video" value="{{ old('video') }}" id="video"
+                                        placeholder="যেমন: dQw4w9WgXcQ অথবা https://www.youtube.com/watch?v=...">
+                                    <small class="text-muted d-block mt-1">
+                                        💡 পুরো YouTube লিংক, শেয়ার লিংক (youtu.be), শর্টস লিংক অথবা শুধু ১১ অক্ষরের ভিডিও আইডি দিলেও স্বয়ংক্রিয়ভাবে কাজ করবে।
+                                    </small>
                                     @error('video')
-                                    <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
+
+                                    <!-- Live YouTube Video Preview -->
+                                    <div id="youtube_preview_wrap" class="mt-2 p-2 border rounded bg-light" style="display: none;">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <span class="fs-12 fw-bold text-primary"><i class="fe-video me-1"></i> লাইভ ভিডিও প্রিভিউ:</span>
+                                            <span id="youtube_preview_status" class="badge bg-success">Active</span>
+                                        </div>
+                                        <div class="ratio ratio-16x9" style="max-width: 450px;">
+                                            <iframe id="youtube_preview_iframe" src="" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- col-end -->
@@ -266,6 +283,142 @@
                                                       placeholder="ছাঁকনি দিয়ে কাপে ঢেলে পরিবেশন করুন ধোঁয়া ওঠা অতুলনীয় স্বাদের চা!">{{ old('step_four') }}</textarea>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Value Propositions / Key Feature Cards Section -->
+                            <div class="col-sm-12 my-3">
+                                <div class="card border border-primary border-opacity-25 bg-light p-3 rounded">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                        <h5 class="text-primary mb-0"><i class="fe-grid me-1"></i> পণ্য সুবিধা ও বৈশিষ্ট্য কার্ড (Key Feature Cards)</h5>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-feature-card-btn">
+                                            <i class="fe-plus-circle me-1"></i> নতুন ফিচার যোগ করুন (+ Add Feature)
+                                        </button>
+                                    </div>
+                                    <p class="text-muted fs-13 mb-3">ক্যাম্পেইন ল্যান্ডিং পেজে প্রদর্শিত ফিচার কার্ডসমূহ (যেমন: ব্লাড প্রেশার নিয়ন্ত্রণ, মেদ নিয়ন্ত্রণ ইত্যাদি)। আইকন ড্রপডাউন নির্বাচন করলে পাশে লাইভ প্রিভিউ দেখাবে। কার্ড সংখ্যা কম বা বেশি করতে পারেন।</p>
+
+                                    @php
+                                        $availableIcons = [
+                                            'fas fa-heartbeat' => 'হার্ট / ব্লাড প্রেশার (fa-heartbeat)',
+                                            'fas fa-heart-pulse' => 'হার্টবিট / পালস (fa-heart-pulse)',
+                                            'fas fa-fire-alt' => 'মেদ ও ওজন নিয়ন্ত্রণ (fa-fire-alt)',
+                                            'fas fa-fire' => 'আগুন / ফ্যাট বার্ন (fa-fire)',
+                                            'fas fa-leaf' => '১০০% প্রাকৃতিক / আস্ত পাতা (fa-leaf)',
+                                            'fas fa-shield-alt' => 'ইমিউনিটি / রোগ প্রতিরোধ (fa-shield-alt)',
+                                            'fas fa-shield-heart' => 'স্বাস্থ্য সুরক্ষা (fa-shield-heart)',
+                                            'fas fa-coffee' => 'কড়া লিকার / চা (fa-coffee)',
+                                            'fas fa-mug-hot' => 'ধোঁয়া ওঠা গরম চা / মগ (fa-mug-hot)',
+                                            'fas fa-award' => 'বাছাইকৃত সেরা গ্রেড (fa-award)',
+                                            'fas fa-medal' => 'গোল্ড মেডেল / কোয়ালিটি (fa-medal)',
+                                            'fas fa-star' => '৫ স্টার / রেটিং (fa-star)',
+                                            'fas fa-check-circle' => '১০০% বিশুদ্ধ / গ্যারান্টি (fa-check-circle)',
+                                            'fas fa-check-double' => 'দ্বিগুণ কার্যকারিতা (fa-check-double)',
+                                            'fas fa-seedling' => 'অর্গানিক চাষ / চারা (fa-seedling)',
+                                            'fas fa-tint' => 'বিশুদ্ধ তরল / নির্যাস (fa-tint)',
+                                            'fas fa-apple-alt' => 'ভিটামিন ও পুষ্টি (fa-apple-alt)',
+                                            'fas fa-sun' => 'রোদে শুকানো প্রাকৃতিক (fa-sun)',
+                                            'fas fa-bolt' => 'তাৎক্ষণিক এনার্জি (fa-bolt)',
+                                            'fas fa-truck-fast' => 'দ্রুত হোম ডেলিভারি (fa-truck-fast)',
+                                            'fas fa-box-open' => 'নিরাপদ প্যাকেজিং (fa-box-open)',
+                                            'fas fa-hand-holding-heart' => 'যত্ন ও ভালোবাসা (fa-hand-holding-heart)',
+                                            'fas fa-clock' => 'ঝটপট তৈরি / সময় সাশ্রয়ী (fa-clock)',
+                                            'fas fa-smile' => 'শতভাগ তৃপ্তি ও সন্তুষ্টি (fa-smile)',
+                                            'fas fa-thumbs-up' => 'বিশ্বস্ত কোয়ালিটি (fa-thumbs-up)',
+                                            'fas fa-weight-scale' => 'ওজন নিয়ন্ত্রণ (fa-weight-scale)',
+                                            'fas fa-brain' => 'মানসিক ক্লান্তি দূর (fa-brain)',
+                                        ];
+
+                                        $defaultFeatures = [
+                                            [
+                                                'icon' => 'fas fa-heartbeat',
+                                                'title' => 'ব্লাড প্রেশার নিয়ন্ত্রণ',
+                                                'desc' => 'প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।',
+                                            ],
+                                            [
+                                                'icon' => 'fas fa-fire-alt',
+                                                'title' => 'মেদ ও ওজন নিয়ন্ত্রণ',
+                                                'desc' => 'প্রচুর অ্যান্টিঅক্সিডেন্ট মেটাবলিজম বাড়িয়ে মেদ ঝরাতে সহায়ক।',
+                                            ],
+                                            [
+                                                'icon' => 'fas fa-leaf',
+                                                'title' => '১০০% আস্ত পাহাড়ি পাপড়ি',
+                                                'desc' => 'পাহাড়ে রোদে শুকানো বিষমুক্ত ও রাসায়নিকবিহীন অক্ষত ফুল।',
+                                            ],
+                                            [
+                                                'icon' => 'fas fa-shield-alt',
+                                                'title' => 'ভিটামিন সি ও রোগ প্রতিরোধ',
+                                                'desc' => 'ত্বক সতেজ রাখে এবং শরীরের ইমিউনিটি বহুগুণ বাড়িয়ে তোলে।',
+                                            ],
+                                        ];
+
+                                        if (old('feature_titles')) {
+                                            $defaultFeatures = [];
+                                            foreach (old('feature_titles') as $k => $t) {
+                                                $defaultFeatures[] = [
+                                                    'icon' => old('feature_icons.'.$k, 'fas fa-heartbeat'),
+                                                    'title' => $t,
+                                                    'desc' => old('feature_descs.'.$k, ''),
+                                                ];
+                                            }
+                                        }
+                                    @endphp
+
+                                    <div id="feature-cards-wrapper">
+                                        @foreach($defaultFeatures as $fItem)
+                                            <div class="card mb-3 border border-secondary border-opacity-25 shadow-none feature-item-card bg-white">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                                                        <span class="fw-bold text-dark fs-13">
+                                                            <i class="fe-check-circle me-1 text-primary"></i> ফিচার কার্ড #<span class="feature-card-index">{{ $loop->iteration }}</span>
+                                                        </span>
+                                                        <button type="button" class="btn btn-xs btn-outline-danger remove-feature-card-btn" title="মুছে ফেলুন">
+                                                            <i class="fe-trash-2 me-1"></i> ডিলিট
+                                                        </button>
+                                                    </div>
+                                                    <div class="row g-2 align-items-center">
+                                                        <!-- Icon dropdown + preview -->
+                                                        <div class="col-md-3">
+                                                            <label class="form-label fw-semibold fs-12 mb-1">আইকন (Icon)</label>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="feature-icon-preview text-danger d-flex align-items-center justify-content-center border rounded bg-light" style="width: 44px; height: 38px; font-size: 20px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                                                    <i class="{{ $fItem['icon'] ?? 'fas fa-check-circle' }}"></i>
+                                                                </div>
+                                                                <select name="feature_icons[]" class="form-select form-select-sm feature-icon-select">
+                                                                    @php $matched = false; @endphp
+                                                                    @foreach($availableIcons as $iClass => $iLabel)
+                                                                        @php
+                                                                            $isSel = ($fItem['icon'] ?? '') === $iClass;
+                                                                            if ($isSel) $matched = true;
+                                                                        @endphp
+                                                                        <option value="{{ $iClass }}" {{ $isSel ? 'selected' : '' }}>{{ $iLabel }}</option>
+                                                                    @endforeach
+                                                                    @if(!$matched && !empty($fItem['icon']))
+                                                                        <option value="{{ $fItem['icon'] }}" selected>{{ $fItem['icon'] }} (Custom)</option>
+                                                                    @endif
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Title -->
+                                                        <div class="col-md-4">
+                                                            <label class="form-label fw-semibold fs-12 mb-1">ফিচার শিরোনাম (Title)</label>
+                                                            <input type="text" name="feature_titles[]" class="form-control form-control-sm" value="{{ $fItem['title'] ?? '' }}" placeholder="যেমন: ব্লাড প্রেশার নিয়ন্ত্রণ">
+                                                        </div>
+
+                                                        <!-- Description -->
+                                                        <div class="col-md-5">
+                                                            <label class="form-label fw-semibold fs-12 mb-1">সংক্ষিপ্ত বিবরণ (Description)</label>
+                                                            <input type="text" name="feature_descs[]" class="form-control form-control-sm" value="{{ $fItem['desc'] ?? '' }}" placeholder="যেমন: প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="add-feature-card-btn-footer">
+                                        <i class="fe-plus-circle me-1"></i> আরও ফিচার যোগ করুন (+ Add Another Feature)
+                                    </button>
                                 </div>
                             </div>
 
@@ -650,5 +803,97 @@
                 $(this).closest('.point-row').find('input').val('');
             }
         });
+
+        // YouTube Video Live Preview
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            url = url.trim();
+            if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+            var match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i);
+            return match ? match[1] : null;
+        }
+
+        $('#video').on('input change', function() {
+            var val = $(this).val();
+            var ytId = extractYouTubeId(val);
+            if (ytId) {
+                $('#youtube_preview_iframe').attr('src', 'https://www.youtube.com/embed/' + ytId);
+                $('#youtube_preview_wrap').show();
+            } else {
+                $('#youtube_preview_iframe').attr('src', '');
+                $('#youtube_preview_wrap').hide();
+            }
+        });
+
+        // Dynamic Feature Cards Repeater & Live Icon Preview
+        $(document).on('change', '.feature-icon-select', function() {
+            var selectedIcon = $(this).val();
+            $(this).closest('.feature-item-card').find('.feature-icon-preview i').attr('class', selectedIcon);
+        });
+
+        $(document).on('click', '#add-feature-card-btn, #add-feature-card-btn-footer', function() {
+            var index = $('#feature-cards-wrapper .feature-item-card').length + 1;
+            var template = $('#feature-card-template').html();
+            var rendered = template.replace(/\{INDEX\}/g, index);
+            $('#feature-cards-wrapper').append(rendered);
+            reindexFeatureCards();
+        });
+
+        $(document).on('click', '.remove-feature-card-btn', function() {
+            var wrapper = $('#feature-cards-wrapper');
+            if (wrapper.find('.feature-item-card').length > 1) {
+                $(this).closest('.feature-item-card').remove();
+                reindexFeatureCards();
+            } else {
+                var card = $(this).closest('.feature-item-card');
+                card.find('input').val('');
+            }
+        });
+
+        function reindexFeatureCards() {
+            $('#feature-cards-wrapper .feature-item-card').each(function(i) {
+                $(this).find('.feature-card-index').text(i + 1);
+            });
+        }
     </script>
+
+    <template id="feature-card-template">
+        <div class="card mb-3 border border-secondary border-opacity-25 shadow-none feature-item-card bg-white">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                    <span class="fw-bold text-dark fs-13">
+                        <i class="fe-check-circle me-1 text-primary"></i> ফিচার কার্ড #<span class="feature-card-index">{INDEX}</span>
+                    </span>
+                    <button type="button" class="btn btn-xs btn-outline-danger remove-feature-card-btn" title="মুছে ফেলুন">
+                        <i class="fe-trash-2 me-1"></i> ডিলিট
+                    </button>
+                </div>
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold fs-12 mb-1">আইকন (Icon)</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="feature-icon-preview text-danger d-flex align-items-center justify-content-center border rounded bg-light" style="width: 44px; height: 38px; font-size: 20px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <select name="feature_icons[]" class="form-select form-select-sm feature-icon-select">
+                                @foreach($availableIcons as $iClass => $iLabel)
+                                    <option value="{{ $iClass }}">{{ $iLabel }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold fs-12 mb-1">ফিচার শিরোনাম (Title)</label>
+                        <input type="text" name="feature_titles[]" class="form-control form-control-sm" placeholder="ফিচার শিরোনাম...">
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold fs-12 mb-1">সংক্ষিপ্ত বিবরণ (Description)</label>
+                        <input type="text" name="feature_descs[]" class="form-control form-control-sm" placeholder="সংক্ষিপ্ত বিবরণ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
 @endsection

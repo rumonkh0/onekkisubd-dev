@@ -59,15 +59,30 @@
         @endif
 
         <!-- Rating Stars & Reviews -->
-        <div class="mt-1.5 flex items-center justify-center gap-1">
-            @for($s = 0; $s < 5; $s++)
-                <svg class="h-3 w-3 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-            @endfor
-            <span class="ml-1 text-[11px] text-tea-800">({{ (abs(crc32($prod->slug ?? 'tea')) % 25) + 18 }})</span>
-        </div>
+        @php
+            $cardRevCount = $prod->reviews_count ?? ($prod->reviews ? $prod->reviews->count() : 0);
+        @endphp
+        @if($cardRevCount > 0)
+            <div class="mt-1.5 flex items-center justify-center gap-1">
+                @for($s = 0; $s < 5; $s++)
+                    <svg class="h-3 w-3 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                @endfor
+                <span class="ml-1 text-[11px] font-medium text-tea-800">({{ $cardRevCount }})</span>
+            </div>
+        @else
+            <div class="mt-1.5 flex items-center justify-center gap-1 opacity-75">
+                @for($s = 0; $s < 5; $s++)
+                    <svg class="h-3 w-3 fill-gold-500/40 text-gold-500/40" viewBox="0 0 24 24" fill="currentColor"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                @endfor
+                <span class="ml-1 text-[11px] text-tea-800/70">(0)</span>
+            </div>
+        @endif
 
         <div class="mt-2 flex items-center justify-center gap-2">
             @if($hasOldPrice)

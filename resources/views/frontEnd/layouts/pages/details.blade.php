@@ -1289,16 +1289,19 @@
                 <!-- LEFT: Gallery Showcase -->
                 <div class="col-lg-6 col-md-12">
                     <div class="tea-gallery-wrap">
+                        @php
+                            $initRegular = $productsizes->count() > 0 ? $productsizes[0]->RegularPrice : $details->old_price;
+                            $initSale = $productsizes->count() > 0 ? $productsizes[0]->SalePrice : $details->new_price;
+                            $hasDiscount = !empty($initRegular) && ($initRegular > $initSale);
+                            $initSave = $hasDiscount ? ($initRegular - $initSale) : 0;
+                            $initPercent = $hasDiscount ? round((($initRegular - $initSale) * 100) / $initRegular) : 0;
+                        @endphp
+
                         <!-- Floating Discount Badge -->
-                        @if ($details->old_price && $details->old_price > $details->new_price)
-                            @php
-                                $discount = ((($details->old_price) - ($details->new_price)) * 100) / ($details->old_price);
-                            @endphp
-                            <div class="tea-badge-discount">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                                {{ number_format($discount, 0) }}% OFF
-                            </div>
-                        @endif
+                        <div class="tea-badge-discount" id="discount_badge" style="{{ $hasDiscount ? '' : 'display: none !important;' }}">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span id="discount_percent">{{ $initPercent }}% OFF</span>
+                        </div>
 
                         <!-- Organic Trust Badge -->
                         <div class="tea-badge-organic">
@@ -1306,9 +1309,22 @@
                             100% Pure & Organic
                         </div>
 
+                        @php
+                            $postImages = [];
+                            if (!empty($details->PostImage)) {
+                                $decoded = is_array($details->PostImage) ? $details->PostImage : json_decode($details->PostImage, true);
+                                if (is_array($decoded)) {
+                                    $postImages = array_values($decoded);
+                                }
+                            }
+                            $colorCount = $productcolors->count();
+                            $imageCount = $details->images->count();
+                            $totalImages = ($colorCount > 0 ? $colorCount : $imageCount) + count($postImages);
+                        @endphp
+
                         <!-- Main Big Slider -->
                         <div class="tea-main-slider details_slider owl-carousel">
-                            @if ($productcolors->count() > 0)
+                            @if ($colorCount > 0)
                                 @foreach ($productcolors as $proc)
                                     <div class="dimage_item">
                                         <img src="{{ asset($proc->Image) }}" class="block__pic" alt="{{ $details->name }}" />
@@ -1322,8 +1338,8 @@
                                 @endforeach
                             @endif
 
-                            @if (isset($details->PostImage))
-                                @foreach (json_decode($details->PostImage) as $key => $image)
+                            @if (count($postImages) > 0)
+                                @foreach ($postImages as $key => $image)
                                     <div class="dimage_item">
                                         <img src="{{ asset('public/images/product/slider') }}/{{ $image }}" class="block__pic" alt="{{ $details->name }}" />
                                     </div>
@@ -1332,32 +1348,31 @@
                         </div>
 
                         <!-- Thumbnails Strip -->
-                        <div class="tea-thumbs-strip indicator_thumb @if ($details->images->count() > 4) thumb_slider owl-carousel @endif">
-                            @php
-                                $keyidone = 0;
-                                $keyid = 0;
-                            @endphp
+                        <div class="tea-thumbs-strip indicator_thumb @if ($totalImages > 4) thumb_slider owl-carousel @endif">
+                            @php $thumbIndex = 0; @endphp
 
-                            @if ($productcolors->count() > 0)
+                            @if ($colorCount > 0)
                                 @foreach ($productcolors as $key => $procs)
-                                    <div class="tea-thumb-item indicator-item {{ $key == 0 ? 'active' : '' }}" id="{{ ++$keyidone }}" data-id="{{ $key }}">
-                                        <img src="{{ asset($procs->Image) }}" alt="Thumb {{ $key }}" />
+                                    <div class="tea-thumb-item indicator-item {{ $thumbIndex == 0 ? 'active' : '' }}" id="{{ $thumbIndex + 1 }}" data-id="{{ $thumbIndex }}">
+                                        <img src="{{ asset($procs->Image) }}" alt="Thumb {{ $thumbIndex }}" />
                                     </div>
+                                    @php $thumbIndex++; @endphp
                                 @endforeach
                             @else
                                 @foreach ($details->images as $key => $image)
-                                    @php $keyid = $key + $keyidone + 1; @endphp
-                                    <div class="tea-thumb-item indicator-item {{ $key == 0 ? 'active' : '' }}" id="{{ $keyid }}" data-id="{{ $key + $keyidone }}">
-                                        <img src="{{ asset($image->image) }}" alt="Thumb {{ $key }}" />
+                                    <div class="tea-thumb-item indicator-item {{ $thumbIndex == 0 ? 'active' : '' }}" id="{{ $thumbIndex + 1 }}" data-id="{{ $thumbIndex }}">
+                                        <img src="{{ asset($image->image) }}" alt="Thumb {{ $thumbIndex }}" />
                                     </div>
+                                    @php $thumbIndex++; @endphp
                                 @endforeach
                             @endif
 
-                            @if (isset($details->PostImage))
-                                @foreach (json_decode($details->PostImage) as $key => $image)
-                                    <div class="tea-thumb-item indicator-item" data-id="{{ $key + $keyid + 1 }}">
+                            @if (count($postImages) > 0)
+                                @foreach ($postImages as $key => $image)
+                                    <div class="tea-thumb-item indicator-item {{ $thumbIndex == 0 ? 'active' : '' }}" id="{{ $thumbIndex + 1 }}" data-id="{{ $thumbIndex }}">
                                         <img src="{{ asset('public/images/product/slider') }}/{{ $image }}" alt="Thumb Post {{ $key }}" />
                                     </div>
+                                    @php $thumbIndex++; @endphp
                                 @endforeach
                             @endif
                         </div>
@@ -1401,39 +1416,48 @@
                         <h1 class="tea-product-title">{{ $details->name }}</h1>
 
                         <!-- Ratings summary -->
+                        @php
+                            $revCount = $reviews->count();
+                            $revAvg = $revCount > 0 ? round($reviews->avg('ratting'), 1) : 5.0;
+                            $fullStars = floor($revAvg);
+                            $hasHalf = ($revAvg - $fullStars) >= 0.5;
+                        @endphp
                         <div class="tea-rating-row">
                             <div class="tea-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
+                                @if($revCount > 0)
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $fullStars)
+                                            <i class="fa-solid fa-star"></i>
+                                        @elseif($i == $fullStars + 1 && $hasHalf)
+                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                        @else
+                                            <i class="fa-regular fa-star" style="opacity: 0.35;"></i>
+                                        @endif
+                                    @endfor
+                                    <span class="text-muted" style="font-size: 13px;">{{ number_format($revAvg, 1) }}</span>
+                                    <a href="#reviews-section" class="tea-rating-count">({{ $revCount }} customer {{ Str::plural('review', $revCount) }})</a>
+                                @else
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i class="fa-solid fa-star" style="opacity: 0.35; color: #d1d5db;"></i>
+                                    @endfor
+                                    <span class="text-muted" style="font-size: 13px;">5.0</span>
+                                    <a href="#reviews-section" class="tea-rating-count">(0 reviews • প্রথম রিভিউটি দিন)</a>
+                                @endif
                             </div>
-                            <span class="text-muted" style="font-size: 13px;">5.0</span>
-                            <a href="#reviews-section" class="tea-rating-count">({{ $reviews->count() }} customer {{ Str::plural('review', $reviews->count()) }})</a>
                         </div>
 
                         <!-- Price Showcase -->
                         <div class="tea-price-box">
                             <div class="tea-current-price">
-                                <span class="currency">৳</span><span id="regp">@if ($productsizes->count() > 0){{ $productsizes[0]->SalePrice }}@else{{ $details->new_price }}@endif</span>
+                                <span class="currency">৳</span><span id="regp">{{ $initSale }}</span>
                             </div>
 
-                            @if ($productsizes->count() > 0 && $productsizes[0]->RegularPrice > $productsizes[0]->SalePrice)
-                                <div class="tea-old-price">
-                                    <span class="currency">৳</span><span id="delp">{{ $productsizes[0]->RegularPrice }}</span>
-                                </div>
-                                <span class="tea-savings-pill">
-                                    Save ৳{{ $productsizes[0]->RegularPrice - $productsizes[0]->SalePrice }}
-                                </span>
-                            @elseif ($details->old_price && $details->old_price > $details->new_price)
-                                <div class="tea-old-price">
-                                    <span class="currency">৳</span><span id="delp">{{ $details->old_price }}</span>
-                                </div>
-                                <span class="tea-savings-pill">
-                                    Save ৳{{ $details->old_price - $details->new_price }}
-                                </span>
-                            @endif
+                            <div class="tea-old-price" id="old_price_wrap" style="{{ $hasDiscount ? '' : 'display: none !important;' }}">
+                                <span class="currency">৳</span><span id="delp">{{ $initRegular }}</span>
+                            </div>
+                            <span class="tea-savings-pill" id="savings_pill" style="{{ $hasDiscount ? '' : 'display: none !important;' }}">
+                                Save ৳<span id="save_amount">{{ $initSave }}</span>
+                            </span>
                         </div>
 
                         <!-- Short Description / Highlights -->
@@ -1492,6 +1516,8 @@
                                                     value="{{ $prosize->size }}"
                                                     name="product_size"
                                                     class="select_product_size emptyalert"
+                                                    data-regular="{{ $prosize->RegularPrice }}"
+                                                    data-sale="{{ $prosize->SalePrice }}"
                                                     {{ $loop->first ? 'checked' : '' }}
                                                     required />
                                                 <label for="f-option{{ $prosize->id }}"
@@ -1628,6 +1654,36 @@
             </div>
 
             <div class="tea-reviews-card p-4 p-md-5">
+                <!-- Trust Guarantee Strip -->
+                <div class="tea-trust-strip mb-4 p-3 rounded-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1px solid #bbf7d0;">
+                    <div class="row text-center g-2">
+                        <div class="col-6 col-md-3">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-success"></i>
+                                <span style="font-size: 13px; font-weight: 600; color: #166534;">১০০% খাঁটি পণ্য</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <i class="fa-solid fa-truck-fast text-success"></i>
+                                <span style="font-size: 13px; font-weight: 600; color: #166534;">সারা দেশে হোম ডেলিভারি</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <i class="fa-solid fa-hand-holding-dollar text-success"></i>
+                                <span style="font-size: 13px; font-weight: 600; color: #166534;">ক্যাশ অন ডেলিভারি</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <i class="fa-solid fa-rotate-left text-success"></i>
+                                <span style="font-size: 13px; font-weight: 600; color: #166534;">সহজ রিটার্ন সুবিধা</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tea-reviews-header">
                     <div>
                         <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
@@ -1659,13 +1715,20 @@
                                     </div>
                                     <div class="tea-author-info">
                                         <strong>{{ $review->name }}</strong>
-                                        <small>{{ $review->created_at->format('d M, Y') }} • Verified Buyer</small>
+                                        <small><i class="fa-solid fa-circle-check text-success me-1"></i>Verified Buyer • {{ $review->created_at->format('d M, Y') }}</small>
                                     </div>
                                     <div class="tea-stars ms-auto">
                                         {!! str_repeat('<i class="fa-solid fa-star"></i>', $review->ratting) !!}
                                     </div>
                                 </div>
                                 <p class="tea-review-text">{{ $review->review }}</p>
+                                @if ($review->image)
+                                    <div class="tea-review-attachment mt-2">
+                                        <a href="{{ asset($review->image) }}" target="_blank">
+                                            <img src="{{ asset($review->image) }}" alt="Customer photo" style="max-height: 110px; border-radius: 8px; border: 1px solid #dee2e6; object-fit: cover;">
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -1743,38 +1806,57 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if (Auth::guard('customer')->user())
-                    <form action="{{ route('customer.review') }}" id="review-form" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $details->id }}">
+                @php
+                    $isCustomer = Auth::guard('customer')->check();
+                    $custUser = $isCustomer ? Auth::guard('customer')->user() : null;
+                @endphp
+                <form action="{{ route('customer.review') }}" id="review-form" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $details->id }}">
 
-                        <div class="mb-3">
-                            <label class="form-label font-weight-bold" style="font-size: 13px;">Your Rating *</label>
-                            <div class="rating">
-                                <input required type="radio" id="star5" name="ratting" value="5" /><label for="star5" title="Excellent">★</label>
-                                <input required type="radio" id="star4" name="ratting" value="4" /><label for="star4" title="Very Good">★</label>
-                                <input required type="radio" id="star3" name="ratting" value="3" /><label for="star3" title="Good">★</label>
-                                <input required type="radio" id="star2" name="ratting" value="2" /><label for="star2" title="Fair">★</label>
-                                <input required type="radio" id="star1" name="ratting" value="1" /><label for="star1" title="Poor">★</label>
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold" style="font-size: 13px;">Your Rating (রেটিং দিন) *</label>
+                        <div class="rating">
+                            <input required type="radio" id="star5" name="ratting" value="5" checked /><label for="star5" title="Excellent">★</label>
+                            <input required type="radio" id="star4" name="ratting" value="4" /><label for="star4" title="Very Good">★</label>
+                            <input required type="radio" id="star3" name="ratting" value="3" /><label for="star3" title="Good">★</label>
+                            <input required type="radio" id="star2" name="ratting" value="2" /><label for="star2" title="Fair">★</label>
+                            <input required type="radio" id="star1" name="ratting" value="1" /><label for="star1" title="Poor">★</label>
+                        </div>
+                    </div>
+
+                    @if(!$isCustomer)
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6 col-12">
+                                <label class="form-label font-weight-bold" style="font-size: 13px;">আপনার নাম (Your Name) *</label>
+                                <input type="text" name="name" required class="form-control" placeholder="যেমন: মো: তানভীর হোসেন" style="border-radius: 10px; border: 1px solid var(--tea-border);">
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="form-label font-weight-bold" style="font-size: 13px;">জেলা / মোবাইল (Location/Phone)</label>
+                                <input type="text" name="email" class="form-control" placeholder="যেমন: ঢাকা বা 018..." style="border-radius: 10px; border: 1px solid var(--tea-border);">
                             </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="message-text" class="form-label font-weight-bold" style="font-size: 13px;">Your Review / Tasting Notes *</label>
-                            <textarea required class="form-control" name="review" id="message-text" rows="4" placeholder="How was the aroma, flavor and taste?" style="border-radius: 12px; border: 1px solid var(--tea-border);"></textarea>
-                            <span id="validation-message" style="color: red; font-size: 12px;"></span>
+                    @else
+                        <div class="mb-3 p-2 bg-light rounded d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-user-check text-success"></i>
+                            <span style="font-size: 13px;">Posting as <strong>{{ $custUser->name }}</strong></span>
                         </div>
+                    @endif
 
-                        <button class="details-review-button" type="submit">Submit Review</button>
-                    </form>
-                @else
-                    <div class="text-center py-4">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mb-2 text-warning"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        <h6 style="color: var(--tea-dark); font-weight: 700;">Sign in to Share Your Review</h6>
-                        <p class="text-muted" style="font-size: 13px;">Please log in with your customer account to post a verified review.</p>
-                        <a class="btn tea-btn-buy" href="{{ route('customer.login') }}" style="display: inline-block; padding: 10px 24px;">Login to Review</a>
+                    <div class="mb-3">
+                        <label for="message-text" class="form-label font-weight-bold" style="font-size: 13px;">Your Review / Tasting Notes (আপনার অভিজ্ঞতা) *</label>
+                        <textarea required class="form-control" name="review" id="message-text" rows="3" placeholder="পণ্যটির স্বাদ, ঘ্রাণ ও আপনার অভিজ্ঞতা কেমন লেগেছে?" style="border-radius: 12px; border: 1px solid var(--tea-border);"></textarea>
+                        <span id="validation-message" style="color: red; font-size: 12px;"></span>
                     </div>
-                @endif
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold" style="font-size: 13px;">ছবি আপলোড (Optional Photo)</label>
+                        <input type="file" name="image" class="form-control" accept="image/*" style="border-radius: 10px; border: 1px solid var(--tea-border); font-size: 13px;">
+                        <small class="text-muted" style="font-size: 11px;">প্রোডাক্ট বা চায়ের কাপের ছবি থাকলে যুক্ত করতে পারেন।</small>
+                    </div>
+
+                    <button class="details-review-button" type="submit">Submit Review (রিভিউ জমা দিন)</button>
+                </form>
             </div>
         </div>
     </div>
@@ -1787,8 +1869,31 @@
 
     <script>
         function setprice(delp, regp) {
-            $('#delp').html(delp);
-            $('#regp').html(regp);
+            delp = parseFloat(delp) || 0;
+            regp = parseFloat(regp) || 0;
+
+            $('#regp').text(regp);
+
+            if (delp > regp) {
+                var save = Math.round(delp - regp);
+                var percent = Math.round(((delp - regp) * 100) / delp);
+
+                $('#delp').text(delp);
+                $('#save_amount').text(save);
+                $('#old_price_wrap').show();
+                $('#savings_pill').show();
+
+                if ($('#discount_badge').length) {
+                    $('#discount_percent').text(percent + '% OFF');
+                    $('#discount_badge').css('display', 'inline-flex');
+                }
+            } else {
+                $('#old_price_wrap').hide();
+                $('#savings_pill').hide();
+                if ($('#discount_badge').length) {
+                    $('#discount_badge').hide();
+                }
+            }
         }
 
         $(document).ready(function() {
@@ -1803,11 +1908,26 @@
             });
 
             // Thumbnail Click Handler
-            $(".indicator-item").on("click", function() {
-                var slideIndex = $(this).data("id");
-                $(".indicator-item").removeClass("active");
-                $(this).addClass("active");
-                detailsSlider.trigger("to.owl.carousel", [slideIndex, 300]);
+            $(document).on("click", ".indicator-item", function() {
+                var slideIndex = parseInt($(this).attr("data-id"));
+                if (!isNaN(slideIndex)) {
+                    $(".indicator-item").removeClass("active");
+                    $(this).addClass("active");
+                    detailsSlider.trigger("to.owl.carousel", [slideIndex, 300]);
+                }
+            });
+
+            // Sync active thumbnail when main slider changes
+            detailsSlider.on("changed.owl.carousel", function(event) {
+                if (event.item && typeof event.item.index !== "undefined") {
+                    var currentIndex = event.item.index;
+                    $(".indicator-item").removeClass("active");
+                    var activeThumb = $(".indicator-item[data-id='" + currentIndex + "']");
+                    activeThumb.addClass("active");
+                    if ($(".thumb_slider").length) {
+                        $(".thumb_slider").trigger("to.owl.carousel", [currentIndex, 300]);
+                    }
+                }
             });
 
             // Thumbnails strip carousel if > 4 images
@@ -1889,6 +2009,11 @@
             });
 
             $(document).on('change', '.select_product_size', function() {
+                var reg = $(this).data('regular');
+                var sale = $(this).data('sale');
+                if (typeof reg !== 'undefined' && typeof sale !== 'undefined') {
+                    setprice(reg, sale);
+                }
                 var count = parseInt($('#getqty').val()) || 1;
                 checkStock(count);
             });

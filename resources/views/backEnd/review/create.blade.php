@@ -35,7 +35,7 @@
                                     name="product_id" id="product_id" required>
                                     <option value="">Choose Product...</option>
                                     @foreach ($products as $value)
-                                        <option value="{{ $value->id }}" {{ old('product_id') == $value->id ? 'selected' : '' }}>
+                                        <option value="{{ $value->id }}" {{ old('product_id', $selected_product_id ?? request('product_id')) == $value->id ? 'selected' : '' }}>
                                             {{ $value->name }}
                                         </option>
                                     @endforeach
@@ -121,6 +121,19 @@
                                 <label for="review" class="form-label fw-semibold">Review Text <span class="text-danger">*</span></label>
                                 <textarea name="review" id="review" rows="4" class="form-control @error('review') is-invalid @enderror" placeholder="Write the customer's feedback or testimonial..." required>{{ old('review') }}</textarea>
                                 @error('review')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Review Date (For Backdating / Realistic Timeline) -->
+                            <div class="col-md-6 col-12 mb-3">
+                                <label for="created_at" class="form-label fw-semibold">Review Date</label>
+                                <input type="date" class="form-control @error('created_at') is-invalid @enderror"
+                                    name="created_at" id="created_at" value="{{ old('created_at', date('Y-m-d')) }}">
+                                <small class="text-muted">Set past date (e.g., 3 days or 2 weeks ago) to make reviews look authentic and staggered over time.</small>
+                                @error('created_at')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

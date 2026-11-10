@@ -377,10 +377,16 @@
         /* Value Props Grid */
         .camp-props-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
             margin-bottom: 28px;
             text-align: center;
+        }
+        @media (min-width: 992px) {
+            .camp-props-grid.props-count-1 { grid-template-columns: minmax(auto, 460px); justify-content: center; }
+            .camp-props-grid.props-count-2 { grid-template-columns: repeat(2, 1fr); }
+            .camp-props-grid.props-count-3 { grid-template-columns: repeat(3, 1fr); }
+            .camp-props-grid.props-count-4 { grid-template-columns: repeat(4, 1fr); }
         }
         .camp-prop-box {
             background: #fcfbf9;
@@ -1491,66 +1497,37 @@
             </div>
 
             <!-- Value Props Grid -->
-            <div class="camp-props-grid">
-                @if($isRoselle)
+            @php
+                $featuresList = $campaign_data->features_list;
+                if (empty($featuresList) || count($featuresList) === 0) {
+                    if ($isRoselle) {
+                        $featuresList = [
+                            ['icon' => 'fas fa-heartbeat', 'title' => 'ব্লাড প্রেশার নিয়ন্ত্রণ', 'desc' => 'প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।'],
+                            ['icon' => 'fas fa-fire-alt', 'title' => 'মেদ ও ওজন নিয়ন্ত্রণ', 'desc' => 'প্রচুর অ্যান্টিঅক্সিডেন্ট মেটাবলিজম বাড়িয়ে মেদ ঝরাতে সহায়ক।'],
+                            ['icon' => 'fas fa-leaf', 'title' => '১০০% আস্ত পাহাড়ি পাপড়ি', 'desc' => 'পাহাড়ে রোদে শুকানো বিষমুক্ত ও রাসায়নিকবিহীন অক্ষত ফুল।'],
+                            ['icon' => 'fas fa-shield-alt', 'title' => 'ভিটামিন সি ও রোগ প্রতিরোধ', 'desc' => 'ত্বক সতেজ রাখে এবং শরীরের ইমিউনিটি বহুগুণ বাড়িয়ে তোলে।'],
+                        ];
+                    } else {
+                        $featuresList = [
+                            ['icon' => 'fas fa-leaf', 'title' => '১০০% বিশুদ্ধ ও প্রাকৃতিক', 'desc' => 'কোনো প্রকার ক্ষতিকর কেমিক্যাল, কৃত্রিম রঙ বা ভেজাল নেই।'],
+                            ['icon' => 'fas fa-coffee', 'title' => 'কড়া লিকার ও চমৎকার স্বাদ', 'desc' => 'প্রতিটি কাপে অসাধারণ সতেজতা, মন মাতানো ঘ্রাণ ও আসল তৃপ্তি।'],
+                            ['icon' => 'fas fa-award', 'title' => 'বাছাইকৃত সেরা গ্রেড', 'desc' => 'সেরা বাগান ও বিশ্বস্ত সোর্স থেকে নির্বাচিত শতভাগ তাজা কালেকশন।'],
+                            ['icon' => 'fas fa-shield-alt', 'title' => 'স্বাস্থ্যকর ও সতেজতাদায়ক', 'desc' => 'প্রাকৃতিক অ্যান্টিঅক্সিডেন্টে ভরপুর যা শরীর ও মনে তাৎক্ষণিক চনমনে ভাব আনে।'],
+                        ];
+                    }
+                }
+                $propCount = count($featuresList);
+            @endphp
+            <div class="camp-props-grid props-count-{{ $propCount }}">
+                @foreach($featuresList as $prop)
                     <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div class="camp-prop-icon"><i class="{{ $prop['icon'] ?? 'fas fa-check-circle' }}"></i></div>
                         <div class="camp-prop-text">
-                            <h4>ব্লাড প্রেশার নিয়ন্ত্রণ</h4>
-                            <p>প্রাকৃতিকভাবে হাই ব্লাড প্রেশার কমাতে কার্যকর ভূমিকা রাখে।</p>
+                            <h4>{{ $prop['title'] ?? '' }}</h4>
+                            <p>{{ $prop['desc'] ?? '' }}</p>
                         </div>
                     </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-fire-alt"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>মেদ ও ওজন নিয়ন্ত্রণ</h4>
-                            <p>প্রচুর অ্যান্টিঅক্সিডেন্ট মেটাবলিজম বাড়িয়ে মেদ ঝরাতে সহায়ক।</p>
-                        </div>
-                    </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-leaf"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>১০০% আস্ত পাহাড়ি পাপড়ি</h4>
-                            <p>পাহাড়ে রোদে শুকানো বিষমুক্ত ও রাসায়নিকবিহীন অক্ষত ফুল।</p>
-                        </div>
-                    </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>ভিটামিন সি ও রোগ প্রতিরোধ</h4>
-                            <p>ত্বক সতেজ রাখে এবং শরীরের ইমিউনিটি বহুগুণ বাড়িয়ে তোলে।</p>
-                        </div>
-                    </div>
-                @else
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-leaf"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>১০০% বিশুদ্ধ ও প্রাকৃতিক</h4>
-                            <p>কোনো প্রকার ক্ষতিকর কেমিক্যাল, কৃত্রিম রঙ বা ভেজাল নেই।</p>
-                        </div>
-                    </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-coffee"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>কড়া লিকার ও চমৎকার স্বাদ</h4>
-                            <p>প্রতিটি কাপে অসাধারণ সতেজতা, মন মাতানো ঘ্রাণ ও আসল তৃপ্তি।</p>
-                        </div>
-                    </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-award"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>বাছাইকৃত সেরা গ্রেড</h4>
-                            <p>সেরা বাগান ও বিশ্বস্ত সোর্স থেকে নির্বাচিত শতভাগ তাজা কালেকশন।</p>
-                        </div>
-                    </div>
-                    <div class="camp-prop-box">
-                        <div class="camp-prop-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div class="camp-prop-text">
-                            <h4>স্বাস্থ্যকর ও সতেজতাদায়ক</h4>
-                            <p>প্রাকৃতিক অ্যান্টিঅক্সিডেন্টে ভরপুর যা শরীর ও মনে তাৎক্ষণিক চনমনে ভাব আনে।</p>
-                        </div>
-                    </div>
-                @endif
+                @endforeach
             </div>
 
             <!-- Hero CTA -->
@@ -1618,7 +1595,7 @@
         @endif
 
         <!-- ==================== VIDEO DEMO SHOWCASE ==================== -->
-        @if($campaign_data->video)
+        @if(!empty($campaign_data->youtube_id))
             <section class="camp-video-wrapper">
                 <div class="camp-section-header">
                     <span class="camp-section-tag">ভিডিও ডেমো</span>
@@ -1627,7 +1604,7 @@
                 </div>
 
                 <div class="camp-video-aspect-16-9">
-                    <iframe src="https://www.youtube.com/embed/{{ $campaign_data->video }}?rel=0&modestbranding=1"
+                    <iframe src="https://www.youtube.com/embed/{{ $campaign_data->youtube_id }}?rel=0&modestbranding=1"
                             title="{{ $campaign_data->name }}"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowfullscreen></iframe>

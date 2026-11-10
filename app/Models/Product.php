@@ -58,7 +58,28 @@ class Product extends Model
     }
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'product_id')->select('id');
+        return $this->hasMany(Review::class, 'product_id')->where('status', 'active');
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        if (array_key_exists('reviews_count', $this->attributes)) {
+            return (int) $this->attributes['reviews_count'];
+        }
+        if ($this->relationLoaded('reviews')) {
+            return $this->reviews->where('status', 'active')->count();
+        }
+        return $this->reviews()->where('status', 'active')->count();
+    }
+
+    public function getAvgRatingAttribute()
+    {
+        if ($this->relationLoaded('reviews')) {
+            $active = $this->reviews->where('status', 'active');
+            return $active->count() > 0 ? round($active->avg('ratting'), 1) : 5.0;
+        }
+        $avg = $this->reviews()->where('status', 'active')->avg('ratting');
+        return $avg ? round($avg, 1) : 5.0;
     }
     public function category()
     {

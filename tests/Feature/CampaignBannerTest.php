@@ -237,4 +237,101 @@ class CampaignBannerTest extends TestCase
         $response->assertSee('সঠিক পণ্য চিনুন');
         $response->assertSee('camp-compare-card');
     }
+
+    public function test_campaign_dynamic_feature_props(): void
+    {
+        $campaign = Campaign::first();
+        if (!$campaign) {
+            $this->markTestSkipped('No campaign found to test.');
+        }
+
+        // Test custom 3 feature cards
+        $customFeatures = [
+            [
+                'icon' => 'fas fa-mug-hot',
+                'title' => 'দারুণ ধোঁয়া ওঠা ফ্লেভার',
+                'desc' => 'প্রতিটি কাপে অনন্য ঘ্রাণ ও অতুলনীয় স্বাদ এনে দেয়।',
+            ],
+            [
+                'icon' => 'fas fa-truck-fast',
+                'title' => '২৪ ঘণ্টায় সুপারফাস্ট ডেলিভারি',
+                'desc' => 'সারা দেশে দ্রুততম ক্যাশ অন ডেলিভারি সুবিধা।',
+            ],
+            [
+                'icon' => 'fas fa-star',
+                'title' => '১০০% গ্রাহক সন্তুষ্টি',
+                'desc' => 'হাজারো সন্তুষ্ট গ্রাহকের সেরা রিভিউ ও ভালোবাসা।',
+            ],
+        ];
+
+        $campaign->update([
+            'feature_props' => json_encode($customFeatures, JSON_UNESCAPED_UNICODE),
+        ]);
+
+        $this->assertCount(3, $campaign->fresh()->features_list);
+        $this->assertEquals('fas fa-mug-hot', $campaign->fresh()->features_list[0]['icon']);
+
+        $response = $this->get('/campaign/' . $campaign->slug);
+        $response->assertStatus(200);
+        $response->assertSee('দারুণ ধোঁয়া ওঠা ফ্লেভার');
+        $response->assertSee('প্রতিটি কাপে অনন্য ঘ্রাণ ও অতুলনীয় স্বাদ এনে দেয়।');
+        $response->assertSee('fa-mug-hot');
+        $response->assertSee('২৪ ঘণ্টায় সুপারফাস্ট ডেলিভারি');
+        $response->assertSee('fa-truck-fast');
+        $response->assertSee('১০০% গ্রাহক সন্তুষ্টি');
+        $response->assertSee('fa-star');
+        $response->assertSee('props-count-3');
+
+        // Test fallback to defaults when feature_props is null
+        $campaign->update([
+            'feature_props' => null,
+        ]);
+        $this->assertNull($campaign->fresh()->features_list);
+
+        $responseFallback = $this->get('/campaign/' . $campaign->slug);
+        $responseFallback->assertStatus(200);
+        $responseFallback->assertSee('camp-props-grid');
+        // Roselle default or tea default
+        $responseFallback->assertSee('camp-prop-box');
+
+        // Test admin update flow with feature cards
+        $admin = User::first();
+        if ($admin) {
+            $postData = [
+                'hidden_id' => $campaign->id,
+                'name' => $campaign->name,
+                'slug' => $campaign->slug,
+                'status' => 1,
+                'feature_icons' => ['fas fa-bolt', 'fas fa-seedling'],
+                'feature_titles' => ['তাৎক্ষণিক শক্তি', '১০০% প্রাকৃতিক উপাদান'],
+                'feature_descs' => ['সারা দিন চাঙ্গা ও কর্মক্ষম থাকুন।', 'রাসায়নিক ও কীটনাশক মুক্ত।'],
+            ];
+
+            $updateResp = $this->actingAs($admin)->post('/admin/campaign/update', $postData);
+            $updateResp->assertRedirect();
+
+            $updatedCampaign = $campaign->fresh();
+            $this->assertNotNull($updatedCampaign->feature_props);
+            $this->assertCount(2, $updatedCampaign->features_list);
+            $this->assertEquals('fas fa-bolt', $updatedCampaign->features_list[0]['icon']);
+            $this->assertEquals('তাৎক্ষণিক শক্তি', $updatedCampaign->features_list[0]['title']);
+            $this->assertEquals('fas fa-seedling', $updatedCampaign->features_list[1]['icon']);
+            $this->assertEquals('১০০% প্রাকৃতিক উপাদান', $updatedCampaign->features_list[1]['title']);
+        }
+
+        // Test YouTube video ID extraction and rendering
+        $campaign->update([
+            'video' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        ]);
+        $this->assertEquals('dQw4w9WgXcQ', $campaign->fresh()->youtube_id);
+        $respYt = $this->get('/campaign/' . $campaign->slug);
+        $respYt->assertOk();
+        $respYt->assertSee('https://www.youtube.com/embed/dQw4w9WgXcQ');
+
+        // Test with youtu.be short link
+        $campaign->update([
+            'video' => 'https://youtu.be/dQw4w9WgXcQ?si=test',
+        ]);
+        $this->assertEquals('dQw4w9WgXcQ', $campaign->fresh()->youtube_id);
+    }
 }

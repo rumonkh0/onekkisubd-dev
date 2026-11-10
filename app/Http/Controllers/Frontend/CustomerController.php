@@ -32,33 +32,57 @@ use Cart;
 use Mail;
 use Str;
 use DB;
+use Illuminate\Support\Facades\File;
 
 class CustomerController extends Controller
 {
     function __construct()
     {
-        $this->middleware('customer', ['except' => ['register', 'store', 'verify', 'resendotp', 'account_verify', 'login', 'signin', 'logout', 'checkout', 'forgot_password', 'forgot_verify', 'forgot_reset', 'forgot_store', 'forgot_resend', 'order_save', 'landingpageorder_save', 'order_success', 'order_track', 'order_track_result']]);
+        $this->middleware('customer', ['except' => ['register', 'store', 'verify', 'resendotp', 'account_verify', 'login', 'signin', 'logout', 'checkout', 'forgot_password', 'forgot_verify', 'forgot_reset', 'forgot_store', 'forgot_resend', 'order_save', 'landingpageorder_save', 'order_success', 'order_track', 'order_track_result', 'review']]);
     }
 
     public function review(Request $request)
     {
         $this->validate($request, [
-            'ratting' => 'required',
-            'review' => 'required',
+            'product_id' => 'required|exists:products,id',
+            'ratting'    => 'required|integer|min:1|max:5',
+            'review'     => 'required|string',
+            'name'       => 'nullable|string|max:191',
+            'email'      => 'nullable|string|max:191',
+            'image'      => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
-        // data save
-        $review              =   new Review();
-        $review->name        =   Auth::guard('customer')->user()->name ? Auth::guard('customer')->user()->name : 'N / A';
-        $review->email       =   Auth::guard('customer')->user()->email ? Auth::guard('customer')->user()->email : 'N / A';
-        $review->product_id  =   $request->product_id;
-        $review->review      =   $request->review;
-        $review->ratting     =   $request->ratting;
-        $review->customer_id =   Auth::guard('customer')->user()->id;
-        $review->status      =   'pending';
+        $review = new Review();
+        if (Auth::guard('customer')->check()) {
+            $user = Auth::guard('customer')->user();
+            $review->name        = $request->name ?: ($user->name ?: 'Customer');
+            $review->email       = $request->email ?: ($user->email ?: ($user->phone ?: 'N/A'));
+            $review->customer_id = $user->id;
+        } else {
+            $review->name        = $request->name ?: 'Customer';
+            $review->email       = $request->email ?: 'N/A';
+            $review->customer_id = null;
+        }
+
+        $review->product_id  = $request->product_id;
+        $review->review      = $request->review;
+        $review->ratting     = $request->ratting;
+
+        if ($request->file('image')) {
+            $image = $request->file('image');
+            $imageName = microtime('.') . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'public/uploads/review/';
+            if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
+                File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+            }
+            $image->move($imagePath, $imageName);
+            $review->image = $imagePath . $imageName;
+        }
+
+        $review->status      = 'active';
         $review->save();
 
-        Toastr::success('Thanks, Your review send successfully', 'Success!');
+        Toastr::success('Thanks, your review has been submitted successfully!', 'Success!');
         return redirect()->back();
     }
 

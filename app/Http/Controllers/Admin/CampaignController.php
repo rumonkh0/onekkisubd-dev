@@ -74,6 +74,30 @@ class CampaignController extends Controller
             $input['compare_bad_4'] = $filteredBad[3] ?? null;
         }
 
+        // Dynamic Feature Cards (Value Propositions)
+        if ($request->has('feature_titles')) {
+            $features = [];
+            $icons = $request->feature_icons ?? [];
+            $titles = $request->feature_titles ?? [];
+            $descs = $request->feature_descs ?? [];
+
+            foreach ($titles as $idx => $title) {
+                $cleanTitle = trim($title ?? '');
+                $cleanDesc = trim($descs[$idx] ?? '');
+                $cleanIcon = trim($icons[$idx] ?? 'fas fa-check-circle');
+
+                if (!empty($cleanTitle) || !empty($cleanDesc)) {
+                    $features[] = [
+                        'icon' => $cleanIcon,
+                        'title' => $cleanTitle,
+                        'desc' => $cleanDesc,
+                    ];
+                }
+            }
+            $input['feature_props'] = count($features) > 0 ? json_encode($features, JSON_UNESCAPED_UNICODE) : null;
+        }
+        unset($input['feature_icons'], $input['feature_titles'], $input['feature_descs']);
+
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $campaign = Campaign::create($input);
 
@@ -242,6 +266,30 @@ class CampaignController extends Controller
             $input['compare_bad_3'] = $filteredBad[2] ?? null;
             $input['compare_bad_4'] = $filteredBad[3] ?? null;
         }
+
+        // Dynamic Feature Cards (Value Propositions)
+        if ($request->has('feature_titles')) {
+            $features = [];
+            $icons = $request->feature_icons ?? [];
+            $titles = $request->feature_titles ?? [];
+            $descs = $request->feature_descs ?? [];
+
+            foreach ($titles as $idx => $title) {
+                $cleanTitle = trim($title ?? '');
+                $cleanDesc = trim($descs[$idx] ?? '');
+                $cleanIcon = trim($icons[$idx] ?? 'fas fa-check-circle');
+
+                if (!empty($cleanTitle) || !empty($cleanDesc)) {
+                    $features[] = [
+                        'icon' => $cleanIcon,
+                        'title' => $cleanTitle,
+                        'desc' => $cleanDesc,
+                    ];
+                }
+            }
+            $input['feature_props'] = count($features) > 0 ? json_encode($features, JSON_UNESCAPED_UNICODE) : null;
+        }
+        unset($input['feature_icons'], $input['feature_titles'], $input['feature_descs']);
 
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
         $update_data = Campaign::find($request->hidden_id);

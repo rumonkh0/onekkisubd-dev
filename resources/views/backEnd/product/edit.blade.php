@@ -21,7 +21,13 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <div class="page-title-right">
+                <div class="page-title-right d-flex gap-1 flex-wrap align-items-center">
+                    <a href="{{ route('reviews.create', ['product_id' => $edit_data->id]) }}" class="btn btn-warning rounded-pill" target="_blank">
+                        <i class="fe-star me-1"></i> Add Review
+                    </a>
+                    <a href="{{ route('reviews.index', ['product_id' => $edit_data->id]) }}" class="btn btn-outline-info rounded-pill" target="_blank">
+                        <i class="fe-message-square me-1"></i> Reviews ({{ $edit_data->reviews_count }})
+                    </a>
                     <a href="{{ route('products.index') }}" class="btn btn-primary rounded-pill">Manage</a>
                 </div>
                 <h4 class="page-title">Product Edit</h4>

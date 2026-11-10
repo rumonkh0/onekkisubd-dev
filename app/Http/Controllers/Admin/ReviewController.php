@@ -49,11 +49,12 @@ class ReviewController extends Controller
         return view('backEnd.review.index', compact('show_data', 'total_reviews', 'active_reviews', 'pending_reviews', 'avg_rating', 'products'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $products = Product::where('status', 1)->select('id', 'name')->orderBy('name')->get();
         $customers = Customer::where('status', 'active')->select('id', 'name', 'email', 'phone')->get();
-        return view('backEnd.review.create', compact('products', 'customers'));
+        $selected_product_id = $request->get('product_id');
+        return view('backEnd.review.create', compact('products', 'customers', 'selected_product_id'));
     }
 
     public function store(Request $request)
@@ -67,9 +68,10 @@ class ReviewController extends Controller
             'ratting' => 'required|integer|min:1|max:5',
             'review' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'created_at' => 'nullable|date',
         ]);
 
-        $name = $request->name ?: ($request->customer_name ?: 'Anonymous Customer');
+        $name = $request->name ?: ($request->customer_name ?: 'Verified Customer');
         $email = $request->email ?: ($request->customer_email ?: 'N/A');
 
         $review = new Review();
@@ -91,7 +93,12 @@ class ReviewController extends Controller
             $review->image = $imagePath . $imageName;
         }
 
-        $review->status = ($request->status == 1 || $request->status === 'active') ? 'active' : 'pending';
+        $review->status = ($request->status == 1 || $request->status === 'active' || !isset($request->status)) ? 'active' : 'pending';
+
+        if ($request->filled('created_at')) {
+            $review->created_at = \Carbon\Carbon::parse($request->created_at);
+        }
+
         $review->save();
 
         Toastr::success('Success', 'Review created successfully');
@@ -114,6 +121,7 @@ class ReviewController extends Controller
             'product_id' => 'required|exists:products,id',
             'review' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'created_at' => 'nullable|date',
         ]);
 
         $review = Review::findOrFail($id);
@@ -146,6 +154,11 @@ class ReviewController extends Controller
         }
 
         $review->status = ($request->status == 1 || $request->status === 'active') ? 'active' : 'pending';
+
+        if ($request->filled('created_at')) {
+            $review->created_at = \Carbon\Carbon::parse($request->created_at);
+        }
+
         $review->save();
 
         Toastr::success('Success', 'Review updated successfully');

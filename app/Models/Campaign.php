@@ -71,4 +71,34 @@ class Campaign extends Model
 
         return null;
     }
+
+    public function getFeaturesListAttribute()
+    {
+        if (!empty($this->feature_props)) {
+            $decoded = is_array($this->feature_props) ? $this->feature_props : json_decode($this->feature_props, true);
+            if (is_array($decoded)) {
+                $filtered = array_values(array_filter($decoded, function ($item) {
+                    return !empty(trim($item['title'] ?? '')) || !empty(trim($item['desc'] ?? ''));
+                }));
+                if (count($filtered) > 0) {
+                    return $filtered;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function getYoutubeIdAttribute()
+    {
+        if (empty($this->video)) return null;
+        $input = trim($this->video);
+        if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $input)) {
+            return $input;
+        }
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i', $input, $match)) {
+            return $match[1];
+        }
+        return $input;
+    }
 }

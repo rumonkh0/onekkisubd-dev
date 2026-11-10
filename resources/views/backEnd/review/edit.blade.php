@@ -111,6 +111,19 @@
                                 </div>
                             </div>
 
+                            <!-- Review Date (For Backdating / Realistic Timeline) -->
+                            <div class="col-md-6 col-12 mb-3">
+                                <label for="created_at" class="form-label fw-semibold">Review Date</label>
+                                <input type="date" class="form-control @error('created_at') is-invalid @enderror"
+                                    name="created_at" id="created_at" value="{{ old('created_at', $edit_data->created_at ? $edit_data->created_at->format('Y-m-d') : date('Y-m-d')) }}">
+                                <small class="text-muted">Change date to adjust the timeline of this review.</small>
+                                @error('created_at')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                             <!-- Status -->
                             <div class="col-md-6 col-12 mb-3">
                                 <label for="status" class="form-label fw-semibold d-block">Status (Active = Visible on Store)</label>
