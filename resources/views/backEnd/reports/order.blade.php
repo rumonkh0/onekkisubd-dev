@@ -213,6 +213,7 @@
                                     <label for="order_status" class="form-label fw-semibold">Order Status</label>
                                     <select class="form-control select2" id="order_status" name="order_status">
                                         <option value="6" {{ request('order_status', '6') == '6' ? 'selected' : '' }}>Completed (Default)</option>
+                                        <option value="delivered_completed" {{ request('order_status') == 'delivered_completed' ? 'selected' : '' }}>Completed & Delivered</option>
                                         <option value="all" {{ request('order_status') == 'all' ? 'selected' : '' }}>All Statuses</option>
                                         @foreach ($order_statuses as $status)
                                             @if($status->id != 6)

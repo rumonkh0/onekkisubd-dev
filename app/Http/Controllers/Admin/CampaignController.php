@@ -12,9 +12,111 @@ use Image;
 use Toastr;
 use Str;
 use File;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
 
 class CampaignController extends Controller
 {
+    /**
+     * Auto-ensure all required campaign columns exist in the database.
+     * Prevents SQLSTATE[42S22] (Unknown column) even if migrations were not run manually.
+     */
+    protected function ensureCampaignColumns(): void
+    {
+        try {
+            if (!Schema::hasColumn('campaigns', 'feature_props') ||
+                !Schema::hasColumn('campaigns', 'compare_good_points') ||
+                !Schema::hasColumn('campaigns', 'step_title')) {
+
+                Schema::table('campaigns', function (Blueprint $table) {
+                    if (!Schema::hasColumn('campaigns', 'feature_props')) {
+                        $table->longText('feature_props')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_good_points')) {
+                        $table->longText('compare_good_points')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_bad_points')) {
+                        $table->longText('compare_bad_points')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'step_title')) {
+                        $table->string('step_title')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'step_one')) {
+                        $table->text('step_one')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'step_two')) {
+                        $table->text('step_two')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'step_three')) {
+                        $table->text('step_three')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'step_four')) {
+                        $table->text('step_four')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_title')) {
+                        $table->string('compare_title')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_subtitle')) {
+                        $table->string('compare_subtitle')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_tag')) {
+                        $table->string('compare_tag')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_good_title')) {
+                        $table->string('compare_good_title')->nullable();
+                    }
+                    if (!Schema::hasColumn('campaigns', 'compare_bad_title')) {
+                        $table->string('compare_bad_title')->nullable();
+                    }
+                });
+            }
+        } catch (\Throwable $e) {
+            Log::warning('CampaignController: Auto-schema check failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Filter input fields to ensure only existing columns are inserted/updated.
+     * Prevents 1054 Unknown column exceptions under all circumstances.
+     */
+    protected function filterInputForCampaign(array $input): array
+    {
+        $this->ensureCampaignColumns();
+
+        $potentialDynamicCols = [
+            'feature_props',
+            'compare_good_points',
+            'compare_bad_points',
+            'step_title',
+            'step_one',
+            'step_two',
+            'step_three',
+            'step_four',
+            'compare_title',
+            'compare_subtitle',
+            'compare_tag',
+            'compare_good_title',
+            'compare_bad_title',
+            'compare_good_one',
+            'compare_good_two',
+            'compare_good_three',
+            'compare_good_four',
+            'compare_bad_one',
+            'compare_bad_two',
+            'compare_bad_three',
+            'compare_bad_four',
+        ];
+
+        foreach ($potentialDynamicCols as $col) {
+            if (array_key_exists($col, $input) && !Schema::hasColumn('campaigns', $col)) {
+                unset($input[$col]);
+            }
+        }
+
+        return $input;
+    }
+
     public function index(Request $request)
     {
         $show_data = Campaign::orderBy('id', 'DESC')->get();
@@ -22,6 +124,7 @@ class CampaignController extends Controller
     }
     public function create()
     {
+        $this->ensureCampaignColumns();
         $products = Product::where(['status' => 1])->select('id', 'name', 'status')->get();
         return view('backEnd.campaign.create', compact('products'));
     }
@@ -99,6 +202,7 @@ class CampaignController extends Controller
         unset($input['feature_icons'], $input['feature_titles'], $input['feature_descs']);
 
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
+        $input = $this->filterInputForCampaign($input);
         $campaign = Campaign::create($input);
 
         // Main campaign image (optional single)
@@ -151,6 +255,7 @@ class CampaignController extends Controller
 
     public function edit($id)
     {
+        $this->ensureCampaignColumns();
         $edit_data = Campaign::with(['images', 'banners'])->find($id);
         $select_products = Product::where('campaign_id', $id)->get();
         $show_data = Campaign::orderBy('id', 'DESC')->get();
@@ -292,6 +397,7 @@ class CampaignController extends Controller
         unset($input['feature_icons'], $input['feature_titles'], $input['feature_descs']);
 
         $input['slug'] = !empty($request->slug) ? strtolower(Str::slug($request->slug)) : strtolower(Str::slug($request->name));
+        $input = $this->filterInputForCampaign($input);
         $update_data = Campaign::find($request->hidden_id);
         $update_data->update($input);
 

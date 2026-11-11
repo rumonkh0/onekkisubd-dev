@@ -75,6 +75,12 @@ class ReportModuleTest extends TestCase
         ]));
         $responseAllStatus->assertOk();
 
+        // Test order_status = 'delivered_completed'
+        $responseDeliveredCompleted = $this->actingAs($this->admin)->get(route('admin.order_report', [
+            'order_status' => 'delivered_completed',
+        ]));
+        $responseDeliveredCompleted->assertOk();
+
         // Test date range filter
         $responseDates = $this->actingAs($this->admin)->get(route('admin.order_report', [
             'start_date' => '2025-01-01',

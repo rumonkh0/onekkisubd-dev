@@ -279,7 +279,8 @@
                                         @foreach ($product->prosizes as $size)
                                             @php
                                                 $rowNum++;
-                                                $subtotal = $size->quantity * $size->SalePrice;
+                                                $unitPrice = $size->SalePrice ?: $product->new_price;
+                                                $subtotal = $size->quantity * $unitPrice;
                                                 $pageStock += $size->quantity;
                                                 $pageTotal += $subtotal;
                                             @endphp
@@ -292,7 +293,7 @@
                                                 </td>
                                                 <td><span class="badge bg-soft-info text-info">{{ $size->size }}</span></td>
                                                 <td>{{ $product->category->name ?? 'N/A' }}</td>
-                                                <td>৳ {{ number_format($size->SalePrice, 2) }}</td>
+                                                <td>৳ {{ number_format($unitPrice, 2) }}</td>
                                                 <td>
                                                     <span class="fw-bold {{ $size->quantity <= 5 ? 'text-danger' : 'text-dark' }}">
                                                         {{ $size->quantity }} Pcs

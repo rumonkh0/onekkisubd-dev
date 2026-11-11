@@ -730,7 +730,8 @@ class OrderController extends Controller
             $query->where('category_id', $request->category_id);
         }
         if ($request->start_date && $request->end_date) {
-            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+            $query->whereDate('updated_at', '>=', $request->start_date)
+                  ->whereDate('updated_at', '<=', $request->end_date);
         } elseif ($request->start_date) {
             $query->whereDate('updated_at', '>=', $request->start_date);
         } elseif ($request->end_date) {
@@ -746,14 +747,20 @@ class OrderController extends Controller
         foreach ($all_products as $prod) {
             if ($prod->prosizes && $prod->prosizes->count() > 0) {
                 foreach ($prod->prosizes as $sz) {
-                    $total_stock += $sz->quantity;
-                    $total_price += ($sz->quantity * $sz->SalePrice);
-                    $total_purchase += ($sz->quantity * ($prod->purchase_price ?: 0));
+                    $qty = (int) ($sz->quantity ?: 0);
+                    $saleP = (float) ($sz->SalePrice ?: ($prod->new_price ?: 0));
+                    $purP = (float) ($prod->purchase_price ?: 0);
+                    $total_stock += $qty;
+                    $total_price += ($qty * $saleP);
+                    $total_purchase += ($qty * $purP);
                 }
             } else {
-                $total_stock += $prod->stock;
-                $total_price += ($prod->stock * $prod->new_price);
-                $total_purchase += ($prod->stock * ($prod->purchase_price ?: 0));
+                $qty = (int) ($prod->stock ?: 0);
+                $saleP = (float) ($prod->new_price ?: 0);
+                $purP = (float) ($prod->purchase_price ?: 0);
+                $total_stock += $qty;
+                $total_price += ($qty * $saleP);
+                $total_purchase += ($qty * $purP);
             }
         }
 
@@ -772,10 +779,14 @@ class OrderController extends Controller
         // Initialize the query for orders with related shipping, order, and status
         $query = OrderDetails::with(['shipping', 'order.status']);
 
-        // Filter by order_status (defaults to 6: Completed, but allows any status or all)
+        // Filter by order_status (defaults to 6: Completed, but allows any status, all, or delivered+completed)
         if ($request->filled('order_status')) {
             $statusId = $request->order_status;
-            if ($statusId !== 'all') {
+            if ($statusId === 'delivered_completed') {
+                $query->whereHas('order', function ($q) {
+                    $q->whereIn('order_status', ['6', '12', '13']);
+                });
+            } elseif ($statusId !== 'all') {
                 $query->whereHas('order', function ($q) use ($statusId) {
                     $q->where('order_status', $statusId);
                 });
