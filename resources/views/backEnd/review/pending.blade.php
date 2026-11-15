@@ -59,9 +59,10 @@
                                     <th>SL</th>
                                     <th>Product</th>
                                     <th>Customer</th>
+                                    <th>Reviewer Photo</th>
                                     <th>Rating</th>
                                     <th>Review</th>
-                                    <th>Photo</th>
+                                    <th>Post Attachment</th>
                                     <th>Submitted Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -92,6 +93,15 @@
                                             <small class="text-muted">{{ $value->email ?: 'N/A' }}</small>
                                         </td>
                                         <td>
+                                            @if ($value->reviewer_image)
+                                                <a href="{{ asset($value->reviewer_image) }}" target="_blank" title="View Reviewer Photo">
+                                                    <img src="{{ asset($value->reviewer_image) }}" alt="Reviewer Photo" style="width: 36px; height: 36px; object-fit: cover; border-radius: 50%; border: 1px solid #dee2e6;">
+                                                </a>
+                                            @else
+                                                <span class="text-muted small">No photo</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             <div class="text-warning font-14">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     @if ($i <= $value->ratting)
@@ -109,16 +119,19 @@
                                             </span>
                                         </td>
                                         <td>
-                                            @if ($value->image && file_exists(public_path(str_replace('public/', '', $value->image))))
-                                                <a href="{{ asset($value->image) }}" target="_blank" title="View Attachment">
-                                                    <img src="{{ asset($value->image) }}" alt="Attachment" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
-                                                </a>
-                                            @elseif($value->image)
-                                                <a href="{{ asset($value->image) }}" target="_blank" title="View Attachment">
-                                                    <img src="{{ asset($value->image) }}" alt="Attachment" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
-                                                </a>
+                                            @php
+                                                $attImgs = $value->attachment_images;
+                                            @endphp
+                                            @if (count($attImgs) > 0)
+                                                <div class="d-flex align-items-center flex-wrap gap-1">
+                                                    @foreach ($attImgs as $attImg)
+                                                        <a href="{{ asset($attImg) }}" target="_blank" title="View Attachment">
+                                                            <img src="{{ asset($attImg) }}" alt="Attachment" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;">
+                                                        </a>
+                                                    @endforeach
+                                                </div>
                                             @else
-                                                <span class="text-muted small">No photo</span>
+                                                <span class="text-muted small">No attachment</span>
                                             @endif
                                         </td>
                                         <td>

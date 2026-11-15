@@ -9,9 +9,69 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\Customer;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class ReviewController extends Controller
 {
+    protected function ensureUploadDirectory(): string
+    {
+        $imagePath = 'public/uploads/review/';
+        if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
+            File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+        }
+        return $imagePath;
+    }
+
+    protected function removeStoredFile(?string $filePath): void
+    {
+        if (empty($filePath)) {
+            return;
+        }
+        $cleanPath = public_path(str_replace('public/', '', $filePath));
+        if (file_exists($cleanPath) && is_file($cleanPath)) {
+            @unlink($cleanPath);
+        } elseif (file_exists($filePath) && is_file($filePath)) {
+            @unlink($filePath);
+        }
+    }
+
+    protected function extractAttachmentFiles(Request $request): array
+    {
+        $files = [];
+        foreach (['image', 'review_images', 'attachment'] as $field) {
+            if ($request->hasFile($field)) {
+                $uploaded = $request->file($field);
+                if (is_array($uploaded)) {
+                    foreach ($uploaded as $file) {
+                        if ($file) {
+                            $files[] = $file;
+                        }
+                    }
+                } elseif ($uploaded) {
+                    $files[] = $uploaded;
+                }
+            }
+        }
+        return $files;
+    }
+
+    protected function buildAttachmentValidationRules(Request $request): array
+    {
+        $rules = [
+            'reviewer_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+        ];
+
+        foreach (['image', 'review_images', 'attachment'] as $field) {
+            if (is_array($request->file($field))) {
+                $rules[$field] = 'nullable|array';
+                $rules[$field . '.*'] = 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048';
+            } else {
+                $rules[$field] = 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048';
+            }
+        }
+
+        return $rules;
+    }
     public function index(Request $request)
     {
         $query = Review::with('product.image');
@@ -59,7 +119,7 @@ class ReviewController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'product_id' => 'required|exists:products,id',
             'name' => 'nullable|string|max:191',
             'customer_name' => 'nullable|string|max:191',
@@ -67,9 +127,8 @@ class ReviewController extends Controller
             'customer_email' => 'nullable|string|max:191',
             'ratting' => 'required|integer|min:1|max:5',
             'review' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'created_at' => 'nullable|date',
-        ]);
+        ], $this->buildAttachmentValidationRules($request)));
 
         $name = $request->name ?: ($request->customer_name ?: 'Verified Customer');
         $email = $request->email ?: ($request->customer_email ?: 'N/A');
@@ -82,15 +141,29 @@ class ReviewController extends Controller
         $review->product_id = $request->product_id;
         $review->customer_id = $request->customer_id ?: null;
 
-        if ($request->file('image')) {
-            $image = $request->file('image');
-            $imageName = microtime('.') . '.' . $image->getClientOriginalExtension();
-            $imagePath = 'public/uploads/review/';
-            if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
-                File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+        $imagePath = $this->ensureUploadDirectory();
+
+        if ($request->hasFile('reviewer_image')) {
+            $reviewerImg = $request->file('reviewer_image');
+            $reviewerImgName = 'reviewer_' . time() . '_' . uniqid() . '.' . $reviewerImg->getClientOriginalExtension();
+            $reviewerImg->move($imagePath, $reviewerImgName);
+            if (Schema::hasColumn('reviews', 'reviewer_image')) {
+                $review->reviewer_image = $imagePath . $reviewerImgName;
             }
-            $image->move($imagePath, $imageName);
-            $review->image = $imagePath . $imageName;
+        }
+
+        $attachmentFiles = $this->extractAttachmentFiles($request);
+        if (count($attachmentFiles) > 0) {
+            $storedPaths = [];
+            foreach ($attachmentFiles as $idx => $file) {
+                $fileName = 'review_' . time() . '_' . uniqid() . '_' . $idx . '.' . $file->getClientOriginalExtension();
+                $file->move($imagePath, $fileName);
+                $storedPaths[] = $imagePath . $fileName;
+            }
+            $review->image = $storedPaths[0];
+            if (Schema::hasColumn('reviews', 'review_images')) {
+                $review->review_images = json_encode($storedPaths);
+            }
         }
 
         $review->status = ($request->status == 1 || $request->status === 'active' || !isset($request->status)) ? 'active' : 'pending';
@@ -114,15 +187,14 @@ class ReviewController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'name' => 'required|string|max:191',
             'email' => 'nullable|string|max:191',
             'ratting' => 'required|integer|min:1|max:5',
             'product_id' => 'required|exists:products,id',
             'review' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'created_at' => 'nullable|date',
-        ]);
+        ], $this->buildAttachmentValidationRules($request)));
 
         $review = Review::findOrFail($id);
         $review->name = $request->name;
@@ -131,26 +203,33 @@ class ReviewController extends Controller
         $review->review = $request->review;
         $review->product_id = $request->product_id;
 
-        if ($request->file('image')) {
-            $image = $request->file('image');
+        $imagePath = $this->ensureUploadDirectory();
 
-            // Remove old image safely
-            if (!empty($review->image)) {
-                $cleanPath = public_path(str_replace('public/', '', $review->image));
-                if (file_exists($cleanPath)) {
-                    @unlink($cleanPath);
-                } elseif (file_exists($review->image)) {
-                    @unlink($review->image);
-                }
+        if ($request->hasFile('reviewer_image')) {
+            $this->removeStoredFile($review->reviewer_image);
+            $reviewerImg = $request->file('reviewer_image');
+            $reviewerImgName = 'reviewer_' . time() . '_' . uniqid() . '.' . $reviewerImg->getClientOriginalExtension();
+            $reviewerImg->move($imagePath, $reviewerImgName);
+            if (Schema::hasColumn('reviews', 'reviewer_image')) {
+                $review->reviewer_image = $imagePath . $reviewerImgName;
             }
+        }
 
-            $imageName = microtime('.') . '.' . $image->getClientOriginalExtension();
-            $imagePath = 'public/uploads/review/';
-            if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
-                File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+        $attachmentFiles = $this->extractAttachmentFiles($request);
+        if (count($attachmentFiles) > 0) {
+            foreach ($review->attachment_images as $oldPath) {
+                $this->removeStoredFile($oldPath);
             }
-            $image->move($imagePath, $imageName);
-            $review->image = $imagePath . $imageName;
+            $storedPaths = [];
+            foreach ($attachmentFiles as $idx => $file) {
+                $fileName = 'review_' . time() . '_' . uniqid() . '_' . $idx . '.' . $file->getClientOriginalExtension();
+                $file->move($imagePath, $fileName);
+                $storedPaths[] = $imagePath . $fileName;
+            }
+            $review->image = $storedPaths[0];
+            if (Schema::hasColumn('reviews', 'review_images')) {
+                $review->review_images = json_encode($storedPaths);
+            }
         }
 
         $review->status = ($request->status == 1 || $request->status === 'active') ? 'active' : 'pending';
@@ -201,13 +280,9 @@ class ReviewController extends Controller
     {
         $delete_data = Review::find($request->hidden_id);
         if ($delete_data) {
-            if (!empty($delete_data->image)) {
-                $cleanPath = public_path(str_replace('public/', '', $delete_data->image));
-                if (file_exists($cleanPath)) {
-                    @unlink($cleanPath);
-                } elseif (file_exists($delete_data->image)) {
-                    @unlink($delete_data->image);
-                }
+            $this->removeStoredFile($delete_data->reviewer_image);
+            foreach ($delete_data->attachment_images as $attPath) {
+                $this->removeStoredFile($attPath);
             }
             $delete_data->delete();
             Toastr::success('Success', 'Review deleted successfully');

@@ -60,16 +60,37 @@
 
 @section('content')
 <div class="container-fluid">
+    @php
+        $isFiltered = $isFiltered ?? (!empty($startDate) || !empty($endDate));
+        $rangeLabel = 'All Time';
+        if (!empty($startDate) && !empty($endDate)) {
+            $rangeLabel = \Carbon\Carbon::parse($startDate)->format('d M, Y') . ' — ' . \Carbon\Carbon::parse($endDate)->format('d M, Y');
+        } elseif (!empty($startDate)) {
+            $rangeLabel = 'From ' . \Carbon\Carbon::parse($startDate)->format('d M, Y');
+        } elseif (!empty($endDate)) {
+            $rangeLabel = 'Until ' . \Carbon\Carbon::parse($endDate)->format('d M, Y');
+        }
+        $dateQueryParams = array_filter([
+            'start_date' => $startDate ?? null,
+            'end_date' => $endDate ?? null,
+        ]);
+    @endphp
+
     <!-- Dashboard Header -->
     <div class="dashboard-header mt-3">
         <div>
-            <h4 class="page-title mb-1">Dashboard Overview</h4>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h4 class="page-title mb-1">Dashboard Overview</h4>
+                <span class="badge {{ $isFiltered ? 'bg-primary' : 'bg-secondary bg-opacity-10 text-secondary' }}" style="font-size: 12px;">
+                    <i class="fe-calendar me-1"></i> {{ $rangeLabel }}
+                </span>
+            </div>
             <p class="text-muted mb-0" style="font-size: 13.5px;">
-                Welcome back, <strong>{{ Auth::user()->name }}</strong>. Here is your store's latest activity and performance.
+                Welcome back, <strong>{{ Auth::user()->name }}</strong>. Here is your store's activity and performance {{ $isFiltered ? 'for the selected date range' : 'overview' }}.
             </p>
         </div>
         <div class="dashboard-actions">
-            <a href="{{ route('admin.orders', ['slug' => 'all']) }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('admin.orders', array_merge(['slug' => 'all'], $dateQueryParams)) }}" class="btn btn-primary btn-sm">
                 <i class="fe-shopping-bag"></i> All Orders
             </a>
             <a href="{{ route('products.create') }}" class="btn btn-success btn-sm">
@@ -81,27 +102,67 @@
         </div>
     </div>
 
-    <!-- Accounts Date Filter Card -->
+    <!-- Full Dashboard Date Range Filter Card -->
     <div class="filter-card">
-        <form action="{{ route('deposit.filtering') }}" method="GET" class="row align-items-end g-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div class="fw-bold text-dark" style="font-size: 13px;">
+                <i class="fe-sliders text-primary me-1"></i> Filter Full Dashboard by Date Range
+            </div>
+            <div class="d-flex flex-wrap gap-1">
+                @php
+                    $todayStr = now()->toDateString();
+                    $last7Str = now()->subDays(6)->toDateString();
+                    $monthStartStr = now()->startOfMonth()->toDateString();
+                    $monthEndStr = now()->endOfMonth()->toDateString();
+                    $lastMonthStartStr = now()->subMonth()->startOfMonth()->toDateString();
+                    $lastMonthEndStr = now()->subMonth()->endOfMonth()->toDateString();
+                @endphp
+                <a href="{{ route('dashboard', ['start_date' => $todayStr, 'end_date' => $todayStr]) }}"
+                   class="btn btn-xs {{ ($startDate === $todayStr && $endDate === $todayStr) ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    Today
+                </a>
+                <a href="{{ route('dashboard', ['start_date' => $last7Str, 'end_date' => $todayStr]) }}"
+                   class="btn btn-xs {{ ($startDate === $last7Str && $endDate === $todayStr) ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    Last 7 Days
+                </a>
+                <a href="{{ route('dashboard', ['start_date' => $monthStartStr, 'end_date' => $monthEndStr]) }}"
+                   class="btn btn-xs {{ ($startDate === $monthStartStr && $endDate === $monthEndStr) ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    This Month
+                </a>
+                <a href="{{ route('dashboard', ['start_date' => $lastMonthStartStr, 'end_date' => $lastMonthEndStr]) }}"
+                   class="btn btn-xs {{ ($startDate === $lastMonthStartStr && $endDate === $lastMonthEndStr) ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    Last Month
+                </a>
+                <a href="{{ route('dashboard') }}"
+                   class="btn btn-xs {{ !$isFiltered ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    All Time
+                </a>
+            </div>
+        </div>
+        <form action="{{ route('dashboard') }}" method="GET" class="row align-items-end g-2">
             <div class="col-md-4">
                 <label class="form-label mb-1 text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">
                     <i class="fe-calendar me-1"></i> Start Date
                 </label>
-                <input type="date" value="{{ request()->get('start_date', now()->startOfMonth()->toDateString()) }}"
+                <input type="date" value="{{ $startDate ?? '' }}"
                     class="form-control" name="start_date">
             </div>
             <div class="col-md-4">
                 <label class="form-label mb-1 text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">
                     <i class="fe-calendar me-1"></i> End Date
                 </label>
-                <input type="date" value="{{ request()->get('end_date', now()->endOfMonth()->toDateString()) }}"
+                <input type="date" value="{{ $endDate ?? '' }}"
                     class="form-control" name="end_date">
             </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-primary w-100" style="height: 38px;">
-                    <i class="fe-filter me-1"></i> Filter Accounts
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1" style="height: 38px;">
+                    <i class="fe-filter me-1"></i> Apply Date Filter
                 </button>
+                @if($isFiltered)
+                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="height: 38px;" title="Reset Filter">
+                        <i class="fe-refresh-cw"></i>
+                    </a>
+                @endif
             </div>
         </form>
     </div>
@@ -116,7 +177,9 @@
                     <div class="stat-widget-value text-primary">
                         ৳<span data-plugin="counterup">{{ number_format($account_balance, 0) }}</span>
                     </div>
-                    <small class="text-muted" style="font-size: 11.5px;">Period Net (Lifetime: ৳{{ number_format($lifetime_balance, 0) }})</small>
+                    <small class="text-muted" style="font-size: 11.5px;">
+                        {{ $isFiltered ? 'Period Net' : 'Overall Net' }} (Lifetime: ৳{{ number_format($lifetime_balance, 0) }})
+                    </small>
                 </div>
                 <div class="stat-widget-icon stat-icon-primary">
                     <i class="fe-credit-card"></i>
@@ -132,7 +195,7 @@
                     <div class="stat-widget-value text-success">
                         ৳<span data-plugin="counterup">{{ number_format($total_payment, 0) }}</span>
                     </div>
-                    <small class="text-muted" style="font-size: 11.5px;">Courier + Office receipts</small>
+                    <small class="text-muted" style="font-size: 11.5px;">Courier + Office receipts ({{ $isFiltered ? 'Filtered' : 'All Time' }})</small>
                 </div>
                 <div class="stat-widget-icon stat-icon-success">
                     <i class="fe-trending-up"></i>
@@ -148,7 +211,7 @@
                     <div class="stat-widget-value text-danger">
                         ৳<span data-plugin="counterup">{{ number_format($total_cost, 0) }}</span>
                     </div>
-                    <small class="text-muted" style="font-size: 11.5px;">Boost, office & shipping</small>
+                    <small class="text-muted" style="font-size: 11.5px;">Boost, office & shipping ({{ $isFiltered ? 'Filtered' : 'All Time' }})</small>
                 </div>
                 <div class="stat-widget-icon stat-icon-danger">
                     <i class="fe-trending-down"></i>
@@ -156,16 +219,25 @@
             </div>
         </div>
 
-        <!-- Today & Total Orders -->
+        <!-- Orders KPI -->
         <div class="col-md-6 col-xl-3">
             <div class="stat-widget">
                 <div class="stat-widget-content">
-                    <div class="stat-widget-label">Today's Orders</div>
-                    <div class="stat-widget-value text-info">
-                        <span data-plugin="counterup">{{ $today_order }}</span>
-                        <span style="font-size: 14px; color: var(--slate-500); font-weight: normal;"> / {{ $total_order }} total</span>
-                    </div>
-                    <small class="text-muted" style="font-size: 11.5px;">{{ $total_delivery }} Delivered overall</small>
+                    @if($isFiltered)
+                        <div class="stat-widget-label">Filtered Orders</div>
+                        <div class="stat-widget-value text-info">
+                            <span data-plugin="counterup">{{ $total_order }}</span>
+                            <span style="font-size: 14px; color: var(--slate-500); font-weight: normal;"> in range</span>
+                        </div>
+                        <small class="text-muted" style="font-size: 11.5px;">{{ $total_delivery }} Delivered in range (Today: {{ $today_order }})</small>
+                    @else
+                        <div class="stat-widget-label">Today's Orders</div>
+                        <div class="stat-widget-value text-info">
+                            <span data-plugin="counterup">{{ $today_order }}</span>
+                            <span style="font-size: 14px; color: var(--slate-500); font-weight: normal;"> / {{ $total_order }} total</span>
+                        </div>
+                        <small class="text-muted" style="font-size: 11.5px;">{{ $total_delivery }} Delivered overall</small>
+                    @endif
                 </div>
                 <div class="stat-widget-icon stat-icon-info">
                     <i class="fe-shopping-bag"></i>
@@ -178,7 +250,7 @@
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="m-0"><i class="fe-truck text-primary"></i> Order Pipeline & Fulfillment Status</h3>
-            <span class="badge bg-light text-dark">{{ $total_order }} Total Orders</span>
+            <span class="badge bg-light text-dark">{{ $total_order }} {{ $isFiltered ? 'Orders in Range' : 'Total Orders' }}</span>
         </div>
         <div class="card-body">
             @php
@@ -266,7 +338,7 @@
                         ];
                     @endphp
                     <div class="col-6 col-sm-4 col-md-3 col-xl-2">
-                        <a href="{{ route('admin.orders', ['slug' => $st->slug]) }}" class="pipeline-card d-block h-100 mb-0">
+                        <a href="{{ route('admin.orders', array_merge(['slug' => $st->slug], $dateQueryParams)) }}" class="pipeline-card d-block h-100 mb-0">
                             <div class="pipeline-card-inner">
                                 <span class="pipeline-card-title text-truncate" title="{{ $st->name }}">
                                     <i class="{{ $meta['icon'] }} {{ $meta['color'] }}"></i> {{ $st->name }}
@@ -287,7 +359,10 @@
         <div class="col-xl-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="header-title m-0"><i class="fe-bar-chart-2 text-primary"></i> 30-Day Sales & Revenue Trend</h4>
+                    <h4 class="header-title m-0">
+                        <i class="fe-bar-chart-2 text-primary"></i>
+                        {{ $isFiltered ? 'Sales & Revenue Trend (' . $rangeLabel . ')' : '30-Day Sales & Revenue Trend' }}
+                    </h4>
                     <span class="text-muted font-12">Net revenue per day</span>
                 </div>
                 <div class="card-body">
@@ -300,6 +375,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="header-title m-0"><i class="fe-pie-chart text-success"></i> Delivery Performance</h4>
+                    @if($isFiltered)
+                        <span class="badge bg-success bg-opacity-10 text-success">Filtered</span>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div id="total-revenue" class="apex-charts" data-colors="#10b981" style="min-height: 220px;"></div>
@@ -317,7 +395,7 @@
                             <strong>{{ $last_month }} orders</strong>
                         </div>
                         <div class="breakdown-row">
-                            <span class="text-muted"><i class="fe-check-circle text-primary me-1"></i> Total Completed:</span>
+                            <span class="text-muted"><i class="fe-check-circle text-primary me-1"></i> {{ $isFiltered ? 'Completed in Range:' : 'Total Completed:' }}</span>
                             <strong>{{ $total_delivery }} orders</strong>
                         </div>
                     </div>
@@ -413,7 +491,7 @@
             <h4 class="header-title m-0">
                 <i class="fe-database text-primary"></i> Inventory Stock by Category
             </h4>
-            <span class="badge bg-primary">{{ $total_product }} Total Products</span>
+            <span class="badge bg-primary">{{ $total_product }} {{ $isFiltered ? 'Products Added in Range' : 'Total Products' }}</span>
         </div>
         <div class="card-body">
             <div class="d-flex flex-wrap">
@@ -435,8 +513,11 @@
         <div class="col-xl-7">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="header-title m-0"><i class="fe-shopping-bag text-primary"></i> Latest Orders</h4>
-                    <a href="{{ route('admin.orders', ['slug' => 'all']) }}" class="btn btn-sm btn-outline-primary">
+                    <h4 class="header-title m-0">
+                        <i class="fe-shopping-bag text-primary"></i>
+                        {{ $isFiltered ? 'Orders in Selected Range (Latest 5)' : 'Latest Orders' }}
+                    </h4>
+                    <a href="{{ route('admin.orders', array_merge(['slug' => 'all'], $dateQueryParams)) }}" class="btn btn-sm btn-outline-primary">
                         View All Orders <i class="fe-arrow-right"></i>
                     </a>
                 </div>
@@ -509,7 +590,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">No recent orders found.</td>
+                                        <td colspan="6" class="text-center py-4 text-muted">No orders found {{ $isFiltered ? 'for this date range' : '' }}.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -523,8 +604,11 @@
         <div class="col-xl-5">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="header-title m-0"><i class="fe-users text-info"></i> Latest Customers</h4>
-                    <span class="badge bg-light text-dark">{{ $total_customer }} Registered</span>
+                    <h4 class="header-title m-0">
+                        <i class="fe-users text-info"></i>
+                        {{ $isFiltered ? 'Customers Joined in Range' : 'Latest Customers' }}
+                    </h4>
+                    <span class="badge bg-light text-dark">{{ $total_customer }} {{ $isFiltered ? 'Joined in Range' : 'Registered' }}</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">

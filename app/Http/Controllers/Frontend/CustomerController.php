@@ -33,6 +33,7 @@ use Mail;
 use Str;
 use DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class CustomerController extends Controller
 {
@@ -43,14 +44,25 @@ class CustomerController extends Controller
 
     public function review(Request $request)
     {
-        $this->validate($request, [
-            'product_id' => 'required|exists:products,id',
-            'ratting'    => 'required|integer|min:1|max:5',
-            'review'     => 'required|string',
-            'name'       => 'nullable|string|max:191',
-            'email'      => 'nullable|string|max:191',
-            'image'      => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-        ]);
+        $rules = [
+            'product_id'     => 'required|exists:products,id',
+            'ratting'        => 'required|integer|min:1|max:5',
+            'review'         => 'required|string',
+            'name'           => 'nullable|string|max:191',
+            'email'          => 'nullable|string|max:191',
+            'reviewer_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+        ];
+
+        foreach (['image', 'review_images', 'attachment'] as $field) {
+            if (is_array($request->file($field))) {
+                $rules[$field] = 'nullable|array';
+                $rules[$field . '.*'] = 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048';
+            } else {
+                $rules[$field] = 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048';
+            }
+        }
+
+        $this->validate($request, $rules);
 
         $review = new Review();
         if (Auth::guard('customer')->check()) {
@@ -68,15 +80,47 @@ class CustomerController extends Controller
         $review->review      = $request->review;
         $review->ratting     = $request->ratting;
 
-        if ($request->file('image')) {
-            $image = $request->file('image');
-            $imageName = microtime('.') . '.' . $image->getClientOriginalExtension();
-            $imagePath = 'public/uploads/review/';
-            if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
-                File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+        $imagePath = 'public/uploads/review/';
+        if (!File::isDirectory(base_path($imagePath)) && !File::isDirectory(public_path('uploads/review'))) {
+            File::makeDirectory(public_path('uploads/review'), 0777, true, true);
+        }
+
+        if ($request->hasFile('reviewer_image')) {
+            $reviewerImg = $request->file('reviewer_image');
+            $reviewerImgName = 'reviewer_' . time() . '_' . uniqid() . '.' . $reviewerImg->getClientOriginalExtension();
+            $reviewerImg->move($imagePath, $reviewerImgName);
+            if (Schema::hasColumn('reviews', 'reviewer_image')) {
+                $review->reviewer_image = $imagePath . $reviewerImgName;
             }
-            $image->move($imagePath, $imageName);
-            $review->image = $imagePath . $imageName;
+        }
+
+        $attachmentFiles = [];
+        foreach (['image', 'review_images', 'attachment'] as $field) {
+            if ($request->hasFile($field)) {
+                $uploaded = $request->file($field);
+                if (is_array($uploaded)) {
+                    foreach ($uploaded as $file) {
+                        if ($file) {
+                            $attachmentFiles[] = $file;
+                        }
+                    }
+                } elseif ($uploaded) {
+                    $attachmentFiles[] = $uploaded;
+                }
+            }
+        }
+
+        if (count($attachmentFiles) > 0) {
+            $storedPaths = [];
+            foreach ($attachmentFiles as $idx => $file) {
+                $fileName = 'review_' . time() . '_' . uniqid() . '_' . $idx . '.' . $file->getClientOriginalExtension();
+                $file->move($imagePath, $fileName);
+                $storedPaths[] = $imagePath . $fileName;
+            }
+            $review->image = $storedPaths[0];
+            if (Schema::hasColumn('reviews', 'review_images')) {
+                $review->review_images = json_encode($storedPaths);
+            }
         }
 
         $review->status      = 'active';

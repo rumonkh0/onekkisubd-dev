@@ -25,18 +25,52 @@ class DashboardController extends Controller
         // $this->middleware('auth')->except(['locked','unlocked']);
     }
     public function dashboard(Request $request){
-        $total_order = Order::count();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($startDate && $endDate && $startDate > $endDate) {
+            [$startDate, $endDate] = [$endDate, $startDate];
+        }
+
+        $isFiltered = !empty($startDate) || !empty($endDate);
+
+        $applyOrderDateFilter = function ($query) use ($startDate, $endDate) {
+            if ($startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            }
+            if ($endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            }
+            return $query;
+        };
+
+        $applyAccountDateFilter = function ($query) use ($startDate, $endDate) {
+            if ($startDate) {
+                $query->whereDate('date', '>=', $startDate);
+            }
+            if ($endDate) {
+                $query->whereDate('date', '<=', $endDate);
+            }
+            return $query;
+        };
+
+        $total_order = $applyOrderDateFilter(Order::query())->count();
         $today_order = Order::where('created_at', '>=', Carbon::today())->count();
-        $total_product = Product::count();
-        $total_customer = Customer::count();
-        $latest_order = Order::latest()->limit(5)->with('customer','product','product.image','status')->get();
-        $latest_customer = Customer::latest()->limit(5)->get();
+        $total_product = $isFiltered
+            ? $applyOrderDateFilter(Product::query())->count()
+            : Product::count();
+        $total_customer = $applyOrderDateFilter(Customer::query())->count();
+        $latest_order = $applyOrderDateFilter(Order::latest())
+            ->limit(5)
+            ->with('customer', 'product', 'product.image', 'status', 'shipping')
+            ->get();
+        $latest_customer = $applyOrderDateFilter(Customer::latest())->limit(5)->get();
 
         // Successful delivered / completed statuses (Completed = 6, Delivered = 12, Partial Delivery = 13)
         $delivery_statuses = ['6', '12', '13'];
 
         $today_delivery = Order::whereIn('order_status', $delivery_statuses)->where('created_at', '>=', Carbon::today())->count();
-        $total_delivery = Order::whereIn('order_status', $delivery_statuses)->count();
+        $total_delivery = $applyOrderDateFilter(Order::whereIn('order_status', $delivery_statuses))->count();
         $last_week = Order::whereIn('order_status', $delivery_statuses)->whereBetween('created_at', [
             Carbon::now()->subWeek()->startOfWeek(),
             Carbon::now()->subWeek()->endOfWeek(),
@@ -46,12 +80,34 @@ class DashboardController extends Controller
             ->whereYear('created_at', $lastMonth->year)
             ->whereMonth('created_at', $lastMonth->month)
             ->count();
-        $monthly_sale = Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
-            ->whereIn('order_status', $delivery_statuses)
-            ->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->groupBy('date')
-            ->orderBy('date', 'asc')
-            ->get();
+
+        if ($isFiltered) {
+            $monthly_sale = $applyOrderDateFilter(
+                Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
+                    ->whereIn('order_status', $delivery_statuses)
+            )
+                ->groupBy('date')
+                ->orderBy('date', 'asc')
+                ->get();
+        } else {
+            $monthly_sale = Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
+                ->whereIn('order_status', $delivery_statuses)
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->groupBy('date')
+                ->orderBy('date', 'asc')
+                ->get();
+
+            if ($monthly_sale->isEmpty()) {
+                $monthly_sale = Order::selectRaw('DATE(created_at) as date, SUM(amount) as amount')
+                    ->whereIn('order_status', $delivery_statuses)
+                    ->groupBy('date')
+                    ->orderBy('date', 'desc')
+                    ->limit(30)
+                    ->get()
+                    ->sortBy('date')
+                    ->values();
+            }
+        }
 
         // Dynamic Pipeline statuses (aggregated by slug so duplicates like 'return' merge counts)
         $sortOrder = [
@@ -72,7 +128,9 @@ class DashboardController extends Controller
         ];
 
         $pipeline_statuses = OrderStatus::where('status', 1)
-            ->withCount('orders')
+            ->withCount(['orders' => function ($query) use ($applyOrderDateFilter) {
+                $applyOrderDateFilter($query);
+            }])
             ->get()
             ->groupBy('slug')
             ->map(function ($group) {
@@ -86,50 +144,78 @@ class DashboardController extends Controller
             ->values();
 
         // Legacy individual order status counts (kept for backward compatibility)
-        $pending_order = Order::where(['order_status' => '1'])->count();
-        $confirm_order = Order::where(['order_status' => '2'])->count();
-        $pre_order = Order::whereIn('order_status', ['3', '9'])->count();
-        $shipped_courier = Order::where(['order_status' => '5'])->count();
-        $return_order = Order::whereIn('order_status', ['8', '15'])->count();
-        $delivery_done_order = Order::whereIn('order_status', ['6', '12'])->count();
-        $total_cancel_order = Order::where(['order_status' => '4'])->count();
+        $pending_order = $applyOrderDateFilter(Order::where(['order_status' => '1']))->count();
+        $confirm_order = $applyOrderDateFilter(Order::where(['order_status' => '2']))->count();
+        $pre_order = $applyOrderDateFilter(Order::whereIn('order_status', ['3', '9']))->count();
+        $shipped_courier = $applyOrderDateFilter(Order::where(['order_status' => '5']))->count();
+        $return_order = $applyOrderDateFilter(Order::whereIn('order_status', ['8', '15']))->count();
+        $delivery_done_order = $applyOrderDateFilter(Order::whereIn('order_status', ['6', '12']))->count();
+        $total_cancel_order = $applyOrderDateFilter(Order::where(['order_status' => '4']))->count();
 
         // inventory
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where('status', 1)->with('homeproducts')->get();
 
         // Lifetime overall accounts balance
         $lifetime_deposit = Deposit::where('status', 1)->sum('amount');
         $lifetime_expense = Expense::where('status', 1)->sum('amount');
         $lifetime_balance = $lifetime_deposit - $lifetime_expense;
 
-        // account filtering
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-
-        if (!$startDate || !$endDate) {
-            $startDate = now()->startOfMonth()->toDateString();
-            $endDate = now()->endOfMonth()->toDateString();
-        }
-
-        // accounts within filtered period
+        // accounts within filtered period (or all-time when not filtered)
         // deposit
-        $courier_payment = Deposit::where(['status'=>1,'deposit_type' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $officesale_payment = Deposit::where(['status' => 1, 'deposit_type' => 2])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $expense_others = Deposit::where(['status' => 1, 'deposit_type' => 3])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $total_payment = Deposit::where(['status' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
+        $courier_payment = $applyAccountDateFilter(Deposit::where(['status' => 1, 'deposit_type' => 1]))->sum('amount');
+        $officesale_payment = $applyAccountDateFilter(Deposit::where(['status' => 1, 'deposit_type' => 2]))->sum('amount');
+        $expense_others = $applyAccountDateFilter(Deposit::where(['status' => 1, 'deposit_type' => 3]))->sum('amount');
+        $total_payment = $applyAccountDateFilter(Deposit::where(['status' => 1]))->sum('amount');
         // expense
-        $boost_cost = Expense::where(['status' => 1, 'expense_type' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $office_cost = Expense::where(['status' => 1, 'expense_type' => 2])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $bank_deposit = Expense::where(['status' => 1, 'expense_type' => 3])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $packaging_cost = Expense::where(['status' => 1, 'expense_type' => 4])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $transport_cost = Expense::where(['status' => 1, 'expense_type' => 5])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $others_expense_cost = Expense::where(['status' => 1, 'expense_type' => 6])->whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $total_cost = Expense::where(['status' => 1])->whereBetween('date', [$startDate, $endDate])->sum('amount');
+        $boost_cost = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 1]))->sum('amount');
+        $office_cost = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 2]))->sum('amount');
+        $bank_deposit = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 3]))->sum('amount');
+        $packaging_cost = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 4]))->sum('amount');
+        $transport_cost = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 5]))->sum('amount');
+        $others_expense_cost = $applyAccountDateFilter(Expense::where(['status' => 1, 'expense_type' => 6]))->sum('amount');
+        $total_cost = $applyAccountDateFilter(Expense::where(['status' => 1]))->sum('amount');
 
         // Net balance for the filtered period
         $account_balance = $total_payment - $total_cost;
 
-        return view('backEnd.admin.dashboard',compact('total_order','today_order','total_product','total_customer','latest_order','latest_customer','today_delivery','total_delivery','last_week','last_month','monthly_sale', 'pipeline_statuses', 'pending_order', 'pre_order', 'confirm_order', 'shipped_courier', 'return_order', 'delivery_done_order', 'total_cancel_order','categories', 'courier_payment', 'officesale_payment', 'expense_others', 'total_payment', 'boost_cost', 'office_cost', 'bank_deposit', 'packaging_cost', 'transport_cost', 'others_expense_cost', 'total_cost', 'account_balance', 'lifetime_balance'));
+        return view('backEnd.admin.dashboard', compact(
+            'total_order',
+            'today_order',
+            'total_product',
+            'total_customer',
+            'latest_order',
+            'latest_customer',
+            'today_delivery',
+            'total_delivery',
+            'last_week',
+            'last_month',
+            'monthly_sale',
+            'pipeline_statuses',
+            'pending_order',
+            'pre_order',
+            'confirm_order',
+            'shipped_courier',
+            'return_order',
+            'delivery_done_order',
+            'total_cancel_order',
+            'categories',
+            'courier_payment',
+            'officesale_payment',
+            'expense_others',
+            'total_payment',
+            'boost_cost',
+            'office_cost',
+            'bank_deposit',
+            'packaging_cost',
+            'transport_cost',
+            'others_expense_cost',
+            'total_cost',
+            'account_balance',
+            'lifetime_balance',
+            'startDate',
+            'endDate',
+            'isFiltered'
+        ));
     }
     public function changepassword(){
         return view('backEnd.admin.changepassword');

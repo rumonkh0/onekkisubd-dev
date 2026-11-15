@@ -871,12 +871,17 @@
         .tea-review-author {
             display: flex;
             align-items: center;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 10px 12px;
             margin-bottom: 10px;
         }
         .tea-author-avatar {
             width: 44px;
             height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            flex-shrink: 0;
+            aspect-ratio: 1 / 1;
             border-radius: 50%;
             background: var(--tea-dark);
             color: var(--tea-gold);
@@ -891,7 +896,13 @@
         .tea-author-avatar img {
             width: 100%;
             height: 100%;
+            display: block;
             object-fit: cover;
+            border-radius: 50%;
+        }
+        .tea-author-info {
+            min-width: 0;
+            flex: 1;
         }
         .tea-author-info strong {
             display: block;
@@ -901,6 +912,20 @@
         .tea-author-info small {
             color: var(--tea-muted);
             font-size: 12px;
+            display: block;
+        }
+        .tea-review-author .tea-stars {
+            flex-shrink: 0;
+        }
+        @media (max-width: 576px) {
+            .tea-review-card {
+                padding: 16px;
+            }
+            .tea-review-author .tea-stars {
+                width: 100%;
+                margin-left: 0 !important;
+                padding-left: 56px;
+            }
         }
         .tea-stars i {
             color: #eab308;
@@ -1654,7 +1679,7 @@
             </div>
 
             <div class="tea-reviews-card p-4 p-md-5">
-                <!-- Trust Guarantee Strip -->
+                {{-- Trust Guarantee Strip
                 <div class="tea-trust-strip mb-4 p-3 rounded-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1px solid #bbf7d0;">
                     <div class="row text-center g-2">
                         <div class="col-6 col-md-3">
@@ -1683,6 +1708,7 @@
                         </div>
                     </div>
                 </div>
+                --}}
 
                 <div class="tea-reviews-header">
                     <div>
@@ -1707,8 +1733,8 @@
                             <div class="tea-review-card">
                                 <div class="tea-review-author">
                                     <div class="tea-author-avatar">
-                                        @if ($review->image)
-                                            <img src="{{ asset($review->image) }}" alt="{{ $review->name }}">
+                                        @if ($review->reviewer_image)
+                                            <img src="{{ asset($review->reviewer_image) }}" alt="{{ $review->name }}">
                                         @else
                                             {{ strtoupper(substr($review->name, 0, 1)) }}
                                         @endif
@@ -1722,11 +1748,16 @@
                                     </div>
                                 </div>
                                 <p class="tea-review-text">{{ $review->review }}</p>
-                                @if ($review->image)
-                                    <div class="tea-review-attachment mt-2">
-                                        <a href="{{ asset($review->image) }}" target="_blank">
-                                            <img src="{{ asset($review->image) }}" alt="Customer photo" style="max-height: 110px; border-radius: 8px; border: 1px solid #dee2e6; object-fit: cover;">
-                                        </a>
+                                @php
+                                    $attachmentImages = $review->attachment_images;
+                                @endphp
+                                @if (count($attachmentImages) > 0)
+                                    <div class="tea-review-attachment mt-2 d-flex flex-wrap gap-2">
+                                        @foreach ($attachmentImages as $attImg)
+                                            <a href="{{ asset($attImg) }}" target="_blank">
+                                                <img src="{{ asset($attImg) }}" alt="Review attachment" style="max-height: 110px; border-radius: 8px; border: 1px solid #dee2e6; object-fit: cover;">
+                                            </a>
+                                        @endforeach
                                     </div>
                                 @endif
                             </div>
@@ -1849,10 +1880,21 @@
                         <span id="validation-message" style="color: red; font-size: 12px;"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label font-weight-bold" style="font-size: 13px;">ছবি আপলোড (Optional Photo)</label>
-                        <input type="file" name="image" class="form-control" accept="image/*" style="border-radius: 10px; border: 1px solid var(--tea-border); font-size: 13px;">
-                        <small class="text-muted" style="font-size: 11px;">প্রোডাক্ট বা চায়ের কাপের ছবি থাকলে যুক্ত করতে পারেন।</small>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6 col-12">
+                            <label class="form-label font-weight-bold" style="font-size: 13px;">Reviewer Photo (আপনার ছবি)</label>
+                            <input type="file" name="reviewer_image" id="customer_reviewer_image" class="form-control" accept="image/*" onchange="previewModalReviewerPhoto(this)" style="border-radius: 10px; border: 1px solid var(--tea-border); font-size: 13px;">
+                            <small class="text-muted" style="font-size: 11px;">রিভিউয়ারের প্রোফাইল ছবি (ঐচ্ছিক)।</small>
+                            <div id="modal_reviewer_preview_box" class="mt-2 d-none">
+                                <img id="modal_reviewer_preview" src="" alt="Reviewer Preview" style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 1px solid #dee2e6;">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <label class="form-label font-weight-bold" style="font-size: 13px;">Post Images / Attachment (পণ্যের ছবি)</label>
+                            <input type="file" name="image[]" id="customer_post_images" class="form-control" accept="image/*" multiple onchange="previewModalPostImages(this)" style="border-radius: 10px; border: 1px solid var(--tea-border); font-size: 13px;">
+                            <small class="text-muted" style="font-size: 11px;">প্রোডাক্ট বা চায়ের কাপের ছবি যুক্ত করুন (ঐচ্ছিক)।</small>
+                            <div id="modal_post_images_preview_box" class="mt-2 d-none d-flex flex-wrap gap-2"></div>
+                        </div>
                     </div>
 
                     <button class="details-review-button" type="submit">Submit Review (রিভিউ জমা দিন)</button>
@@ -1868,6 +1910,41 @@
     <script src="{{ asset('public/frontEnd/js/zoomsl.min.js') }}"></script>
 
     <script>
+        function previewModalReviewerPhoto(input) {
+            var box = document.getElementById('modal_reviewer_preview_box');
+            var img = document.getElementById('modal_reviewer_preview');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    box.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                box.classList.add('d-none');
+            }
+        }
+
+        function previewModalPostImages(input) {
+            var box = document.getElementById('modal_post_images_preview_box');
+            box.innerHTML = '';
+            if (input.files && input.files.length > 0) {
+                box.classList.remove('d-none');
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Attachment Preview';
+                        img.style.cssText = 'width: 54px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;';
+                        box.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                box.classList.add('d-none');
+            }
+        }
         function setprice(delp, regp) {
             delp = parseFloat(delp) || 0;
             regp = parseFloat(regp) || 0;

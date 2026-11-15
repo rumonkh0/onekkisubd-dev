@@ -214,4 +214,113 @@ class DepositExpenseModuleTest extends TestCase
         $e1->delete();
         $e2->delete();
     }
+
+    public function test_dashboard_full_page_date_range_filtering()
+    {
+        \App\Models\Customer::whereIn('name', ['Range Customer In', 'Range Customer Out'])->delete();
+        \App\Models\Order::whereIn('invoice_id', ['999001', '999002', '999003'])->delete();
+
+        $cIn = null;
+        $cOut = null;
+        $orderPendingIn = null;
+        $orderDeliveredIn = null;
+        $orderOut = null;
+
+        try {
+            // Create orders and customers inside and outside a specific future date range (Feb 2035)
+            $cIn = new \App\Models\Customer();
+            $cIn->name = 'Range Customer In';
+            $cIn->slug = 'range-customer-in-' . uniqid();
+            $cIn->phone = '01700000001';
+            $cIn->email = 'in_' . uniqid() . '@example.com';
+            $cIn->password = bcrypt('password');
+            $cIn->status = 'active';
+            $cIn->save();
+            \Illuminate\Support\Facades\DB::table('customers')->where('id', $cIn->id)->update([
+                'created_at' => '2035-02-10 10:00:00',
+                'updated_at' => '2035-02-10 10:00:00',
+            ]);
+
+            $cOut = new \App\Models\Customer();
+            $cOut->name = 'Range Customer Out';
+            $cOut->slug = 'range-customer-out-' . uniqid();
+            $cOut->phone = '01700000002';
+            $cOut->email = 'out_' . uniqid() . '@example.com';
+            $cOut->password = bcrypt('password');
+            $cOut->status = 'active';
+            $cOut->save();
+            \Illuminate\Support\Facades\DB::table('customers')->where('id', $cOut->id)->update([
+                'created_at' => '2035-03-10 10:00:00',
+                'updated_at' => '2035-03-10 10:00:00',
+            ]);
+
+            $orderPendingIn = new \App\Models\Order();
+            $orderPendingIn->invoice_id = '999001';
+            $orderPendingIn->amount = 1200;
+            $orderPendingIn->discount = 0;
+            $orderPendingIn->shipping_charge = 60;
+            $orderPendingIn->customer_id = $cIn->id;
+            $orderPendingIn->order_status = '1'; // Pending
+            $orderPendingIn->save();
+            \Illuminate\Support\Facades\DB::table('orders')->where('id', $orderPendingIn->id)->update([
+                'created_at' => '2035-02-12 12:00:00',
+                'updated_at' => '2035-02-12 12:00:00',
+            ]);
+
+            $orderDeliveredIn = new \App\Models\Order();
+            $orderDeliveredIn->invoice_id = '999002';
+            $orderDeliveredIn->amount = 2500;
+            $orderDeliveredIn->discount = 0;
+            $orderDeliveredIn->shipping_charge = 60;
+            $orderDeliveredIn->customer_id = $cIn->id;
+            $orderDeliveredIn->order_status = '6'; // Completed / Delivered
+            $orderDeliveredIn->save();
+            \Illuminate\Support\Facades\DB::table('orders')->where('id', $orderDeliveredIn->id)->update([
+                'created_at' => '2035-02-15 15:00:00',
+                'updated_at' => '2035-02-15 15:00:00',
+            ]);
+
+            $orderOut = new \App\Models\Order();
+            $orderOut->invoice_id = '999003';
+            $orderOut->amount = 4000;
+            $orderOut->discount = 0;
+            $orderOut->shipping_charge = 60;
+            $orderOut->customer_id = $cOut->id;
+            $orderOut->order_status = '6';
+            $orderOut->save();
+            \Illuminate\Support\Facades\DB::table('orders')->where('id', $orderOut->id)->update([
+                'created_at' => '2035-03-15 15:00:00',
+                'updated_at' => '2035-03-15 15:00:00',
+            ]);
+
+            $response = $this->actingAs($this->admin)->get(route('dashboard', [
+                'start_date' => '2035-02-01',
+                'end_date' => '2035-02-28',
+            ]));
+
+            $response->assertOk();
+            $response->assertViewHas('isFiltered', true);
+            $response->assertViewHas('total_order', 2);
+            $response->assertViewHas('total_delivery', 1);
+            $response->assertViewHas('pending_order', 1);
+            $response->assertViewHas('delivery_done_order', 1);
+            $response->assertViewHas('total_customer', 1);
+
+            $latestOrders = $response->viewData('latest_order');
+            $this->assertCount(2, $latestOrders);
+
+            $monthlySale = $response->viewData('monthly_sale');
+            $this->assertCount(1, $monthlySale);
+            $this->assertEquals(2500, (float) $monthlySale->first()->amount);
+
+            $pipelineStatuses = $response->viewData('pipeline_statuses');
+            $this->assertEquals(2, $pipelineStatuses->sum('orders_count'));
+        } finally {
+            if ($orderPendingIn) $orderPendingIn->delete();
+            if ($orderDeliveredIn) $orderDeliveredIn->delete();
+            if ($orderOut) $orderOut->delete();
+            if ($cIn) $cIn->delete();
+            if ($cOut) $cOut->delete();
+        }
+    }
 }

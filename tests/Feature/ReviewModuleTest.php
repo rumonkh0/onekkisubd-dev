@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Review;
+use Illuminate\Http\UploadedFile;
 
 class ReviewModuleTest extends TestCase
 {
@@ -126,6 +127,7 @@ class ReviewModuleTest extends TestCase
         $this->assertEquals(5, $review->ratting);
         $this->assertEquals($this->product->id, $review->product_id);
         $this->assertNull($review->customer_id);
+        $review->delete();
     }
 
     public function test_admin_can_create_backdated_review_with_preselected_product()
@@ -147,10 +149,11 @@ class ReviewModuleTest extends TestCase
         ]);
         $response->assertRedirect(route('reviews.index'));
 
-        $review = Review::where('name', 'Sultana Begum')->first();
+        $review = Review::where('name', 'Sultana Begum')->latest('id')->first();
         $this->assertNotNull($review);
         $this->assertEquals('2026-10-15', $review->created_at->format('Y-m-d'));
         $this->assertEquals('active', $review->status);
+        $review->delete();
     }
 
     public function test_product_card_reviews_count_matches_active_reviews()
@@ -160,7 +163,7 @@ class ReviewModuleTest extends TestCase
         $this->assertEquals($initialActiveCount, $this->product->reviews_count);
 
         // Add 1 more active review
-        Review::create([
+        $created = Review::create([
             'name'       => 'Count Tester',
             'email'      => 'tester@test.com',
             'ratting'    => 5,
@@ -171,5 +174,66 @@ class ReviewModuleTest extends TestCase
 
         $this->product->refresh();
         $this->assertEquals($initialActiveCount + 1, $this->product->reviews_count);
+        $created->delete();
+    }
+
+    public function test_admin_and_customer_can_upload_separate_reviewer_photo_and_post_attachments()
+    {
+        $adminReviewerPhoto = UploadedFile::fake()->image('admin_avatar.jpg', 100, 100);
+        $adminPostImg1 = UploadedFile::fake()->image('admin_post1.jpg', 300, 300);
+        $adminPostImg2 = UploadedFile::fake()->image('admin_post2.jpg', 300, 300);
+
+        $response = $this->actingAs($this->admin)->post(route('reviews.store'), [
+            'product_id'     => $this->product->id,
+            'name'           => 'Admin Separate Photo Tester',
+            'email'          => 'Sylhet',
+            'ratting'        => 5,
+            'review'         => 'Separate reviewer photo and post attachments work great!',
+            'reviewer_image' => $adminReviewerPhoto,
+            'image'          => [$adminPostImg1, $adminPostImg2],
+            'status'         => '1',
+        ]);
+        $response->assertRedirect(route('reviews.index'));
+
+        $adminReview = Review::where('name', 'Admin Separate Photo Tester')->latest('id')->first();
+        $this->assertNotNull($adminReview);
+        $this->assertNotNull($adminReview->reviewer_image);
+        $this->assertNotNull($adminReview->image);
+        $this->assertNotEquals($adminReview->reviewer_image, $adminReview->image);
+        $this->assertCount(2, $adminReview->attachment_images);
+
+        // Customer end submission with separate reviewer_image and post attachment images
+        $custReviewerPhoto = UploadedFile::fake()->image('cust_avatar.png', 100, 100);
+        $custPostImg = UploadedFile::fake()->image('cust_post.png', 300, 300);
+
+        $custResponse = $this->post(route('customer.review'), [
+            'product_id'     => $this->product->id,
+            'name'           => 'Customer Separate Photo Tester',
+            'email'          => 'Dhaka',
+            'ratting'        => 5,
+            'review'         => 'Customer review with separate avatar and attachment!',
+            'reviewer_image' => $custReviewerPhoto,
+            'image'          => [$custPostImg],
+        ]);
+        $custResponse->assertRedirect();
+
+        $custReview = Review::where('name', 'Customer Separate Photo Tester')->latest('id')->first();
+        $this->assertNotNull($custReview);
+        $this->assertNotNull($custReview->reviewer_image);
+        $this->assertNotNull($custReview->image);
+        $this->assertNotEquals($custReview->reviewer_image, $custReview->image);
+        $this->assertCount(1, $custReview->attachment_images);
+
+        // Check product detail page renders both distinctly
+        $detailResponse = $this->get(route('product', $this->product->slug));
+        $detailResponse->assertOk();
+        $detailResponse->assertSee($adminReview->reviewer_image);
+        foreach ($adminReview->attachment_images as $att) {
+            $detailResponse->assertSee($att);
+        }
+
+        // Clean up created reviews and files via destroy
+        $this->actingAs($this->admin)->post(route('reviews.destroy'), ['hidden_id' => $adminReview->id]);
+        $this->actingAs($this->admin)->post(route('reviews.destroy'), ['hidden_id' => $custReview->id]);
     }
 }

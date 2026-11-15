@@ -89,26 +89,57 @@
                                 @enderror
                             </div>
 
-                            <!-- Image -->
+                            <!-- Reviewer Photo -->
                             <div class="col-md-6 col-12 mb-3">
-                                <label for="image" class="form-label fw-semibold">Replace Customer Photo (Optional)</label>
-                                <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewImage(this)">
-                                @error('image')
-                                    <span class="invalid-feedback" role="alert">
+                                <label for="reviewer_image" class="form-label fw-semibold">Reviewer Photo (Profile Avatar)</label>
+                                <input type="file" name="reviewer_image" id="reviewer_image" class="form-control @error('reviewer_image') is-invalid @enderror" accept="image/*" onchange="previewReviewerImage(this)">
+                                <small class="text-muted">Upload or replace the reviewer's profile/avatar photo (optional).</small>
+                                @error('reviewer_image')
+                                    <span class="invalid-feedback d-block" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
 
-                                @if($edit_data->image)
+                                @if($edit_data->reviewer_image)
                                     <div class="mt-2 d-flex align-items-center gap-2">
-                                        <img id="current_image" src="{{ asset($edit_data->image) }}" alt="Current Photo" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;">
-                                        <small class="text-muted">Current photo</small>
+                                        <img id="current_reviewer_image" src="{{ asset($edit_data->reviewer_image) }}" alt="Current Reviewer Photo" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 1px solid #dee2e6;">
+                                        <small class="text-muted">Current reviewer photo</small>
                                     </div>
                                 @endif
-                                <div id="image_preview_box" class="mt-2 d-none">
-                                    <img id="image_preview" src="" alt="New Preview" style="max-height: 80px; border-radius: 6px; border: 1px solid #dee2e6;">
-                                    <small class="text-success d-block">New photo selected</small>
+                                <div id="reviewer_image_preview_box" class="mt-2 d-none">
+                                    <img id="reviewer_image_preview" src="" alt="New Reviewer Preview" style="width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 1px solid #dee2e6;">
+                                    <small class="text-success d-block">New reviewer photo selected</small>
                                 </div>
+                            </div>
+
+                            <!-- Post Images / Attachment -->
+                            <div class="col-md-6 col-12 mb-3">
+                                <label for="image" class="form-label fw-semibold">Post Images / Attachment</label>
+                                <input type="file" name="image[]" id="image" class="form-control @error('image') is-invalid @enderror @error('image.*') is-invalid @enderror" accept="image/*" multiple onchange="previewPostImages(this)">
+                                <small class="text-muted">Upload or replace review post attachment images (optional).</small>
+                                @error('image')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                @error('image.*')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+
+                                @php
+                                    $existingAttachments = $edit_data->attachment_images;
+                                @endphp
+                                @if(count($existingAttachments) > 0)
+                                    <div class="mt-2 d-flex align-items-center flex-wrap gap-2">
+                                        @foreach($existingAttachments as $attImg)
+                                            <img src="{{ asset($attImg) }}" alt="Current Attachment" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;">
+                                        @endforeach
+                                        <small class="text-muted">Current post attachment(s)</small>
+                                    </div>
+                                @endif
+                                <div id="image_preview_box" class="mt-2 d-none d-flex flex-wrap gap-2"></div>
                             </div>
 
                             <!-- Review Date (For Backdating / Realistic Timeline) -->
@@ -168,16 +199,37 @@
             $('.select2').select2();
         });
 
-        function previewImage(input) {
-            var box = document.getElementById('image_preview_box');
-            var img = document.getElementById('image_preview');
+        function previewReviewerImage(input) {
+            var box = document.getElementById('reviewer_image_preview_box');
+            var img = document.getElementById('reviewer_image_preview');
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     box.classList.remove('d-none');
-                }
+                };
                 reader.readAsDataURL(input.files[0]);
+            } else {
+                box.classList.add('d-none');
+            }
+        }
+
+        function previewPostImages(input) {
+            var box = document.getElementById('image_preview_box');
+            box.innerHTML = '';
+            if (input.files && input.files.length > 0) {
+                box.classList.remove('d-none');
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'New Preview';
+                        img.style.cssText = 'height: 70px; width: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;';
+                        box.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
             } else {
                 box.classList.add('d-none');
             }

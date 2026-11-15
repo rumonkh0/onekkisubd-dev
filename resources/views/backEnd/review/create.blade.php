@@ -102,18 +102,37 @@
                                 @enderror
                             </div>
 
-                            <!-- Image -->
+                            <!-- Reviewer Photo -->
                             <div class="col-md-6 col-12 mb-3">
-                                <label for="image" class="form-label fw-semibold">Customer Photo / Attachment</label>
-                                <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewImage(this)">
-                                @error('image')
-                                    <span class="invalid-feedback" role="alert">
+                                <label for="reviewer_image" class="form-label fw-semibold">Reviewer Photo (Profile Avatar)</label>
+                                <input type="file" name="reviewer_image" id="reviewer_image" class="form-control @error('reviewer_image') is-invalid @enderror" accept="image/*" onchange="previewReviewerImage(this)">
+                                <small class="text-muted">Upload reviewer's profile/avatar photo (optional).</small>
+                                @error('reviewer_image')
+                                    <span class="invalid-feedback d-block" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                                <div id="image_preview_box" class="mt-2 d-none">
-                                    <img id="image_preview" src="" alt="Preview" style="max-height: 80px; border-radius: 6px; border: 1px solid #dee2e6;">
+                                <div id="reviewer_image_preview_box" class="mt-2 d-none">
+                                    <img id="reviewer_image_preview" src="" alt="Reviewer Preview" style="width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 1px solid #dee2e6;">
                                 </div>
+                            </div>
+
+                            <!-- Post Images / Attachment -->
+                            <div class="col-md-6 col-12 mb-3">
+                                <label for="image" class="form-label fw-semibold">Post Images / Attachment</label>
+                                <input type="file" name="image[]" id="image" class="form-control @error('image') is-invalid @enderror @error('image.*') is-invalid @enderror" accept="image/*" multiple onchange="previewPostImages(this)">
+                                <small class="text-muted">Upload one or more review post attachment images (optional).</small>
+                                @error('image')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                @error('image.*')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                <div id="image_preview_box" class="mt-2 d-none d-flex flex-wrap gap-2"></div>
                             </div>
 
                             <!-- Review Text -->
@@ -184,16 +203,37 @@
             }
         }
 
-        function previewImage(input) {
-            var box = document.getElementById('image_preview_box');
-            var img = document.getElementById('image_preview');
+        function previewReviewerImage(input) {
+            var box = document.getElementById('reviewer_image_preview_box');
+            var img = document.getElementById('reviewer_image_preview');
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     box.classList.remove('d-none');
-                }
+                };
                 reader.readAsDataURL(input.files[0]);
+            } else {
+                box.classList.add('d-none');
+            }
+        }
+
+        function previewPostImages(input) {
+            var box = document.getElementById('image_preview_box');
+            box.innerHTML = '';
+            if (input.files && input.files.length > 0) {
+                box.classList.remove('d-none');
+                Array.from(input.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Preview';
+                        img.style.cssText = 'height: 70px; width: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;';
+                        box.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
             } else {
                 box.classList.add('d-none');
             }
