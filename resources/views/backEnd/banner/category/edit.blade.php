@@ -27,9 +27,31 @@
                     <input type="hidden" value="{{$edit_data->id}}" name="id">
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="name" class="form-label">Name *</label>
+                            <label for="name" class="form-label">Category Name *</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $edit_data->name}}" id="name" required="">
                             @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- col-end -->
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="placement" class="form-label">Website Placement Position *</label>
+                            <select class="form-control @error('placement') is-invalid @enderror" name="placement" id="placement" required="">
+                                <option value="">-- Select Where Banners in This Category Will Appear --</option>
+                                @foreach(\App\Models\BannerCategory::PLACEMENTS as $placementKey => $placementLabel)
+                                    <option value="{{ $placementKey }}" {{ $edit_data->placement === $placementKey ? 'selected' : '' }}>
+                                        {{ $placementLabel }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted d-block mt-1">
+                                Determines the exact section/slot on the website where banners assigned to this category will be rendered.
+                            </small>
+                            @error('placement')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

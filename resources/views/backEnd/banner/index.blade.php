@@ -30,7 +30,7 @@
                     <thead>
                         <tr>
                             <th>SL</th>
-                            <th>Category</th>
+                            <th>Category / Placement</th>
                             <th>Image</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -42,7 +42,12 @@
                         @foreach($data as $key=>$value)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td>{{$value->category?$value->category->name:''}}</td>
+                            <td>
+                                <strong>{{$value->category?$value->category->name:''}}</strong>
+                                @if($value->category && $value->category->placement && isset(\App\Models\BannerCategory::PLACEMENTS[$value->category->placement]))
+                                    <div class="text-muted small">{{ \App\Models\BannerCategory::PLACEMENTS[$value->category->placement] }}</div>
+                                @endif
+                            </td>
                             <td><img src="{{asset($value->image)}}" class="backend-image" alt=""></td>
                             <td>@if($value->status==1)<span class="badge bg-soft-success text-success">Active</span> @else <span class="badge bg-soft-danger text-danger">Inactive</span> @endif</td>
                             <td>

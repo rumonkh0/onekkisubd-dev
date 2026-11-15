@@ -1,112 +1,156 @@
 @extends('backEnd.layouts.master')
-@section('title','Banner Create')
+@section('title', 'Banner Create')
 @section('css')
-<link href="{{asset('public/backEnd')}}/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-<link href="{{asset('public/backEnd')}}/assets/css/switchery.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('public/backEnd')}}/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('public/backEnd')}}/assets/css/switchery.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
-<div class="container-fluid">
-    
-    <!-- start page title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                <div class="page-title-right">
-                    <a href="{{route('banners.index')}}" class="btn btn-primary rounded-pill">Manage</a>
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <a href="{{route('banners.index')}}" class="btn btn-primary rounded-pill">Manage</a>
+                    </div>
+                    <h4 class="page-title">Banner Create</h4>
                 </div>
-                <h4 class="page-title">Banner Create</h4>
             </div>
         </div>
-    </div>       
-    <!-- end page title --> 
-   <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-body">
-                <form action="{{route('banners.store')}}" method="POST" class=row data-parsley-validate=""  enctype="multipart/form-data">
-                    @csrf
-                    <div class="col-sm-12">
-                        <div class="form-group mb-3">
-                            <label for="link" class="form-label">link *</label>
-                            <input type="text" class="form-control @error('link') is-invalid @enderror" name="link" value="{{ old('link') }}" id="link" required="">
-                            @error('link')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col-end -->
-                    <div class="col-sm-12">
-                        <div class="form-group mb-3">
-                            <label for="category_id" class="form-label">Banner Category</label>
-                             <select class="form-control select2-multiple @error('category_id') is-invalid @enderror" name="category_id" data-toggle="select2"  data-placeholder="Choose ...">
-                                <optgroup >
-                                    <option value="">Select..</option>
-                                    @foreach($categories as $value)
-                                    <option value="{{$value->id}}">{{$value->name}}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
-                            @error('category_id')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col end -->
-                    <div class="col-sm-12 mb-3">
-                        <div class="form-group">
-                            <label for="image" class="form-label">Image *</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror " name="image"  value="{{ old('image') }}"  id="image" required="">
-                            @error('image')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col end -->
-                    <div class="col-sm-6 mb-3">
-                        <div class="form-group">
-                            <label for="status" class="d-block">Status</label>
-                            <label class="switch">
-                              <input type="checkbox" value="1" name="status" checked>
-                              <span class="slider round"></span>
-                            </label>
-                            @error('status')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col end -->
-                    <div>
-                        <input type="submit" class="btn btn-success" value="Submit">
-                    </div>
+        <!-- end page title -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{route('banners.store')}}" method="POST" class=row data-parsley-validate=""
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="col-sm-12">
+                                <div class="form-group mb-3">
+                                    <label for="link" class="form-label">link *</label>
+                                    <input type="text" class="form-control @error('link') is-invalid @enderror" name="link"
+                                        value="{{ old('link') }}" id="link" required="">
+                                    @error('link')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col-end -->
+                            <div class="col-sm-12">
+                                <div class="form-group mb-3">
+                                    <label for="category_id" class="form-label">Banner Category / Website Placement *</label>
+                                    <select class="form-control select2-multiple @error('category_id') is-invalid @enderror"
+                                        name="category_id" data-toggle="select2" data-placeholder="Choose ..." required>
+                                        <optgroup>
+                                            <option value="">Select Placement Category..</option>
+                                            @foreach($categories as $value)
+                                                <option value="{{$value->id}}">
+                                                    {{$value->name}}
+                                                    @if($value->placement && isset(\App\Models\BannerCategory::PLACEMENTS[$value->placement]) && $value->name !== \App\Models\BannerCategory::PLACEMENTS[$value->placement])
+                                                        — [{{ \App\Models\BannerCategory::PLACEMENTS[$value->placement] }}]
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    </select>
+                                    @error('category_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-12 mb-3">
+                                <div class="alert alert-info mb-0 py-2" style="font-size: 12.5px;">
+                                    <strong>Recommended Image Sizes by Placement Position (PC / Tablet / Mobile):</strong><br>
+                                    • <strong>1. Hero Left Main Slider:</strong> PC: <code>1080×640 px</code> | Tablet: <code>960×580 px</code> | Mobile: <code>750×480 px</code><br>
+                                    • <strong>2. Hero Right Top Wide Banner:</strong> PC: <code>770×312 px</code> | Tablet: <code>960×366 px</code> | Mobile: <code>750×286 px</code><br>
+                                    • <strong>3. Hero Right Bottom-Left Banner:</strong> PC: <code>377×312 px</code> | Tablet: <code>470×368 px</code> | Mobile: <code>365×286 px</code><br>
+                                    • <strong>4. Hero Right Bottom-Right Banner:</strong> PC: <code>377×312 px</code> | Tablet: <code>470×368 px</code> | Mobile: <code>365×286 px</code>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <div class="form-group">
+                                    <label for="image" class="form-label">PC / Desktop Image *</label>
+                                    <input type="file" class="form-control @error('image') is-invalid @enderror "
+                                        name="image" value="{{ old('image') }}" id="image" required="">
+                                    @error('image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-12 mb-3">
+                                <div class="form-group">
+                                    <label for="tablet_image" class="form-label">Tablet Image (Optional — falls back to PC image)</label>
+                                    <input type="file" class="form-control @error('tablet_image') is-invalid @enderror"
+                                        name="tablet_image" id="tablet_image">
+                                    @error('tablet_image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-12 mb-3">
+                                <div class="form-group">
+                                    <label for="mobile_image" class="form-label">Mobile Image (Optional — falls back to PC image)</label>
+                                    <input type="file" class="form-control @error('mobile_image') is-invalid @enderror"
+                                        name="mobile_image" id="mobile_image">
+                                    @error('mobile_image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div class="col-sm-6 mb-3">
+                                <div class="form-group">
+                                    <label for="status" class="d-block">Status</label>
+                                    <label class="switch">
+                                        <input type="checkbox" value="1" name="status" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                    @error('status')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- col end -->
+                            <div>
+                                <input type="submit" class="btn btn-success" value="Submit">
+                            </div>
 
-                </form>
+                        </form>
 
-            </div> <!-- end card-body-->
-        </div> <!-- end card-->
-    </div> <!-- end col-->
-   </div>
-</div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+        </div>
+    </div>
 @endsection
 
 
 @section('script')
-<script src="{{asset('public/backEnd/')}}/assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/js/pages/form-validation.init.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/libs/select2/js/select2.min.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/js/pages/form-advanced.init.js"></script>
-<script src="{{asset('public/backEnd/')}}/assets/js/switchery.min.js"></script>
-<script>
-    $(document).ready(function(){
-        var elem = document.querySelector('.js-switch');
-        var init = new Switchery(elem);
-    });
-</script>
+    <script src="{{asset('public/backEnd/')}}/assets/libs/parsleyjs/parsley.min.js"></script>
+    <script src="{{asset('public/backEnd/')}}/assets/js/pages/form-validation.init.js"></script>
+    <script src="{{asset('public/backEnd/')}}/assets/libs/select2/js/select2.min.js"></script>
+    <script src="{{asset('public/backEnd/')}}/assets/js/pages/form-advanced.init.js"></script>
+    <script src="{{asset('public/backEnd/')}}/assets/js/switchery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var elem = document.querySelector('.js-switch');
+            var init = new Switchery(elem);
+        });
+    </script>
 @endsection

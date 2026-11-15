@@ -11,14 +11,19 @@
     <meta property="og:title" content="OnekkisuBD - Experience The Pure Taste Of Nature" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url('/') }}" />
-    <meta property="og:image" content="{{ asset('images/hero.webp') }}" />
+    @php
+        $firstHeroSlide = isset($sliders) && $sliders->count() > 0 ? $sliders->first() : null;
+        $preloadDesktopHero = $firstHeroSlide && $firstHeroSlide->image ? asset($firstHeroSlide->image) : asset('images/hero.webp');
+        $preloadTabletHero = $firstHeroSlide && $firstHeroSlide->tablet_image ? asset($firstHeroSlide->tablet_image) : $preloadDesktopHero;
+        $preloadMobileHero = $firstHeroSlide && $firstHeroSlide->mobile_image ? asset($firstHeroSlide->mobile_image) : $preloadDesktopHero;
+    @endphp
+    <meta property="og:image" content="{{ $preloadDesktopHero }}" />
     <meta property="og:description"
         content="Handcrafted premium tea, collected from authentic sources to bring you a healthier and happier life." />
-    <!-- Preload LCP Hero Banner for immediate discovery (Mobile & Desktop) -->
-    <link rel="preload" as="image" href="{{ asset('images/hero-mobile.webp') }}" type="image/webp"
-        media="(max-width: 640px)" fetchpriority="high" />
-    <link rel="preload" as="image" href="{{ asset('images/hero.webp') }}" type="image/webp" media="(min-width: 641px)"
-        fetchpriority="high" />
+    <!-- Preload LCP Hero Banner for immediate discovery (Mobile, Tablet & Desktop) -->
+    <link rel="preload" as="image" href="{{ $preloadMobileHero }}" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ $preloadTabletHero }}" media="(min-width: 768px) and (max-width: 1023px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="{{ $preloadDesktopHero }}" media="(min-width: 1024px)" fetchpriority="high" />
 @endpush
 
 @section('content')
@@ -38,241 +43,315 @@
         @endphp
 
         <!-- ==========================================================================
-                     SECTION 1: HERO (Hero.tsx)
-                     ========================================================================== -->
-        <section id="home" class="relative overflow-hidden bg-tea-900">
-            <!-- Background image -->
-            <picture>
-                <source media="(max-width: 640px)" srcset="{{ asset('images/hero-mobile.webp') }}" type="image/webp">
-                <source srcset="{{ asset('images/hero.webp') }}" type="image/webp">
-                <img src="{{ asset('images/hero.jpg') }}" alt="Tea garden at sunrise with a cup of green tea"
-                    class="absolute inset-0 h-full w-full object-cover object-[70%_center]" fetchpriority="high"
-                    decoding="async" width="1376" height="768" />
-            </picture>
-            <!-- Overlays for readability -->
-            <div class="absolute inset-0 bg-[#f4f6ec]/80 lg:hidden"></div>
-            <div
-                class="absolute inset-0 hidden bg-gradient-to-r from-[#f4f6ec]/95 via-[#f4f6ec]/55 via-40% to-transparent to-65% lg:block">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-tea-950/30 via-transparent to-transparent"></div>
+                         SECTION 1: BENTO 4-IMAGE HERO SLIDER & PROMO BANNERS
+                         ========================================================================== -->
+        <style>
+            .bento-hero-section {
+                background: #faf8f4;
+                padding: 16px 0 28px;
+            }
+            .bento-hero-container {
+                width: 100%;
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 0 12px;
+            }
+            @media (min-width: 640px) {
+                .bento-hero-container {
+                    padding: 0 20px;
+                }
+            }
+            .bento-hero-grid {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 12px;
+                align-items: stretch;
+            }
+            @media (min-width: 1024px) {
+                .bento-hero-grid {
+                    grid-template-columns: 7fr 5fr;
+                    gap: 16px;
+                }
+            }
+            .bento-slider-box {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 750 / 480;
+                overflow: hidden;
+                border-radius: 16px;
+                background: #f3f1eb;
+                box-shadow: 0 4px 16px rgba(10, 33, 27, 0.06);
+            }
+            @media (min-width: 768px) and (max-width: 1023px) {
+                .bento-slider-box {
+                    aspect-ratio: 960 / 580;
+                }
+            }
+            @media (min-width: 1024px) {
+                .bento-slider-box {
+                    aspect-ratio: auto;
+                    height: 580px;
+                }
+            }
+            @media (min-width: 1280px) {
+                .bento-slider-box {
+                    height: 640px;
+                }
+            }
+            .claude-theme .bento-slider-track {
+                display: flex !important;
+                width: 100% !important;
+                height: 100% !important;
+                transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) !important;
+                will-change: transform;
+            }
+            .claude-theme .bento-slider-slide {
+                display: block !important;
+                flex: 0 0 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden;
+            }
+            .claude-theme .bento-slider-slide picture,
+            .claude-theme .bento-promo-card picture {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+            .claude-theme .bento-slider-slide img,
+            .claude-theme .bento-promo-card img {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+            .bento-promo-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                height: 100%;
+            }
+            @media (min-width: 1024px) {
+                .bento-promo-grid {
+                    gap: 16px;
+                }
+            }
+            .bento-promo-card {
+                display: block;
+                overflow: hidden;
+                border-radius: 16px;
+                background: #ffffff;
+                box-shadow: 0 4px 16px rgba(10, 33, 27, 0.06);
+            }
+            .bento-promo-card img {
+                transition: transform 0.3s ease;
+            }
+            .bento-promo-card:hover img {
+                transform: scale(1.02);
+            }
+            .bento-promo-top {
+                grid-column: 1 / -1;
+                aspect-ratio: 750 / 286;
+            }
+            .bento-promo-bottom {
+                grid-column: span 1;
+                aspect-ratio: 365 / 286;
+            }
+            @media (min-width: 768px) and (max-width: 1023px) {
+                .bento-promo-top {
+                    aspect-ratio: 960 / 366;
+                }
+                .bento-promo-bottom {
+                    aspect-ratio: 470 / 368;
+                }
+            }
+            @media (min-width: 1024px) {
+                .bento-promo-top,
+                .bento-promo-bottom {
+                    aspect-ratio: auto;
+                    height: 282px;
+                }
+            }
+            @media (min-width: 1280px) {
+                .bento-promo-top,
+                .bento-promo-bottom {
+                    height: 312px;
+                }
+            }
+            .claude-theme .bento-nav-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 15;
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 50% !important;
+                border: none !important;
+                background-color: rgba(255, 255, 255, 0.92) !important;
+                color: #0a211b !important;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.2s ease, background-color 0.2s ease;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .claude-theme .bento-nav-btn.prev { left: 12px; }
+            .claude-theme .bento-nav-btn.next { right: 12px; }
+            .claude-theme .bento-slider-box:hover .bento-nav-btn {
+                opacity: 1 !important;
+            }
+            .claude-theme .bento-nav-btn:hover {
+                background-color: #ffffff !important;
+            }
+            .claude-theme .bento-dots {
+                position: absolute;
+                bottom: 14px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 15;
+                display: flex !important;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 10px;
+                border-radius: 999px !important;
+                background-color: rgba(10, 33, 27, 0.45) !important;
+                backdrop-filter: blur(4px);
+            }
+            .claude-theme .bento-dot {
+                display: block !important;
+                flex-shrink: 0 !important;
+                height: 8px !important;
+                width: 8px !important;
+                border-radius: 999px !important;
+                border: none !important;
+                padding: 0 !important;
+                background-color: rgba(255, 255, 255, 0.72) !important;
+                cursor: pointer;
+                transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease, opacity 0.3s ease !important;
+                will-change: width;
+            }
+            .claude-theme .bento-dot.active {
+                width: 26px !important;
+                background-color: #eab308 !important;
+            }
+        </style>
+        <section id="home" class="bento-hero-section">
+            <div class="bento-hero-container">
+                @php
+                    $heroSlidesList = isset($sliders) && $sliders->count() > 0 ? $sliders : collect([
+                        (object) [
+                            'image' => 'images/hero.webp',
+                            'tablet_image' => null,
+                            'mobile_image' => 'images/hero-mobile.webp',
+                            'link' => url('shop'),
+                        ]
+                    ]);
+                    $promoList = isset($sliderbottomads) ? $sliderbottomads->values() : collect();
+                    $promoTop = $promoList->get(0);
+                    $promoBottomLeft = $promoList->get(1);
+                    $promoBottomRight = $promoList->get(2);
+                @endphp
 
-            <!-- Floating leaves (desktop only to save mobile CPU/battery) -->
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -left-4 top-6 hidden h-20 w-20 rotate-[160deg] opacity-80 animate-float-slow lg:block"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad1)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M22 42c6-1 10-2 14-5M30 34c6-2 9-4 12-8M18 46c3-5 5-7 8-10" stroke="#e5efe2" stroke-width="1"
-                    stroke-linecap="round" opacity=".7" />
-                <defs>
-                    <linearGradient id="heroLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute left-[38%] top-4 hidden h-12 w-12 rotate-[200deg] opacity-70 animate-float lg:block"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad2)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="heroLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute right-[10%] top-8 hidden h-14 w-14 -rotate-12 opacity-80 animate-float-slow lg:block"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad3)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="heroLeafGrad3" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -bottom-3 left-[30%] hidden h-16 w-16 rotate-45 opacity-70 animate-float lg:block"
-                style="animation-delay: 1.5s;" fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad4)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="heroLeafGrad4" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -right-4 bottom-10 hidden h-24 w-24 rotate-[110deg] opacity-80 animate-float-slow lg:block"
-                style="animation-delay: 2s;" fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#heroLeafGrad5)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="heroLeafGrad5" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#6ba367" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
-                <div class="grid min-h-[560px] items-center py-16 lg:min-h-[640px] lg:grid-cols-2 lg:py-20">
-                    <!-- Copy -->
-                    <div class="max-w-xl xl:max-w-none">
-                        <div class="mb-3 flex items-center gap-3 sm:ml-2">
-                            <!-- Sprig Leaf SVG -->
-                            <svg viewBox="0 0 64 64" class="pointer-events-none h-9 w-9" fill="none" aria-hidden="true">
-                                <path d="M32 58C32 40 32 24 34 8" stroke="#2f6f37" stroke-width="2"
-                                    stroke-linecap="round" />
-                                <path d="M33 22c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#468a47" />
-                                <path d="M34 36c9-1 15-7 16-16-9 1-15 7-16 16z" fill="#2f6f37" />
-                                <path d="M32 50c-9-1-15-7-16-16 9 1 15 7 16 16z" fill="#6ba367" />
-                                <path d="M33 22l-9-9M34 36l9-9M32 50l-9-9" stroke="#e5efe2" stroke-width="1"
-                                    stroke-linecap="round" />
-                            </svg>
+                <div class="bento-hero-grid">
+                    <!-- SLOT 1 (LEFT): Main Hero Image Slider -->
+                    <div id="hero-bento-slider" class="bento-slider-box">
+                        <div id="hero-slider-track" class="bento-slider-track" style="transform: translateX(0%);">
+                            @foreach($heroSlidesList as $idx => $slide)
+                                @php
+                                    $pcImg = asset($slide->image);
+                                    $tabImg = !empty($slide->tablet_image) ? asset($slide->tablet_image) : $pcImg;
+                                    $mobImg = !empty($slide->mobile_image) ? asset($slide->mobile_image) : $pcImg;
+                                    $slideLink = !empty($slide->link) ? $slide->link : url('shop');
+                                @endphp
+                                <a href="{{ $slideLink }}" class="bento-slider-slide" aria-label="Hero Slide {{ $idx + 1 }}">
+                                    <picture>
+                                        <source media="(max-width: 767px)" srcset="{{ $mobImg }}">
+                                        <source media="(min-width: 768px) and (max-width: 1023px)" srcset="{{ $tabImg }}">
+                                        <img src="{{ $pcImg }}"
+                                            alt="Featured Offer {{ $idx + 1 }}"
+                                            @if($idx === 0) fetchpriority="high" @else loading="lazy" @endif
+                                            decoding="async" />
+                                    </picture>
+                                </a>
+                            @endforeach
                         </div>
 
-                        <div class="mb-5 flex items-center gap-3">
-                            <span class="h-px w-8 bg-gold-500"></span>
-                            <span class="text-[11px] font-semibold tracking-[0.28em] text-tea-800 uppercase">
-                                Bangladesh's Trusted Brand
-                            </span>
-                            <span class="h-px w-8 bg-gold-500"></span>
-                        </div>
+                        @if($heroSlidesList->count() > 1)
+                            <button type="button" id="hero-prev-btn" class="bento-nav-btn prev" aria-label="Previous slide">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                            </button>
+                            <button type="button" id="hero-next-btn" class="bento-nav-btn next" aria-label="Next slide">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            </button>
 
-                        <h1 class="font-serif text-[44px] font-bold leading-[1.02] text-tea-800 sm:text-6xl lg:text-[68px]">
-                            Experience
-                            <br />
-                            <span class="text-gold-500">The Pure Taste</span>
-                            <br />
-                            Of Nature
-                        </h1>
-
-                        <p class="mt-6 max-w-md text-[15px] leading-relaxed text-tea-900/80">
-                            Handcrafted premium tea, collected from authentic sources to bring you a healthier and happier
-                            life.
-                        </p>
-
-                        <div class="mt-8 flex flex-wrap items-center gap-4">
-                            <a href="{{ url('shop') }}"
-                                class="group inline-flex items-center gap-2 rounded-full bg-tea-700 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-tea-900/25 transition-all hover:bg-tea-800 hover:shadow-xl">
-                                Shop Collection
-                                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M5 12h14" />
-                                    <path d="m12 5 7 7-7 7" />
-                                </svg>
-                            </a>
-                            <a href="#features"
-                                class="inline-flex items-center gap-2 rounded-full border-2 border-tea-700 bg-white/60 px-6 py-3 text-sm font-semibold text-tea-800 backdrop-blur transition-colors hover:bg-tea-700 hover:text-white">
-                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path
-                                        d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                </svg>
-                                Explore Benefits
-                            </a>
-                        </div>
-
-                        <!-- Trust badges -->
-                        <ul class="mt-10 hero-trust-list">
-                            <li class="flex items-center gap-2.5">
-                                <span
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-tea-700/30 bg-white/60 text-tea-700 backdrop-blur">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] font-semibold leading-tight text-tea-900 whitespace-nowrap">
-                                    100%<br />Natural
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2.5 hero-trust-divider">
-                                <span
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-tea-700/30 bg-white/60 text-tea-700 backdrop-blur">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                                        <path d="m9 12 2 2 4-4" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] font-semibold leading-tight text-tea-900 whitespace-nowrap">
-                                    Premium<br />Quality
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2.5 hero-trust-divider-desktop">
-                                <span
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-tea-700/30 bg-white/60 text-tea-700 backdrop-blur">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
-                                        <path d="M15 18H9" />
-                                        <path
-                                            d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
-                                        <circle cx="17" cy="18.5" r="2.5" />
-                                        <circle cx="7" cy="18.5" r="2.5" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] font-semibold leading-tight text-tea-900 whitespace-nowrap">
-                                    Fast<br />Delivery
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2.5 hero-trust-divider">
-                                <span
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-tea-700/30 bg-white/60 text-tea-700 backdrop-blur">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
-                                </span>
-                                <span class="text-[12px] font-semibold leading-tight text-tea-900 whitespace-nowrap">
-                                    Trusted<br />By Thousands
-                                </span>
-                            </li>
-                        </ul>
+                            <div id="hero-slider-dots" class="bento-dots">
+                                @foreach($heroSlidesList as $idx => $slide)
+                                    <button type="button"
+                                        data-slide-to="{{ $idx }}"
+                                        aria-label="Go to slide {{ $idx + 1 }}"
+                                        class="bento-dot {{ $idx === 0 ? 'active' : '' }}">
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
-                    <!-- Right side script quote -->
-                    <div class="pointer-events-none relative hidden h-full lg:block">
-                        <div class="absolute right-2 top-[42%] -translate-y-1/2 text-right xl:right-8">
-                            <p
-                                class="font-script text-4xl leading-[1.05] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] xl:text-[44px]">
-                                Good Tea
-                                <br />
-                                Brings
-                                <br />
-                                Good People
-                                <br />
-                                Together
-                            </p>
-                            <span class="mt-3 ml-auto block h-px w-24 bg-white/80"></span>
-                        </div>
+                    <!-- SLOTS 2, 3, 4 (RIGHT): 3 Clickable Promo Image Templates -->
+                    <div class="bento-promo-grid">
+                        <!-- SLOT 2: Top Wide Banner -->
+                        @php
+                            $topPc = $promoTop && $promoTop->image ? asset($promoTop->image) : asset('images/hero.webp');
+                            $topTab = $promoTop && !empty($promoTop->tablet_image) ? asset($promoTop->tablet_image) : $topPc;
+                            $topMob = $promoTop && !empty($promoTop->mobile_image) ? asset($promoTop->mobile_image) : $topPc;
+                            $topLink = $promoTop && !empty($promoTop->link) ? $promoTop->link : url('shop');
+                        @endphp
+                        <a href="{{ $topLink }}" class="bento-promo-card bento-promo-top">
+                            <picture>
+                                <source media="(max-width: 767px)" srcset="{{ $topMob }}">
+                                <source media="(min-width: 768px) and (max-width: 1023px)" srcset="{{ $topTab }}">
+                                <img src="{{ $topPc }}" alt="Featured Promo Banner 1" />
+                            </picture>
+                        </a>
+
+                        <!-- SLOT 3: Bottom Left Banner -->
+                        @php
+                            $blPc = $promoBottomLeft && $promoBottomLeft->image ? asset($promoBottomLeft->image) : asset('images/products/roselle-tea.webp');
+                            $blTab = $promoBottomLeft && !empty($promoBottomLeft->tablet_image) ? asset($promoBottomLeft->tablet_image) : $blPc;
+                            $blMob = $promoBottomLeft && !empty($promoBottomLeft->mobile_image) ? asset($promoBottomLeft->mobile_image) : $blPc;
+                            $blLink = $promoBottomLeft && !empty($promoBottomLeft->link) ? $promoBottomLeft->link : url('shop');
+                        @endphp
+                        <a href="{{ $blLink }}" class="bento-promo-card bento-promo-bottom">
+                            <picture>
+                                <source media="(max-width: 767px)" srcset="{{ $blMob }}">
+                                <source media="(min-width: 768px) and (max-width: 1023px)" srcset="{{ $blTab }}">
+                                <img src="{{ $blPc }}" alt="Featured Promo Banner 2" />
+                            </picture>
+                        </a>
+
+                        <!-- SLOT 4: Bottom Right Banner -->
+                        @php
+                            $brPc = $promoBottomRight && $promoBottomRight->image ? asset($promoBottomRight->image) : asset('images/products/chamomile.webp');
+                            $brTab = $promoBottomRight && !empty($promoBottomRight->tablet_image) ? asset($promoBottomRight->tablet_image) : $brPc;
+                            $brMob = $promoBottomRight && !empty($promoBottomRight->mobile_image) ? asset($promoBottomRight->mobile_image) : $brPc;
+                            $brLink = $promoBottomRight && !empty($promoBottomRight->link) ? $promoBottomRight->link : url('shop');
+                        @endphp
+                        <a href="{{ $brLink }}" class="bento-promo-card bento-promo-bottom">
+                            <picture>
+                                <source media="(max-width: 767px)" srcset="{{ $brMob }}">
+                                <source media="(min-width: 768px) and (max-width: 1023px)" srcset="{{ $brTab }}">
+                                <img src="{{ $brPc }}" alt="Featured Promo Banner 3" />
+                            </picture>
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ==========================================================================
-                 SECTION 2: FLASH SALES (topsale = 1)
-                 ========================================================================== -->
+                     SECTION 2: FLASH SALES (topsale = 1)
+                     ========================================================================== -->
         @if(isset($hotdeal_top) && $hotdeal_top->count() > 0)
             <section id="flash-sales" class="relative overflow-hidden bg-cream py-12 lg:py-16">
                 <!-- Floating decorative leaf -->
@@ -404,259 +483,276 @@
         @endif
 
         <!-- ==========================================================================
-             SECTION 3: TOP TRENDING (feature_product = 1)
-             ========================================================================== -->
-        @if(isset($feature_products) && $feature_products->count() > 0)
-        <section id="top-trending" class="relative overflow-hidden bg-gradient-to-b from-[#f8faf6] via-white to-[#f8faf6] py-12 lg:py-16 border-t border-tea-100/60">
-            <!-- Floating decorative leaves -->
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -left-4 bottom-10 h-20 w-20 rotate-[130deg] opacity-35 animate-float-slow"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad1)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="trendLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#15803d" />
-                        <stop offset="1" stop-color="#86efac" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -right-4 top-10 h-20 w-20 -rotate-45 opacity-35 animate-float-slow"
-                style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad2)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="trendLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#2f6f37" />
-                        <stop offset="1" stop-color="#4ade80" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <!-- Side scripts -->
-            <div
-                class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase">
-                <p>Artisan</p>
-                <p class="mt-1">Beloved</p>
-                <p class="mt-1">Choice</p>
-            </div>
-            <p
-                class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
-                Pure Taste
-                <br />
-                Pure Bliss
-            </p>
-
-            <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
-                <!-- Header -->
-                <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
-                            Connoisseurs' Favorites <span class="mx-1 text-tea-400 font-normal">|</span> <span class="font-bengali tracking-normal text-tea-800/80">সর্বাধিক প্রশংসিত</span>
-                        </span>
-                        <h2 class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            TOP <span class="text-tea-700">TRENDING</span>
-                            <!-- Artisanal Trending Sprout SVG -->
-                            <svg class="h-7 w-7 text-tea-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2v8" />
-                                <path d="m4.93 10.93 1.41 1.41" />
-                                <path d="M2 18h2" />
-                                <path d="M20 18h2" />
-                                <path d="m19.07 10.93-1.41 1.41" />
-                                <path d="M22 22H2" />
-                                <path d="m16 6-4-4-4 4" />
-                                <path d="M16 18a4 4 0 0 0-8 0" />
-                            </svg>
-                        </h2>
-                        <p class="mt-1 text-sm text-tea-900/70">
-                            Our most requested artisanal harvests and beloved customer favorites
-                        </p>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-4 sm:gap-6">
-                        <ul class="hidden sm:flex items-center gap-5">
-                            <li class="flex items-center gap-2">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
-                                    <svg class="h-4 w-4 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                    </svg>
-                                </span>
-                                <span class="text-left text-[12px] leading-tight">
-                                    <span class="block font-semibold text-tea-950">Top Rated 4.9★</span>
-                                    <span class="text-tea-800/80">Customer Approved</span>
-                                </span>
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
-                                    <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                    </svg>
-                                </span>
-                                <span class="text-left text-[12px] leading-tight">
-                                    <span class="block font-semibold text-tea-950">100% Estate Fresh</span>
-                                    <span class="text-tea-800/80">Pure Harvest</span>
-                                </span>
-                            </li>
-                        </ul>
-                        <a href="{{ url('shop') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 bg-white px-5 py-2 text-sm font-semibold text-tea-800 shadow-sm transition-colors hover:bg-tea-700 hover:text-white">
-                            View All Trending
-                            <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M5 12h14" />
-                                <path d="m12 5 7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Carousel Slider -->
-                <div class="relative">
-                    <button type="button" onclick="scrollTrending(-1)" aria-label="Previous slide"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <button type="button" onclick="scrollTrending(1)" aria-label="Next slide"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-
-                    <div id="trending-track"
-                        class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
-                        @foreach($feature_products as $prod)
-                            <div data-card class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
-                                @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </section>
-        @endif
-
-        <!-- ==========================================================================
-             SECTION 4: DEAL OF THE DAY (deal_of_theday = 1)
-             ========================================================================== -->
-        @if(isset($dealofthe_products) && $dealofthe_products->count() > 0)
-        <section id="deal-of-the-day" class="relative overflow-hidden bg-[#faf5ea] py-12 lg:py-16 border-y border-amber-200/70">
-            <!-- Warm decorative tea sunbeam watermark -->
-            <svg viewBox="0 0 64 64"
-                class="pointer-events-none absolute -right-5 top-8 h-24 w-24 rotate-[25deg] opacity-25 animate-float-slow"
-                fill="none" aria-hidden="true">
-                <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#dealLeafGrad)" />
-                <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="dealLeafGrad" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#b45309" />
-                        <stop offset="1" stop-color="#fbbf24" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
-            <!-- Side scripts -->
-            <div
-                class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-amber-900/40 uppercase">
-                <p>Daily</p>
-                <p class="mt-1">Golden</p>
-                <p class="mt-1">Harvest</p>
-            </div>
-            <p
-                class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
-                Golden Brew
-                <br />
-                Daily Joy
-            </p>
-
-            <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
-                <!-- Header -->
-                <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-gold-300/40 px-3 py-0.5 text-[10px] font-bold tracking-[0.2em] text-tea-900 uppercase border border-gold-500/60 shadow-xs">
-                            <span class="relative flex h-2 w-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-gold-500"></span>
-                            </span>
-                            DAILY SPECIAL HARVEST • আজকের বিশেষ অফার
-                        </span>
-                        <h2 class="mt-2 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
-                            DEAL OF THE <span class="text-gold-500">DAY</span>
-                            <svg class="h-7 w-7 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                            </svg>
-                        </h2>
-                        <p class="mt-1 text-sm text-tea-900/80">
-                            Handpicked signature blends refreshed daily with exclusive limited savings
-                        </p>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-4 sm:gap-6">
-                        <div class="hidden sm:flex items-center gap-2.5 rounded-full border border-gold-500/60 bg-white/95 px-4 py-2 shadow-xs backdrop-blur">
-                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-white shadow-xs">
-                                <svg class="h-4 w-4 stroke-white text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polyline points="12 6 12 12 16 14" />
-                                </svg>
-                            </span>
-                            <span class="text-left text-[12px] leading-tight">
-                                <span class="block font-bold text-tea-950">Refreshed Daily</span>
-                                <span class="text-tea-800/80">Valid Till Midnight</span>
-                            </span>
-                        </div>
-                        <a href="{{ route('hotdeals') }}"
-                            class="group inline-flex items-center gap-1.5 rounded-full border border-amber-800 bg-amber-800 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-900">
-                            View All Deals
-                            <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M5 12h14" />
-                                <path d="m12 5 7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Carousel Slider -->
-                <div class="relative">
-                    <button type="button" onclick="scrollDeals(-1)" aria-label="Previous slide"
-                        class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-left-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    <button type="button" onclick="scrollDeals(1)" aria-label="Next slide"
-                        class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-right-5">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-
-                    <div id="deal-track"
-                        class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
-                        @foreach($dealofthe_products as $prod)
-                            <div data-card class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
-                                @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </section>
-        @endif
-
-        <!-- ==========================================================================
-                 SECTION 5: NEW ARRIVALS (latest products)
+                 SECTION 3: TOP TRENDING (feature_product = 1)
                  ========================================================================== -->
+        @if(isset($feature_products) && $feature_products->count() > 0)
+            <section id="top-trending"
+                class="relative overflow-hidden bg-gradient-to-b from-[#f8faf6] via-white to-[#f8faf6] py-12 lg:py-16 border-t border-tea-100/60">
+                <!-- Floating decorative leaves -->
+                <svg viewBox="0 0 64 64"
+                    class="pointer-events-none absolute -left-4 bottom-10 h-20 w-20 rotate-[130deg] opacity-35 animate-float-slow"
+                    fill="none" aria-hidden="true">
+                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad1)" />
+                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="trendLeafGrad1" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#15803d" />
+                            <stop offset="1" stop-color="#86efac" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <svg viewBox="0 0 64 64"
+                    class="pointer-events-none absolute -right-4 top-10 h-20 w-20 -rotate-45 opacity-35 animate-float-slow"
+                    style="animation-delay: 2.5s;" fill="none" aria-hidden="true">
+                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#trendLeafGrad2)" />
+                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="trendLeafGrad2" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2f6f37" />
+                            <stop offset="1" stop-color="#4ade80" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Side scripts -->
+                <div
+                    class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-tea-900/40 uppercase">
+                    <p>Artisan</p>
+                    <p class="mt-1">Beloved</p>
+                    <p class="mt-1">Choice</p>
+                </div>
+                <p
+                    class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
+                    Pure Taste
+                    <br />
+                    Pure Bliss
+                </p>
+
+                <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
+                    <!-- Header -->
+                    <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div>
+                            <span class="text-[10px] font-semibold tracking-[0.25em] text-tea-900/60 uppercase">
+                                Connoisseurs' Favorites <span class="mx-1 text-tea-400 font-normal">|</span> <span
+                                    class="font-bengali tracking-normal text-tea-800/80">সর্বাধিক প্রশংসিত</span>
+                            </span>
+                            <h2
+                                class="mt-1 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
+                                TOP <span class="text-tea-700">TRENDING</span>
+                                <!-- Artisanal Trending Sprout SVG -->
+                                <svg class="h-7 w-7 text-tea-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v8" />
+                                    <path d="m4.93 10.93 1.41 1.41" />
+                                    <path d="M2 18h2" />
+                                    <path d="M20 18h2" />
+                                    <path d="m19.07 10.93-1.41 1.41" />
+                                    <path d="M22 22H2" />
+                                    <path d="m16 6-4-4-4 4" />
+                                    <path d="M16 18a4 4 0 0 0-8 0" />
+                                </svg>
+                            </h2>
+                            <p class="mt-1 text-sm text-tea-900/70">
+                                Our most requested artisanal harvests and beloved customer favorites
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                            <ul class="hidden sm:flex items-center gap-5">
+                                <li class="flex items-center gap-2">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
+                                        <svg class="h-4 w-4 fill-gold-500 text-gold-500" viewBox="0 0 24 24"
+                                            fill="currentColor">
+                                            <polygon
+                                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-left text-[12px] leading-tight">
+                                        <span class="block font-semibold text-tea-950">Top Rated 4.9★</span>
+                                        <span class="text-tea-800/80">Customer Approved</span>
+                                    </span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-tea-100 text-tea-800">
+                                        <svg class="h-4 w-4 text-tea-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                        </svg>
+                                    </span>
+                                    <span class="text-left text-[12px] leading-tight">
+                                        <span class="block font-semibold text-tea-950">100% Estate Fresh</span>
+                                        <span class="text-tea-800/80">Pure Harvest</span>
+                                    </span>
+                                </li>
+                            </ul>
+                            <a href="{{ url('shop') }}"
+                                class="group inline-flex items-center gap-1.5 rounded-full border border-tea-700 bg-white px-5 py-2 text-sm font-semibold text-tea-800 shadow-sm transition-colors hover:bg-tea-700 hover:text-white">
+                                View All Trending
+                                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Carousel Slider -->
+                    <div class="relative">
+                        <button type="button" onclick="scrollTrending(-1)" aria-label="Previous slide"
+                            class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-left-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <button type="button" onclick="scrollTrending(1)" aria-label="Next slide"
+                            class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-tea-200 bg-white text-tea-800 shadow-md transition-colors hover:bg-tea-700 hover:text-white md:flex xl:-right-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <div id="trending-track"
+                            class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
+                            @foreach($feature_products as $prod)
+                                <div data-card
+                                    class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
+                                    @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <!-- ==========================================================================
+                 SECTION 4: DEAL OF THE DAY (deal_of_theday = 1)
+                 ========================================================================== -->
+        @if(isset($dealofthe_products) && $dealofthe_products->count() > 0)
+            <section id="deal-of-the-day"
+                class="relative overflow-hidden bg-[#faf5ea] py-12 lg:py-16 border-y border-amber-200/70">
+                <!-- Warm decorative tea sunbeam watermark -->
+                <svg viewBox="0 0 64 64"
+                    class="pointer-events-none absolute -right-5 top-8 h-24 w-24 rotate-[25deg] opacity-25 animate-float-slow"
+                    fill="none" aria-hidden="true">
+                    <path d="M10 54C12 30 30 12 56 8c-4 26-22 44-46 46z" fill="url(#dealLeafGrad)" />
+                    <path d="M12 52L52 12" stroke="#e5efe2" stroke-width="1.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="dealLeafGrad" x1="10" y1="54" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#b45309" />
+                            <stop offset="1" stop-color="#fbbf24" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Side scripts -->
+                <div
+                    class="tea-side-watermark pointer-events-none absolute left-6 top-14 text-[10px] font-semibold tracking-[0.3em] text-amber-900/40 uppercase">
+                    <p>Daily</p>
+                    <p class="mt-1">Golden</p>
+                    <p class="mt-1">Harvest</p>
+                </div>
+                <p
+                    class="tea-side-watermark pointer-events-none absolute right-10 top-12 -rotate-6 font-script text-3xl leading-tight text-tea-900/30">
+                    Golden Brew
+                    <br />
+                    Daily Joy
+                </p>
+
+                <div class="relative mx-auto max-w-[1400px] px-4 sm:px-6">
+                    <!-- Header -->
+                    <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div>
+                            <span
+                                class="inline-flex items-center gap-1.5 rounded-full bg-gold-300/40 px-3 py-0.5 text-[10px] font-bold tracking-[0.2em] text-tea-900 uppercase border border-gold-500/60 shadow-xs">
+                                <span class="relative flex h-2 w-2">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-gold-500"></span>
+                                </span>
+                                DAILY SPECIAL HARVEST • আজকের বিশেষ অফার
+                            </span>
+                            <h2
+                                class="mt-2 flex items-center gap-2 font-serif text-3xl font-bold tracking-wide text-tea-950 sm:text-4xl">
+                                DEAL OF THE <span class="text-gold-500">DAY</span>
+                                <svg class="h-7 w-7 fill-gold-500 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </h2>
+                            <p class="mt-1 text-sm text-tea-900/80">
+                                Handpicked signature blends refreshed daily with exclusive limited savings
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                            <div
+                                class="hidden sm:flex items-center gap-2.5 rounded-full border border-gold-500/60 bg-white/95 px-4 py-2 shadow-xs backdrop-blur">
+                                <span
+                                    class="flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-white shadow-xs">
+                                    <svg class="h-4 w-4 stroke-white text-white" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>
+                                </span>
+                                <span class="text-left text-[12px] leading-tight">
+                                    <span class="block font-bold text-tea-950">Refreshed Daily</span>
+                                    <span class="text-tea-800/80">Valid Till Midnight</span>
+                                </span>
+                            </div>
+                            <a href="{{ route('hotdeals') }}"
+                                class="group inline-flex items-center gap-1.5 rounded-full border border-amber-800 bg-amber-800 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-900">
+                                View All Deals
+                                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Carousel Slider -->
+                    <div class="relative">
+                        <button type="button" onclick="scrollDeals(-1)" aria-label="Previous slide"
+                            class="absolute -left-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-left-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <button type="button" onclick="scrollDeals(1)" aria-label="Next slide"
+                            class="absolute -right-3 top-1/2 z-10 hidden h-11 w-11 min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full border border-amber-300 bg-white text-amber-900 shadow-md transition-colors hover:bg-amber-800 hover:text-white md:flex xl:-right-5">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <div id="deal-track"
+                            class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-2">
+                            @foreach($dealofthe_products as $prod)
+                                <div data-card
+                                    class="w-[calc(50%-8px)] shrink-0 snap-start sm:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(16.666%-14px)]">
+                                    @include('frontEnd.layouts.partials.product_card', ['prod' => $prod, 'productImages' => $productImages])
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <!-- ==========================================================================
+                     SECTION 5: NEW ARRIVALS (latest products)
+                     ========================================================================== -->
         @if(isset($new_products) && $new_products->count() > 0)
             <section id="new-arrivals" class="relative overflow-hidden bg-white py-12 lg:py-16">
                 <!-- Floating decorative leaves -->
@@ -815,8 +911,8 @@
         @endif
 
         <!-- ==========================================================================
-                     SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
-                     ========================================================================== -->
+                         SECTION 4: FEATURES STRIP (FeaturesStrip.tsx)
+                         ========================================================================== -->
         <section id="features" class="border-y border-tea-100 bg-tea-50">
             <div class="mx-auto grid max-w-[1400px] grid-cols-2 gap-y-6 px-4 py-6 sm:px-6 lg:grid-cols-4">
                 <!-- 100% Natural Ingredients -->
@@ -892,8 +988,8 @@
         </section>
 
         <!-- ==========================================================================
-                     SECTION 5: TOP CATEGORIES (TopCategories.tsx)
-                     ========================================================================== -->
+                         SECTION 5: TOP CATEGORIES (TopCategories.tsx)
+                         ========================================================================== -->
         <section id="categories" class="relative overflow-hidden bg-sand py-16 lg:py-20">
             <!-- Background texture -->
             <div class="pointer-events-none absolute inset-0 opacity-70"
@@ -1173,8 +1269,11 @@
                         @php
                             $dbCategory = isset($frontcategory) ? $frontcategory->firstWhere('slug', $cat['slug']) : null;
                             if (!$dbCategory) {
-                                $dbCategory = \App\Models\Category::where('slug', $cat['slug'])->withCount(['products' => function ($q) {
-                                    $q->where('status', 1); }])->first();
+                                $dbCategory = \App\Models\Category::where('slug', $cat['slug'])->withCount([
+                                    'products' => function ($q) {
+                                        $q->where('status', 1);
+                                    }
+                                ])->first();
                             }
                             $catUrl = $dbCategory ? route('category', $dbCategory->slug) : url('category/' . $cat['slug']);
                             $prodCount = $dbCategory ? ($dbCategory->products_count ?? $dbCategory->products()->where('status', 1)->count()) : 0;
@@ -1242,8 +1341,8 @@
         </section>
 
         <!-- ==========================================================================
-                     SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
-                     ========================================================================== -->
+                         SECTION 6: TEA STORIES & KNOWLEDGE BLOG (BlogSection.tsx)
+                         ========================================================================== -->
         <section id="blog" class="relative overflow-hidden bg-white py-16 lg:py-20">
             <!-- Floating decorative leaves -->
             <svg viewBox="0 0 64 64"
@@ -1423,7 +1522,8 @@
                                                 </svg>
                                             </span>
                                             <span class="leading-tight">
-                                                <span class="block text-[11.5px] font-semibold text-tea-950">{{ $bAuthor }}</span>
+                                                <span
+                                                    class="block text-[11.5px] font-semibold text-tea-950">{{ $bAuthor }}</span>
                                                 <span class="text-[10px] text-tea-800">{{ $bDate }}</span>
                                             </span>
                                         </div>
@@ -1507,5 +1607,71 @@
             const step = card ? card.offsetWidth + 20 : 300;
             el.scrollBy({ left: dir * step, behavior: 'smooth' });
         }
+
+        // Hero Bento Slider
+        (function () {
+            const slider = document.getElementById('hero-bento-slider');
+            const track = document.getElementById('hero-slider-track');
+            if (!slider || !track) return;
+
+            const total = track.children.length;
+            if (total <= 1) return;
+
+            const dots = slider.querySelectorAll('.bento-dot');
+            const prevBtn = document.getElementById('hero-prev-btn');
+            const nextBtn = document.getElementById('hero-next-btn');
+            let current = 0;
+            let timer = null;
+
+            function goTo(index) {
+                current = (index + total) % total;
+                track.style.transform = 'translate3d(-' + (current * 100) + '%, 0, 0)';
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === current);
+                });
+            }
+
+            function startAuto() {
+                stopAuto();
+                timer = setInterval(() => goTo(current + 1), 5000);
+            }
+
+            function stopAuto() {
+                if (timer) clearInterval(timer);
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); goTo(current - 1); startAuto(); });
+            if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); goTo(current + 1); startAuto(); });
+
+            dots.forEach((dot) => {
+                dot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const idx = parseInt(dot.getAttribute('data-slide-to'), 10);
+                    if (!isNaN(idx)) {
+                        goTo(idx);
+                        startAuto();
+                    }
+                });
+            });
+
+            let touchStartX = 0;
+            slider.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].clientX;
+                stopAuto();
+            }, { passive: true });
+            slider.addEventListener('touchend', (e) => {
+                const diff = touchStartX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 40) {
+                    goTo(diff > 0 ? current + 1 : current - 1);
+                }
+                startAuto();
+            }, { passive: true });
+
+            slider.addEventListener('mouseenter', stopAuto);
+            slider.addEventListener('mouseleave', startAuto);
+
+            startAuto();
+        })();
     </script>
 @endsection

@@ -30,15 +30,16 @@ use Cart;
 use Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Log;
 
 class FrontendController extends Controller
 {
-    
-    
-    
 
-    public function datafeed(){
+
+
+
+    public function datafeed()
+    {
         $colours = Productcolor::all();
 
         $xml = new \SimpleXMLElement('<rss/>');
@@ -48,23 +49,23 @@ class FrontendController extends Controller
         $channel->addChild('link', url('https://loreenbd.com'));
         $channel->addChild('description', 'Loreen BD is an online luxury store offering a wide range of premium bags and accessories, including leather handbags, backpacks, and clutches. The site features elegant designs for both men and women and regularly provides discounts on select items.');
 
-        foreach ($colours as $index=>$colour) {
-            $product = Product::where('id',$colour->product_id)->first();
-            if(isset($product)){
-                $color=Color::where('id',$colour->color_id)->first();
-                $sizes=Productsize::where('product_id',$colour->product_id)->get()->pluck('size');
+        foreach ($colours as $index => $colour) {
+            $product = Product::where('id', $colour->product_id)->first();
+            if (isset($product)) {
+                $color = Color::where('id', $colour->color_id)->first();
+                $sizes = Productsize::where('product_id', $colour->product_id)->get()->pluck('size');
                 $item = $channel->addChild('item');
-                $item->addChild('g:id', $index+1);
+                $item->addChild('g:id', $index + 1);
                 $item->addChild('g:item_group_id', $colour->product_id);
                 $item->addChild('g:title', $product->name);
                 $description = str_replace('&nbsp;', ' ', $product->description);
                 $item->addChild('g:description', strip_tags($description));
-                $item->addChild('g:link', 'https://loreenbd.com/product/'.$product->slug);
-                $item->addChild('g:image_link', 'https://loreenbd.com/'.$product->image['image']);
+                $item->addChild('g:link', 'https://loreenbd.com/product/' . $product->slug);
+                $item->addChild('g:image_link', 'https://loreenbd.com/' . $product->image['image']);
                 $item->addChild('g:brand', 'Loreenbd');
-                if(isset($color)){
+                if (isset($color)) {
                     $item->addChild('g:color', $color->colorName);
-                }else{
+                } else {
                     $item->addChild('g:color', '');
                 }
                 $item->addChild('g:size', $sizes);
@@ -76,20 +77,20 @@ class FrontendController extends Controller
         }
 
         $exeid = Productcolor::get()->pluck('product_id');
-        $products=Product::whereNotIn('id',$exeid)->get();
+        $products = Product::whereNotIn('id', $exeid)->get();
 
-        foreach ($products as $ind=>$product) {
-            $id=$ind+1+count($colours);
-            $product = Product::where('id',$product->id)->first();
-            if(isset($product)){
+        foreach ($products as $ind => $product) {
+            $id = $ind + 1 + count($colours);
+            $product = Product::where('id', $product->id)->first();
+            if (isset($product)) {
                 $item = $channel->addChild('item');
                 $item->addChild('g:id', $id);
                 $item->addChild('g:item_group_id', $product->id);
                 $item->addChild('g:title', $product->name);
                 $description = str_replace('&nbsp;', ' ', $product->description);
                 $item->addChild('g:description', strip_tags($description));
-                $item->addChild('g:link', 'https://loreenbd.com/product/'.$product->slug);
-                $item->addChild('g:image_link', 'https://loreenbd.com/'.$product->image['image']);
+                $item->addChild('g:link', 'https://loreenbd.com/product/' . $product->slug);
+                $item->addChild('g:image_link', 'https://loreenbd.com/' . $product->image['image']);
                 $item->addChild('g:brand', 'Loreenbd');
                 $item->addChild('g:color', '');
                 $item->addChild('g:size', '');
@@ -114,23 +115,57 @@ class FrontendController extends Controller
 
         $frontcategory = Category::where(['status' => 1, 'front_view' => 1])
             ->select('id', 'name', 'image', 'slug', 'status')
-            ->withCount(['products' => function ($query) {
-                $query->where('status', 1);
-            }])
+            ->withCount([
+                'products' => function ($query) {
+                    $query->where('status', 1);
+                }
+            ])
             ->orderByRaw("FIELD(id, 1, 2, 3, 4, 5, 7) = 0, FIELD(id, 1, 2, 3, 4, 5, 7)")
             ->limit(6)
             ->get();
 
-        $sliders = Banner::where(['status' => 1, 'category_id' => 1])
-            ->select('id', 'image', 'link')
+        $sliders = Banner::where('status', 1)
+            ->where(function ($q) {
+                $q->whereHas('category', function ($cq) {
+                    $cq->where('placement', 'hero_slider')->where('status', 1);
+                })->orWhere('category_id', 1);
+            })
+            ->select('id', 'image', 'tablet_image', 'mobile_image', 'link')
+            ->orderBy('id', 'ASC')
             ->get();
 
-        $sliderbottomads = Banner::where(['status' => 1, 'category_id' => 5])
-            ->select('id', 'image', 'link')
-            ->limit(3)
-            ->get();
+        $promoTop = Banner::where('status', 1)
+            ->whereHas('category', function ($cq) {
+                $cq->where('placement', 'hero_right_top')->where('status', 1);
+            })
+            ->select('id', 'image', 'tablet_image', 'mobile_image', 'link')
+            ->latest('id')
+            ->first();
 
-        $footertopads = Banner::where(['status' => 1, 'category_id' => 6])
+        $promoBottomLeft = Banner::where('status', 1)
+            ->whereHas('category', function ($cq) {
+                $cq->where('placement', 'hero_right_bottom_left')->where('status', 1);
+            })
+            ->select('id', 'image', 'tablet_image', 'mobile_image', 'link')
+            ->latest('id')
+            ->first();
+
+        $promoBottomRight = Banner::where('status', 1)
+            ->whereHas('category', function ($cq) {
+                $cq->where('placement', 'hero_right_bottom_right')->where('status', 1);
+            })
+            ->select('id', 'image', 'tablet_image', 'mobile_image', 'link')
+            ->latest('id')
+            ->first();
+
+        $sliderbottomads = collect([$promoTop, $promoBottomLeft, $promoBottomRight]);
+
+        $footertopads = Banner::where('status', 1)
+            ->where(function ($q) {
+                $q->whereHas('category', function ($cq) {
+                    $cq->where('placement', 'footer_top')->where('status', 1);
+                })->orWhere('category_id', 6);
+            })
             ->select('id', 'image', 'link')
             ->limit(2)
             ->get();
@@ -182,7 +217,7 @@ class FrontendController extends Controller
                 return $query;
             });
         //  return $frontcategory;
-        return view('frontEnd.layouts.pages.index', compact('sliders', 'frontcategory', 'hotdeal_top', 'feature_products', 'dealofthe_products','new_products' , 'hotdeal_bottom', 'homeproducts', 'sliderbottomads', 'footertopads', 'blog'));
+        return view('frontEnd.layouts.pages.index', compact('sliders', 'frontcategory', 'hotdeal_top', 'feature_products', 'dealofthe_products', 'new_products', 'hotdeal_bottom', 'homeproducts', 'sliderbottomads', 'footertopads', 'blog'));
     }
 
     public function shop()
@@ -394,7 +429,7 @@ class FrontendController extends Controller
             $products = $products->concat($otherProducts);
         }
         $shippingcharge = ShippingCharge::where('status', 1)->get();
-        $reviews = Review::where(['product_id'=> $details->id, 'status' => 'active'])->get();
+        $reviews = Review::where(['product_id' => $details->id, 'status' => 'active'])->get();
         $productcolors = Productcolor::where('product_id', $details->id)->get();
         // return $productcolors;
         $productsizes = Productsize::where('product_id', $details->id)
@@ -409,8 +444,8 @@ class FrontendController extends Controller
         $size = $request->size;
 
         $totalQuantity = Productsize::where('product_id', $product_id)
-        ->where('size', $size)
-        ->sum('quantity');
+            ->where('size', $size)
+            ->sum('quantity');
 
         return response()->json($totalQuantity);
     }
@@ -428,7 +463,7 @@ class FrontendController extends Controller
     }
     public function livesearch(Request $request)
     {
-        $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price',)
+        $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price', )
             ->where('status', 1)
             ->with('image');
         if ($request->keyword) {
@@ -446,7 +481,7 @@ class FrontendController extends Controller
     }
     public function search(Request $request)
     {
-        $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price','product_code')
+        $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price', 'product_code')
             ->where('status', 1)
             ->with('image');
         if ($request->keyword) {
@@ -500,7 +535,7 @@ class FrontendController extends Controller
                     foreach ($words as $w) {
                         $root = rtrim(strtolower($w), 'aeiou');
                         $q->orWhere('slug', 'LIKE', "%{$root}%")
-                          ->orWhere('name', 'LIKE', "%{$root}%");
+                            ->orWhere('name', 'LIKE', "%{$root}%");
                     }
                 })->with('images')->first();
             }
@@ -568,10 +603,10 @@ class FrontendController extends Controller
         $select_charge = ShippingCharge::where('status', 1)->first();
         Session::put('shipping', $select_charge ? $select_charge->amount : 0);
 
-         $productcolors = Productcolor::where('product_id', $campaign_data->product_id)
+        $productcolors = Productcolor::where('product_id', $campaign_data->product_id)
             ->with('color')
             ->get();
-         $productsizes = Productsize::where('product_id', $campaign_data->product_id)
+        $productsizes = Productsize::where('product_id', $campaign_data->product_id)
             ->with('size')
             ->get();
         return view('frontEnd.layouts.pages.campaign.campaign', compact('campaign_data', 'product', 'shippingcharge', 'productcolors', 'productsizes'));

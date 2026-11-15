@@ -18,18 +18,19 @@ class BannerCategoryController extends Controller
 
     public function index(Request $request)
     {
-        $data = BannerCategory::orderBy('id','DESC')->get();
+        $data = BannerCategory::orderByRaw("FIELD(placement, 'hero_slider', 'hero_right_top', 'hero_right_bottom_left', 'hero_right_bottom_right', 'footer_top') = 0, FIELD(placement, 'hero_slider', 'hero_right_top', 'hero_right_bottom_left', 'hero_right_bottom_right', 'footer_top'), id ASC")->get();
         return view('backEnd.banner.category.index',compact('data'));
     }
     public function create()
     {
-        $categories = BannerCategory::orderBy('id','DESC')->select('id','name')->get();
+        $categories = BannerCategory::orderBy('id','DESC')->select('id','name','placement')->get();
         return view('backEnd.banner.category.create',compact('categories'));
     }
     public function store(Request $request)
     {
         $this->validate($request, [
             'name' => 'required',
+            'placement' => 'required',
             'status' => 'required',
         ]);
         $input = $request->all();
@@ -48,6 +49,7 @@ class BannerCategoryController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'placement' => 'required',
         ]);
         $update_data = BannerCategory::find($request->id);
         $input = $request->all();

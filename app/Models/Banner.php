@@ -11,6 +11,6 @@ class Banner extends Model
     protected $guarded = [];
     public function category()
     {
-        return $this->hasOne(BannerCategory::class,'id','category_id')->select('id','name');
+        return $this->hasOne(BannerCategory::class, 'id', 'category_id')->select('id', 'name', 'placement');
     }
 }

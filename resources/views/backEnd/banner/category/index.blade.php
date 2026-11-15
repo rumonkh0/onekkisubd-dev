@@ -30,7 +30,8 @@
                     <thead>
                         <tr>
                             <th>SL</th>
-                            <th>Name</th>
+                            <th>Category Name</th>
+                            <th>Website Placement Position</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -42,6 +43,13 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$value->name}}</td>
+                            <td>
+                                @if($value->placement && isset(\App\Models\BannerCategory::PLACEMENTS[$value->placement]))
+                                    <span class="badge bg-soft-info text-info">{{ \App\Models\BannerCategory::PLACEMENTS[$value->placement] }}</span>
+                                @else
+                                    <span class="badge bg-soft-warning text-warning">Unassigned (Edit to set position)</span>
+                                @endif
+                            </td>
                             <td>@if($value->status==1)<span class="badge bg-soft-success text-success">Active</span> @else <span class="badge bg-soft-danger text-danger">Inactive</span> @endif</td>
                             <td>
                                 <div class="button-list">

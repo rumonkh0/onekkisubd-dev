@@ -40,12 +40,17 @@
                     <!-- col-end -->
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="category_id" class="form-label">Banner Category</label>
-                             <select class="form-control select2-multiple @error('link') is-invalid @enderror" name="category_id" data-toggle="select2"  data-placeholder="Choose ...">
+                            <label for="category_id" class="form-label">Banner Category / Website Placement *</label>
+                             <select class="form-control select2-multiple @error('category_id') is-invalid @enderror" name="category_id" data-toggle="select2" data-placeholder="Choose ..." required>
                                 <optgroup>
-                                    <option value="">Select..</option>
+                                    <option value="">Select Placement Category..</option>
                                     @foreach($categories as $value)
-                                    <option  value="{{$value->id}}" @if($edit_data->category_id==$value->id)selected @endif>{{$value->name}}</option>
+                                    <option value="{{$value->id}}" @if($edit_data->category_id==$value->id)selected @endif>
+                                        {{$value->name}}
+                                        @if($value->placement && isset(\App\Models\BannerCategory::PLACEMENTS[$value->placement]) && $value->name !== \App\Models\BannerCategory::PLACEMENTS[$value->placement])
+                                            — [{{ \App\Models\BannerCategory::PLACEMENTS[$value->placement] }}]
+                                        @endif
+                                    </option>
                                     @endforeach
                                 </optgroup>
                             </select>
@@ -58,11 +63,50 @@
                     </div>
                     <!-- col end -->
                     <div class="col-sm-12 mb-3">
+                        <div class="alert alert-info mb-0 py-2" style="font-size: 12.5px;">
+                            <strong>Recommended Image Sizes by Placement Position (PC / Tablet / Mobile):</strong><br>
+                            • <strong>1. Hero Left Main Slider:</strong> PC: <code>1080×640 px</code> | Tablet: <code>960×580 px</code> | Mobile: <code>750×480 px</code><br>
+                            • <strong>2. Hero Right Top Wide Banner:</strong> PC: <code>770×312 px</code> | Tablet: <code>960×366 px</code> | Mobile: <code>750×286 px</code><br>
+                            • <strong>3. Hero Right Bottom-Left Banner:</strong> PC: <code>377×312 px</code> | Tablet: <code>470×368 px</code> | Mobile: <code>365×286 px</code><br>
+                            • <strong>4. Hero Right Bottom-Right Banner:</strong> PC: <code>377×312 px</code> | Tablet: <code>470×368 px</code> | Mobile: <code>365×286 px</code>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mb-3">
                         <div class="form-group">
-                            <label for="image" class="form-label">Image *</label>
+                            <label for="image" class="form-label">PC / Desktop Image *</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" value="{{ $edit_data->image }}"  id="image" >
-                            <img src="{{asset($edit_data->image)}}" alt="" class="edit-image">
+                            <img src="{{asset($edit_data->image)}}" alt="" class="edit-image mt-2" style="max-height: 80px;">
                             @error('image')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- col end -->
+                    <div class="col-sm-12 mb-3">
+                        <div class="form-group">
+                            <label for="tablet_image" class="form-label">Tablet Image (Optional — falls back to PC image)</label>
+                            <input type="file" class="form-control @error('tablet_image') is-invalid @enderror" name="tablet_image" id="tablet_image">
+                            @if($edit_data->tablet_image)
+                                <img src="{{asset($edit_data->tablet_image)}}" alt="" class="edit-image mt-2" style="max-height: 80px;">
+                            @endif
+                            @error('tablet_image')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- col end -->
+                    <div class="col-sm-12 mb-3">
+                        <div class="form-group">
+                            <label for="mobile_image" class="form-label">Mobile Image (Optional — falls back to PC image)</label>
+                            <input type="file" class="form-control @error('mobile_image') is-invalid @enderror" name="mobile_image" id="mobile_image">
+                            @if($edit_data->mobile_image)
+                                <img src="{{asset($edit_data->mobile_image)}}" alt="" class="edit-image mt-2" style="max-height: 80px;">
+                            @endif
+                            @error('mobile_image')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
