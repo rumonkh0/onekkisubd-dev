@@ -361,7 +361,7 @@
 @section('script')
 <script src="{{ asset('public/backEnd/') }}/assets/libs/select2/js/select2.min.js"></script>
 <script src="{{ asset('public/backEnd/') }}/assets/js/pages/form-advanced.init.js"></script>
-<script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.1/dist/jquery.table2excel.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -374,14 +374,30 @@
 
     $(document).ready(function() {
         $('#export-excel-button').on('click', function() {
-            var contentToExport = $('#content-to-export').html();
-            var tempElement = $('<div>');
-            tempElement.html(contentToExport);
-            tempElement.find('.table').table2excel({
-                exclude: ".no-export",
-                name: "Stock Report",
-                filename: "Stock_Report_" + new Date().toISOString().slice(0, 10)
-            });
+            var filename = "Stock_Report_" + new Date().toISOString().slice(0, 10);
+            if (typeof $.fn.table2excel === 'function') {
+                var contentToExport = $('#content-to-export').html();
+                var tempElement = $('<div>');
+                tempElement.html(contentToExport);
+                tempElement.find('.table').table2excel({
+                    exclude: ".no-export",
+                    name: "Stock Report",
+                    filename: filename
+                });
+            } else {
+                var tableClone = $('#content-to-export .table').clone();
+                tableClone.find('.no-export').remove();
+                var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>' + tableClone.prop('outerHTML') + '</body></html>';
+                var blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename + '.xls';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
         });
     });
 </script>

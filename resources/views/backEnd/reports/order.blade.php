@@ -72,6 +72,17 @@
 @endsection
 
 @section('content')
+@php
+    $order_statuses = $order_statuses ?? \App\Models\OrderStatus::where('status', 1)->get();
+    $users = $users ?? \App\Models\User::where('status', 1)->get();
+    $totalPurchase = $totalPurchase ?? 0;
+    $total_item = $total_item ?? 0;
+    $total_sales = $total_sales ?? 0;
+    $discounts = $discounts ?? 0;
+    $startDate = request('start_date');
+    $endDate = request('end_date');
+    $isDateFiltered = !empty($startDate) || !empty($endDate);
+@endphp
 <div class="container-fluid">
 
     <!-- start page title -->
@@ -99,14 +110,19 @@
         <div class="d-flex flex-wrap gap-2 pt-2 border-top small text-muted">
             @if(request('keyword')) <span><strong>Search:</strong> "{{ request('keyword') }}" &bull; </span> @endif
             @if(request('order_status'))
-                @php $selSt = $order_statuses->firstWhere('id', request('order_status')); @endphp
-                <span><strong>Status:</strong> {{ request('order_status') == 'all' ? 'All Statuses' : ($selSt->name ?? 'Selected') }} &bull; </span>
+                @php
+                    $selSt = $order_statuses->firstWhere('id', request('order_status'));
+                    $statusLabel = request('order_status') == 'all'
+                        ? 'All Statuses'
+                        : (request('order_status') == 'delivered_completed' ? 'Completed & Delivered' : ($selSt->name ?? 'Completed'));
+                @endphp
+                <span><strong>Status:</strong> {{ $statusLabel }} &bull; </span>
             @endif
             @if(request('user_id'))
                 @php $selUsr = $users->firstWhere('id', request('user_id')); @endphp
                 <span><strong>Assigned:</strong> {{ $selUsr->name ?? 'Selected' }} &bull; </span>
             @endif
-            <span><strong>Date Range:</strong> {{ request('start_date') ? date('d M, Y', strtotime(request('start_date'))) : 'All Time' }} to {{ request('end_date') ? date('d M, Y', strtotime(request('end_date'))) : 'Present' }}</span>
+            <span><strong>Date Range:</strong> {{ $startDate ? date('d M, Y', strtotime($startDate)) : 'All Time' }} to {{ $endDate ? date('d M, Y', strtotime($endDate)) : 'Present' }}</span>
         </div>
     </div>
 
@@ -199,13 +215,38 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @php
+                        $todayStr = now()->toDateString();
+                        $last7Str = now()->subDays(6)->toDateString();
+                        $monthStartStr = now()->startOfMonth()->toDateString();
+                        $monthEndStr = now()->endOfMonth()->toDateString();
+                        $lastMonthStartStr = now()->subMonth()->startOfMonth()->toDateString();
+                        $lastMonthEndStr = now()->subMonth()->endOfMonth()->toDateString();
+                        $baseParams = array_filter(request()->only(['keyword', 'order_status', 'user_id']), fn($v) => $v !== null && $v !== '');
+                    @endphp
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                        <span class="fw-semibold text-dark small"><i class="fe-calendar text-primary me-1"></i> Quick Date Filter:</span>
+                        <div class="d-flex flex-wrap gap-1">
+                            <a href="{{ route('admin.order_report', array_merge($baseParams, ['start_date' => $todayStr, 'end_date' => $todayStr])) }}"
+                               class="btn btn-xs {{ ($startDate === $todayStr && $endDate === $todayStr) ? 'btn-primary' : 'btn-outline-secondary' }}">Today</a>
+                            <a href="{{ route('admin.order_report', array_merge($baseParams, ['start_date' => $last7Str, 'end_date' => $todayStr])) }}"
+                               class="btn btn-xs {{ ($startDate === $last7Str && $endDate === $todayStr) ? 'btn-primary' : 'btn-outline-secondary' }}">Last 7 Days</a>
+                            <a href="{{ route('admin.order_report', array_merge($baseParams, ['start_date' => $monthStartStr, 'end_date' => $monthEndStr])) }}"
+                               class="btn btn-xs {{ ($startDate === $monthStartStr && $endDate === $monthEndStr) ? 'btn-primary' : 'btn-outline-secondary' }}">This Month</a>
+                            <a href="{{ route('admin.order_report', array_merge($baseParams, ['start_date' => $lastMonthStartStr, 'end_date' => $lastMonthEndStr])) }}"
+                               class="btn btn-xs {{ ($startDate === $lastMonthStartStr && $endDate === $lastMonthEndStr) ? 'btn-primary' : 'btn-outline-secondary' }}">Last Month</a>
+                            <a href="{{ route('admin.order_report', $baseParams) }}"
+                               class="btn btn-xs {{ !$isDateFiltered ? 'btn-primary' : 'btn-outline-secondary' }}">All Time</a>
+                        </div>
+                    </div>
+
                     <form method="GET" action="{{ route('admin.order_report') }}" class="no-print">
                         <div class="row align-items-end g-2">
                             <div class="col-md-3 col-sm-6">
                                 <div class="form-group">
                                     <label for="keyword" class="form-label fw-semibold">Search Keyword</label>
                                     <input type="text" value="{{ request('keyword') }}" class="form-control"
-                                        id="keyword" name="keyword" placeholder="Invoice, Product, Customer...">
+                                        id="keyword" name="keyword" placeholder="Invoice, Product, Customer, Phone...">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-6">
@@ -215,9 +256,9 @@
                                         <option value="6" {{ request('order_status', '6') == '6' ? 'selected' : '' }}>Completed (Default)</option>
                                         <option value="delivered_completed" {{ request('order_status') == 'delivered_completed' ? 'selected' : '' }}>Completed & Delivered</option>
                                         <option value="all" {{ request('order_status') == 'all' ? 'selected' : '' }}>All Statuses</option>
-                                        @foreach ($order_statuses as $status)
+                                        @foreach ($order_statuses->unique('name') as $status)
                                             @if($status->id != 6)
-                                                <option value="{{ $status->id }}" {{ request('order_status') == $status->id ? 'selected' : '' }}>
+                                                <option value="{{ $status->id }}" {{ (string) request('order_status') === (string) $status->id ? 'selected' : '' }}>
                                                     {{ $status->name }}
                                                 </option>
                                             @endif
@@ -241,15 +282,15 @@
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label for="start_date" class="form-label fw-semibold">Start Date</label>
-                                    <input type="date" value="{{ request('start_date') }}"
-                                        class="form-control flatdate" id="start_date" name="start_date">
+                                    <input type="date" value="{{ $startDate }}"
+                                        class="form-control" id="start_date" name="start_date">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-6">
                                 <div class="form-group">
                                     <label for="end_date" class="form-label fw-semibold">End Date</label>
-                                    <input type="date" value="{{ request('end_date') }}"
-                                        class="form-control flatdate" id="end_date" name="end_date">
+                                    <input type="date" value="{{ $endDate }}"
+                                        class="form-control" id="end_date" name="end_date">
                                 </div>
                             </div>
                             <div class="col-md-1 col-sm-12 d-flex gap-1">
@@ -283,15 +324,18 @@
                             <table class="table table-bordered table-striped table-hover nowrap w-100 align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 5%;">#</th>
+                                        <th style="width: 4%;">#</th>
                                         <th>Order ID</th>
                                         <th>Date</th>
-                                        <th>Product Name</th>
                                         <th>Customer</th>
                                         <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Product Name</th>
                                         <th class="text-center">Qty</th>
+                                        <th class="text-end">Purchase</th>
                                         <th class="text-end">Sale Price</th>
                                         <th class="text-end">Item Total</th>
+                                        <th class="text-end">Profit</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Order Type</th>
                                     </tr>
@@ -300,7 +344,26 @@
                                     @forelse ($orders as $key => $value)
                                         @php
                                             $order = $value->order;
-                                            $itemTotal = $value->qty * $value->sale_price;
+                                            $unitPurchase = ($value->purchase_price && $value->purchase_price > 0)
+                                                ? (float) $value->purchase_price
+                                                : (float) ($value->product->purchase_price ?? 0);
+                                            $unitSale = (float) ($value->sale_price ?? 0);
+                                            $qty = (int) ($value->qty ?? 1);
+                                            $itemTotal = $qty * $unitSale;
+                                            $itemPurchaseTotal = $qty * $unitPurchase;
+                                            $itemProfit = $itemTotal - $itemPurchaseTotal;
+                                            $customerName = $value->shipping ? $value->shipping->name : ($order && $order->customer ? $order->customer->name : 'N/A');
+                                            $customerPhone = $value->shipping ? $value->shipping->phone : ($order && $order->customer ? $order->customer->phone : 'N/A');
+                                            $customerAddress = $value->shipping ? $value->shipping->address : ($order && $order->customer ? $order->customer->address : 'N/A');
+                                            $statusName = ($order && $order->status) ? $order->status->name : null;
+                                            $statusIdVal = $order ? (int) $order->order_status : 0;
+                                            $badgeClass = match($statusIdVal) {
+                                                6, 12 => 'bg-soft-success text-success border-success',
+                                                1 => 'bg-soft-warning text-warning border-warning',
+                                                2, 5, 10, 11, 13 => 'bg-soft-info text-info border-info',
+                                                4, 8, 14, 15, 16 => 'bg-soft-danger text-danger border-danger',
+                                                default => 'bg-soft-primary text-primary border-primary',
+                                            };
                                         @endphp
                                         <tr>
                                             <td>{{ $orders->firstItem() + $loop->index }}</td>
@@ -313,18 +376,26 @@
                                                     <span class="text-muted">N/A</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $value->created_at ? $value->created_at->format('d M, Y') : '' }}</td>
+                                            <td>{{ $value->created_at ? $value->created_at->format('d M, Y') : ($order && $order->created_at ? $order->created_at->format('d M, Y') : '') }}</td>
+                                            <td class="fw-semibold text-dark">{{ $customerName }}</td>
+                                            <td>{{ $customerPhone }}</td>
+                                            <td style="max-width: 180px; white-space: normal;">{{ Str::limit($customerAddress, 45) }}</td>
                                             <td>
                                                 <span class="fw-semibold text-dark">{{ $value->product_name }}</span>
+                                                @if($value->product_size || $value->product_color)
+                                                    <small class="text-muted d-block">
+                                                        {{ implode(' / ', array_filter([$value->product_size, $value->product_color])) }}
+                                                    </small>
+                                                @endif
                                             </td>
-                                            <td>{{ $value->shipping ? $value->shipping->name : ($order && $order->customer ? $order->customer->name : 'N/A') }}</td>
-                                            <td>{{ $value->shipping ? $value->shipping->phone : ($order && $order->customer ? $order->customer->phone : 'N/A') }}</td>
-                                            <td class="text-center fw-bold">{{ $value->qty }}</td>
-                                            <td class="text-end">৳{{ number_format($value->sale_price, 2) }}</td>
+                                            <td class="text-center fw-bold">{{ $qty }}</td>
+                                            <td class="text-end text-muted">৳{{ number_format($unitPurchase, 2) }}</td>
+                                            <td class="text-end">৳{{ number_format($unitSale, 2) }}</td>
                                             <td class="text-end fw-bold">৳{{ number_format($itemTotal, 2) }}</td>
+                                            <td class="text-end fw-semibold {{ $itemProfit >= 0 ? 'text-success' : 'text-danger' }}">৳{{ number_format($itemProfit, 2) }}</td>
                                             <td class="text-center">
-                                                @if($order && $order->status)
-                                                    <span class="badge bg-soft-info text-info border border-info px-2 py-1">{{ $order->status->name }}</span>
+                                                @if($statusName)
+                                                    <span class="badge {{ $badgeClass }} border px-2 py-1">{{ $statusName }}</span>
                                                 @else
                                                     <span class="badge bg-secondary">Unknown</span>
                                                 @endif
@@ -335,7 +406,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="11" class="text-center py-4 text-muted">
+                                            <td colspan="14" class="text-center py-4 text-muted">
                                                 <i class="fe-inbox font-24 d-block mb-1"></i>
                                                 No order records found matching the specified criteria.
                                             </td>
@@ -344,14 +415,15 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="tfoot-total bg-light">
-                                        <th colspan="6" class="text-end fw-bold">Total Items Sold:</th>
+                                        <th colspan="7" class="text-end fw-bold">Total Items Sold:</th>
                                         <th class="text-center fw-bold">{{ number_format($total_item) }}</th>
+                                        <th class="text-end fw-bold">Cost: ৳{{ number_format($totalPurchase, 2) }}</th>
                                         <th colspan="2" class="text-end fw-bold">Gross Sales: ৳{{ number_format($total_sales, 2) }}</th>
-                                        <th colspan="2" class="text-center fw-bold">Discount: ৳{{ number_format($discounts, 2) }}</th>
+                                        <th colspan="3" class="text-center fw-bold">Discount: ৳{{ number_format($discounts, 2) }}</th>
                                     </tr>
                                     <tr class="tfoot-total bg-soft-success">
-                                        <th colspan="6" class="text-end fw-bold">Net Sales (Revenue):</th>
-                                        <th colspan="2" class="fw-bold text-success">৳{{ number_format($total_sales - $discounts, 2) }}</th>
+                                        <th colspan="8" class="text-end fw-bold">Net Sales (Revenue):</th>
+                                        <th colspan="3" class="fw-bold text-success">৳{{ number_format($total_sales - $discounts, 2) }}</th>
                                         <th colspan="2" class="text-end fw-bold">Total Net Profit:</th>
                                         <th class="fw-bold text-success text-center">৳{{ number_format($total_sales - $totalPurchase - $discounts, 2) }}</th>
                                     </tr>
@@ -379,26 +451,34 @@
 @section('script')
 <script src="{{ asset('public/backEnd/') }}/assets/libs/select2/js/select2.min.js"></script>
 <script src="{{ asset('public/backEnd/') }}/assets/js/pages/form-advanced.init.js"></script>
-<script src="{{ asset('public/backEnd/') }}/assets/libs/flatpickr/flatpickr.min.js"></script>
-<script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.1/dist/jquery.table2excel.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
         $('.select2').select2();
-        flatpickr(".flatdate", {});
-    });
-</script>
-<script>
-    $(document).ready(function() {
+
         $('#export-excel-button').on('click', function() {
-            var contentToExport = $('#content-to-export').html();
-            var tempElement = $('<div>');
-            tempElement.html(contentToExport);
-            tempElement.find('.table').table2excel({
-                exclude: ".no-export",
-                name: "Order Report",
-                filename: "Order-Report-" + new Date().toISOString().slice(0, 10)
-            });
+            var filename = "Order-Report-" + new Date().toISOString().slice(0, 10);
+            if ($.fn.table2excel) {
+                var contentToExport = $('#content-to-export').html();
+                var tempElement = $('<div>').html(contentToExport);
+                tempElement.find('.table').table2excel({
+                    exclude: ".no-export",
+                    name: "Order Report",
+                    filename: filename + ".xls"
+                });
+            } else {
+                var tableHtml = $('#content-to-export').find('table')[0].outerHTML;
+                var blob = new Blob(['\ufeff', tableHtml], { type: 'application/vnd.ms-excel' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename + '.xls';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
         });
     });
 </script>

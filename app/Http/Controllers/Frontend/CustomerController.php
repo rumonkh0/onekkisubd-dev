@@ -614,15 +614,17 @@ class CustomerController extends Controller
         // order details data save
         // foreach (Cart::instance('shopping')->content() as $cart) {
             $product = Product::find($request->product_id);
+            $qty = max(1, (int) ($request->quantity ?: 1));
+            $unitSalePrice = $request->product_price ?: (($qty > 0 && $request->subtotal) ? ($request->subtotal / $qty) : ($product->new_price ?? 0));
             $order_details                  =   new OrderDetails();
             $order_details->order_id        =   $order->id;
             $order_details->product_id      =   $product->id;
             $order_details->product_name    =   $product->name;
-            $order_details->purchase_price  =   $product->purchase_price;
+            $order_details->purchase_price  =   $product->purchase_price ?: 0;
             $order_details->product_color   =   $request->color;
             $order_details->product_size    =   $request->package;
-            $order_details->sale_price      =   $request->subtotal;
-            $order_details->qty             =   $request->quantity;
+            $order_details->sale_price      =   $unitSalePrice;
+            $order_details->qty             =   $qty;
             $order_details->save();
             if (!empty($request->package)) {
                 Productsize::where('product_id', $product->id)->where('size', $request->package)->decrement('quantity', $request->quantity);

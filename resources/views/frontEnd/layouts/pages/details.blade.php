@@ -221,6 +221,188 @@
                 height: 360px;
             }
         }
+        @media (max-width: 767px) {
+            .tea-breadcrumb {
+                margin-bottom: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+                gap: 6px;
+            }
+            .tea-details-card {
+                padding: 10px;
+                border-radius: 16px;
+                margin-bottom: 16px;
+            }
+            .tea-gallery-wrap {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .tea-thumbs-strip {
+                order: -1;
+                flex-direction: column;
+                width: 52px;
+                flex-shrink: 0;
+                margin-top: 0;
+                gap: 6px;
+                max-height: 220px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-bottom: 0;
+                padding-right: 2px;
+            }
+            .tea-thumbs-strip::-webkit-scrollbar {
+                width: 3px;
+                height: auto;
+            }
+            .tea-thumb-item {
+                flex: 0 0 50px;
+                width: 50px;
+                height: 50px;
+                border-radius: 8px;
+                padding: 2px;
+            }
+            .tea-main-slider {
+                flex: 1;
+                min-width: 0;
+                border-radius: 14px;
+            }
+            .tea-main-slider .dimage_item {
+                height: 220px;
+                padding: 8px;
+            }
+            .tea-badge-discount {
+                left: 68px;
+                top: 8px;
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            .tea-badge-organic {
+                top: 8px;
+                right: 8px;
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            .tea-info-panel {
+                display: flex;
+                flex-direction: column;
+                margin-top: 8px;
+            }
+            .tea-product-title {
+                order: 1;
+                font-size: 18px;
+                margin-bottom: 3px;
+                line-height: 1.2;
+            }
+            .tea-price-box {
+                order: 2;
+                background: transparent;
+                border: none;
+                padding: 0;
+                margin-bottom: 6px;
+                border-radius: 0;
+                align-items: center;
+                gap: 8px;
+            }
+            .tea-savings-pill {
+                margin-left: 2px;
+                padding: 2px 8px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+            #addcart {
+                order: 3;
+            }
+            .tea-rating-row {
+                order: 4;
+                margin-top: 10px;
+                margin-bottom: 6px;
+                font-size: 12px;
+            }
+            .tea-meta-row {
+                order: 5;
+                margin-bottom: 6px;
+                gap: 6px;
+            }
+            .tea-short-des {
+                order: 6;
+                padding: 10px 12px;
+                margin-top: 4px;
+                margin-bottom: 8px;
+                font-size: 12.5px;
+                line-height: 1.55;
+            }
+            .tea-current-price {
+                font-size: 21px;
+                line-height: 1.2;
+            }
+            .tea-old-price {
+                font-size: 13.5px;
+            }
+            .tea-selector-group {
+                margin-bottom: 6px;
+            }
+            .tea-selector-label {
+                margin-bottom: 5px;
+                font-size: 11.5px;
+            }
+            .tea-weight-options,
+            .tea-color-options {
+                gap: 6px;
+            }
+            .tea-weight-option label {
+                padding: 5px 12px;
+                font-size: 12px;
+                border-radius: 8px;
+            }
+            .tea-color-option label {
+                width: 42px;
+                height: 42px;
+                border-radius: 8px;
+            }
+            .tea-actions-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                margin-top: 8px;
+                gap: 8px;
+            }
+            .tea-qty-stepper {
+                grid-column: 1 / -1;
+                justify-content: space-between;
+                height: 40px;
+                border-radius: 10px;
+                padding: 2px 6px;
+            }
+            .tea-qty-btn {
+                width: 38px;
+                height: 34px;
+                font-size: 16px;
+            }
+            .tea-qty-input {
+                width: 48px;
+                height: 34px;
+                font-size: 15px;
+            }
+            .tea-btn-buy,
+            .tea-btn-cart {
+                height: 44px;
+                font-size: 12px;
+                border-radius: 10px;
+                padding: 0 8px;
+                gap: 6px;
+            }
+            .tea-btn-buy svg,
+            .tea-btn-cart svg {
+                width: 15px;
+                height: 15px;
+                flex-shrink: 0;
+            }
+            .tea-hotline-box {
+                margin-top: 10px;
+                padding: 8px 12px;
+            }
+        }
 
         .tea-meta-row {
             display: flex;
@@ -2001,25 +2183,47 @@
                     $(".indicator-item").removeClass("active");
                     var activeThumb = $(".indicator-item[data-id='" + currentIndex + "']");
                     activeThumb.addClass("active");
-                    if ($(".thumb_slider").length) {
+                    if ($(".thumb_slider").hasClass("owl-loaded")) {
                         $(".thumb_slider").trigger("to.owl.carousel", [currentIndex, 300]);
+                    } else if (activeThumb.length && window.innerWidth <= 767) {
+                        var strip = $(".tea-thumbs-strip")[0];
+                        if (strip) {
+                            strip.scrollTo({
+                                top: activeThumb[0].offsetTop - strip.clientHeight / 2 + activeThumb[0].clientHeight / 2,
+                                behavior: "smooth"
+                            });
+                        }
                     }
                 }
             });
 
-            // Thumbnails strip carousel if > 4 images
-            $(".thumb_slider").owlCarousel({
-                margin: 10,
-                items: 5,
-                loop: false,
-                dots: false,
-                nav: true,
-                responsive: {
-                    0: { items: 3 },
-                    480: { items: 4 },
-                    768: { items: 5 }
+            // Thumbnails strip carousel if > 4 images (desktop/tablet only; mobile uses vertical left rail)
+            function syncThumbCarousel() {
+                var $thumbSlider = $(".thumb_slider");
+                if (!$thumbSlider.length) return;
+                if (window.innerWidth > 767) {
+                    if (!$thumbSlider.hasClass("owl-loaded")) {
+                        $thumbSlider.addClass("owl-carousel").owlCarousel({
+                            margin: 10,
+                            items: 5,
+                            loop: false,
+                            dots: false,
+                            nav: true,
+                            responsive: {
+                                768: { items: 5 }
+                            }
+                        });
+                    }
+                } else {
+                    if ($thumbSlider.hasClass("owl-loaded")) {
+                        $thumbSlider.trigger("destroy.owl.carousel").removeClass("owl-carousel owl-loaded owl-hidden");
+                    } else {
+                        $thumbSlider.removeClass("owl-carousel");
+                    }
                 }
-            });
+            }
+            syncThumbCarousel();
+            $(window).on("resize", syncThumbCarousel);
 
             // Related Products Slider (never duplicate cards if count <= visible items)
             var relatedTotal = {{ $products->count() }};

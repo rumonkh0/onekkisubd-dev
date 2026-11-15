@@ -776,8 +776,14 @@ class OrderController extends Controller
         $users = User::where('status', 1)->get();
         $order_statuses = OrderStatus::where('status', 1)->get();
 
-        // Initialize the query for orders with related shipping, order, and status
-        $query = OrderDetails::with(['shipping', 'order.status']);
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if ($startDate && $endDate && $startDate > $endDate) {
+            [$startDate, $endDate] = [$endDate, $startDate];
+        }
+
+        // Initialize the query for orders with related shipping, order, status, customer, and product
+        $query = OrderDetails::with(['shipping', 'order.status', 'order.customer', 'order.user', 'product']);
 
         // Filter by order_status (defaults to 6: Completed, but allows any status, all, or delivered+completed)
         if ($request->filled('order_status')) {
@@ -798,17 +804,18 @@ class OrderController extends Controller
             });
         }
 
-        // Apply keyword filter (searches product_name, invoice_id, customer name, customer phone)
+        // Apply keyword filter (searches product_name, invoice_id, customer name, customer phone, address)
         if ($request->keyword) {
             $keyword = $request->keyword;
             $query->where(function ($q) use ($keyword) {
-                $q->where('product_name', 'LIKE', '%' . $keyword . '%')
+                $q->where('order_details.product_name', 'LIKE', '%' . $keyword . '%')
                   ->orWhereHas('order', function ($oq) use ($keyword) {
                       $oq->where('invoice_id', 'LIKE', '%' . $keyword . '%');
                   })
                   ->orWhereHas('shipping', function ($sq) use ($keyword) {
                       $sq->where('name', 'LIKE', '%' . $keyword . '%')
-                         ->orWhere('phone', 'LIKE', '%' . $keyword . '%');
+                         ->orWhere('phone', 'LIKE', '%' . $keyword . '%')
+                         ->orWhere('address', 'LIKE', '%' . $keyword . '%');
                   });
             });
         }
@@ -821,25 +828,27 @@ class OrderController extends Controller
         }
 
         // Apply date range filter if provided
-        if ($request->start_date && $request->end_date) {
-            $query->whereDate('created_at', '>=', $request->start_date)
-                  ->whereDate('created_at', '<=', $request->end_date);
-        } elseif ($request->start_date) {
-            $query->whereDate('created_at', '>=', $request->start_date);
-        } elseif ($request->end_date) {
-            $query->whereDate('created_at', '<=', $request->end_date);
+        if ($startDate && $endDate) {
+            $query->whereDate('order_details.created_at', '>=', $startDate)
+                  ->whereDate('order_details.created_at', '<=', $endDate);
+        } elseif ($startDate) {
+            $query->whereDate('order_details.created_at', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->whereDate('order_details.created_at', '<=', $endDate);
         }
 
-        // Calculate totals over entire matched dataset
-        $totalPurchase = (clone $query)->sum(\DB::raw('purchase_price * qty'));
-        $total_item = (clone $query)->sum('qty');
-        $total_sales = (clone $query)->sum(\DB::raw('sale_price * qty'));
+        // Calculate totals over entire matched dataset (falling back to product purchase_price when order_details.purchase_price is 0 or NULL)
+        $totalPurchase = (float) (clone $query)
+            ->leftJoin('products', 'order_details.product_id', '=', 'products.id')
+            ->sum(\DB::raw('COALESCE(NULLIF(order_details.purchase_price, 0), products.purchase_price, 0) * order_details.qty'));
+        $total_item = (int) (clone $query)->sum('order_details.qty');
+        $total_sales = (float) (clone $query)->sum(\DB::raw('IFNULL(order_details.sale_price, 0) * order_details.qty'));
 
         // Calculate discounts only for the filtered orders (prevents lifetime discount subtraction!)
-        $matched_order_ids = (clone $query)->pluck('order_id')->unique();
-        $discounts = Order::whereIn('id', $matched_order_ids)->sum('discount');
+        $matched_order_ids = (clone $query)->pluck('order_details.order_id')->unique();
+        $discounts = (float) Order::whereIn('id', $matched_order_ids)->sum('discount');
 
-        $orders = $query->orderBy('id', 'DESC')->paginate(20)->withQueryString();
+        $orders = $query->orderBy('order_details.id', 'DESC')->paginate(20)->withQueryString();
 
         return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'totalPurchase', 'total_item', 'total_sales', 'discounts'));
     }

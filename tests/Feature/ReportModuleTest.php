@@ -69,11 +69,18 @@ class ReportModuleTest extends TestCase
         ]));
         $responseKeyword->assertOk();
 
-        // Test order_status = 'all'
+        // Test order_status = 'all' and verify OrderDetails->order->status relation loads (not stripped by select)
         $responseAllStatus = $this->actingAs($this->admin)->get(route('admin.order_report', [
             'order_status' => 'all',
         ]));
         $responseAllStatus->assertOk();
+        $orders = $responseAllStatus->viewData('orders');
+        if ($orders->count() > 0) {
+            $firstItem = $orders->first();
+            $this->assertNotNull($firstItem->order, 'OrderDetails->order relationship should be loaded');
+            $this->assertNotNull($firstItem->order->order_status, 'Order->order_status foreign key must not be stripped by select()');
+            $this->assertNotNull($firstItem->order->status, 'Order->status relationship must resolve to an OrderStatus model');
+        }
 
         // Test order_status = 'delivered_completed'
         $responseDeliveredCompleted = $this->actingAs($this->admin)->get(route('admin.order_report', [
@@ -81,10 +88,10 @@ class ReportModuleTest extends TestCase
         ]));
         $responseDeliveredCompleted->assertOk();
 
-        // Test date range filter
+        // Test date range filter (including inverted dates auto-swap)
         $responseDates = $this->actingAs($this->admin)->get(route('admin.order_report', [
-            'start_date' => '2025-01-01',
-            'end_date' => '2026-12-31',
+            'start_date' => '2026-12-31',
+            'end_date' => '2025-01-01',
         ]));
         $responseDates->assertOk();
     }
