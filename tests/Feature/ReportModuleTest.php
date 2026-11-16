@@ -94,6 +94,82 @@ class ReportModuleTest extends TestCase
             'end_date' => '2025-01-01',
         ]));
         $responseDates->assertOk();
+
+        // Test print=1 loads full unpaginated result set
+        $responsePrintAll = $this->actingAs($this->admin)->get(route('admin.order_report', [
+            'print' => 1,
+        ]));
+        $responsePrintAll->assertOk();
+        $printOrders = $responsePrintAll->viewData('orders');
+        $this->assertEquals($printOrders->total(), $printOrders->count());
+        $this->assertFalse($printOrders->hasPages());
+    }
+
+    public function test_order_report_default_includes_delivered_and_completed_orders_sorted_chronologically()
+    {
+        \DB::beginTransaction();
+
+        try {
+            $product = Product::first();
+            $this->assertNotNull($product);
+
+            $createOrderWithDetail = function (int $statusId, string $createdAt) use ($product) {
+                $order = new Order();
+                $order->invoice_id = 'TEST-' . rand(100000, 999999);
+                $order->amount = 500;
+                $order->discount = 0;
+                $order->shipping_charge = 0;
+                $order->customer_id = 1;
+                $order->order_status = $statusId;
+                $order->created_at = $createdAt;
+                $order->updated_at = $createdAt;
+                $order->save();
+
+                $detail = new OrderDetails();
+                $detail->order_id = $order->id;
+                $detail->product_id = $product->id;
+                $detail->product_name = $product->name;
+                $detail->purchase_price = 100;
+                $detail->sale_price = 500;
+                $detail->qty = 1;
+                $detail->created_at = $createdAt;
+                $detail->updated_at = $createdAt;
+                $detail->save();
+
+                return $detail;
+            };
+
+            $completedDetail = $createOrderWithDetail(6, '2030-01-10 10:00:00');
+            $deliveredDetail = $createOrderWithDetail(12, '2030-01-15 12:00:00');
+            $partialDetail = $createOrderWithDetail(13, '2030-01-12 11:00:00');
+            $pendingDetail = $createOrderWithDetail(1, '2030-01-20 14:00:00');
+
+            // Default report (no order_status parameter) should include 6, 12, 13 and exclude 1, ordered newest-first
+            $responseDefault = $this->actingAs($this->admin)->get(route('admin.order_report'));
+            $responseDefault->assertOk();
+            $defaultIds = $responseDefault->viewData('orders')->pluck('id')->all();
+
+            $this->assertContains($deliveredDetail->id, $defaultIds);
+            $this->assertContains($partialDetail->id, $defaultIds);
+            $this->assertContains($completedDetail->id, $defaultIds);
+            $this->assertNotContains($pendingDetail->id, $defaultIds);
+
+            $this->assertSame(
+                [$deliveredDetail->id, $partialDetail->id, $completedDetail->id],
+                array_slice($defaultIds, 0, 3)
+            );
+
+            // Explicit order_status=6 should only show Completed (6)
+            $responseCompletedOnly = $this->actingAs($this->admin)->get(route('admin.order_report', [
+                'order_status' => '6',
+            ]));
+            $responseCompletedOnly->assertOk();
+            $completedOnlyIds = $responseCompletedOnly->viewData('orders')->pluck('id')->all();
+            $this->assertContains($completedDetail->id, $completedOnlyIds);
+            $this->assertNotContains($deliveredDetail->id, $completedOnlyIds);
+        } finally {
+            \DB::rollBack();
+        }
     }
 
     public function test_ip_block_page_renders()

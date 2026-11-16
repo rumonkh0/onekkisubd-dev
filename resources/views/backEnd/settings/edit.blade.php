@@ -3,6 +3,7 @@
 @section('css')
 <link href="{{asset('public/backEnd')}}/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 <link href="{{asset('public/backEnd')}}/assets/libs/summernote/summernote-lite.min.css" rel="stylesheet" type="text/css" />
+<link href="{{asset('public/backEnd')}}/assets/libs/cropper/cropper.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
 <div class="container-fluid">
@@ -169,23 +170,23 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label mb-1">PC Image <small class="text-muted">(1080×640 px)</small></label>
-                                                <input type="file" class="form-control form-control-sm" name="hero_slides[{{ $slide->id }}][image]">
+                                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="image" @if($slide->image) data-existing-src="{{ asset($slide->image) }}" @endif name="hero_slides[{{ $slide->id }}][image]">
                                                 @if($slide->image)
-                                                    <img src="{{ asset($slide->image) }}" alt="PC Slide" class="mt-1 rounded" style="max-height: 45px;">
+                                                    <img src="{{ asset($slide->image) }}" alt="PC Slide" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                                 @endif
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label mb-1">Tablet Image <small class="text-muted">(960×580 px, opt.)</small></label>
-                                                <input type="file" class="form-control form-control-sm" name="hero_slides[{{ $slide->id }}][tablet_image]">
+                                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="tablet_image" @if($slide->tablet_image) data-existing-src="{{ asset($slide->tablet_image) }}" @endif name="hero_slides[{{ $slide->id }}][tablet_image]">
                                                 @if($slide->tablet_image)
-                                                    <img src="{{ asset($slide->tablet_image) }}" alt="Tablet Slide" class="mt-1 rounded" style="max-height: 45px;">
+                                                    <img src="{{ asset($slide->tablet_image) }}" alt="Tablet Slide" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                                 @endif
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="form-label mb-1">Mobile Image <small class="text-muted">(750×480 px, opt.)</small></label>
-                                                <input type="file" class="form-control form-control-sm" name="hero_slides[{{ $slide->id }}][mobile_image]">
+                                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="mobile_image" @if($slide->mobile_image) data-existing-src="{{ asset($slide->mobile_image) }}" @endif name="hero_slides[{{ $slide->id }}][mobile_image]">
                                                 @if($slide->mobile_image)
-                                                    <img src="{{ asset($slide->mobile_image) }}" alt="Mobile Slide" class="mt-1 rounded" style="max-height: 45px;">
+                                                    <img src="{{ asset($slide->mobile_image) }}" alt="Mobile Slide" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                                 @endif
                                             </div>
                                         </div>
@@ -202,9 +203,9 @@
                         <h5 class="mb-2">2, 3, 4. Right-Side Image Banners</h5>
                         @php
                             $promoSlots = [
-                                0 => ['title' => '2. Top Wide Banner', 'pc' => '770×312 px', 'tab' => '960×366 px', 'mob' => '750×286 px'],
-                                1 => ['title' => '3. Bottom Left Banner', 'pc' => '377×312 px', 'tab' => '470×368 px', 'mob' => '365×286 px'],
-                                2 => ['title' => '4. Bottom Right Banner', 'pc' => '377×312 px', 'tab' => '470×368 px', 'mob' => '365×286 px'],
+                                0 => ['title' => '2. Top Wide Banner', 'placement' => 'hero_right_top', 'pc' => '770×312 px', 'tab' => '960×366 px', 'mob' => '750×286 px'],
+                                1 => ['title' => '3. Bottom Left Banner', 'placement' => 'hero_right_bottom_left', 'pc' => '377×312 px', 'tab' => '470×368 px', 'mob' => '365×286 px'],
+                                2 => ['title' => '4. Bottom Right Banner', 'placement' => 'hero_right_bottom_right', 'pc' => '377×312 px', 'tab' => '470×368 px', 'mob' => '365×286 px'],
                             ];
                         @endphp
                         @foreach($promoSlots as $slotIdx => $slotInfo)
@@ -223,23 +224,23 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label mb-1">PC Image <small class="text-muted">({{ $slotInfo['pc'] }})</small></label>
-                                            <input type="file" class="form-control form-control-sm" name="hero_promos[{{ $slotIdx }}][image]">
+                                            <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="{{ $slotInfo['placement'] }}" data-device="image" @if($promo && $promo->image) data-existing-src="{{ asset($promo->image) }}" @endif name="hero_promos[{{ $slotIdx }}][image]">
                                             @if($promo && $promo->image)
-                                                <img src="{{ asset($promo->image) }}" alt="{{ $slotInfo['title'] }}" class="mt-1 rounded" style="max-height: 45px;">
+                                                <img src="{{ asset($promo->image) }}" alt="{{ $slotInfo['title'] }}" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                             @endif
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label mb-1">Tablet Image <small class="text-muted">({{ $slotInfo['tab'] }}, opt.)</small></label>
-                                            <input type="file" class="form-control form-control-sm" name="hero_promos[{{ $slotIdx }}][tablet_image]">
+                                            <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="{{ $slotInfo['placement'] }}" data-device="tablet_image" @if($promo && $promo->tablet_image) data-existing-src="{{ asset($promo->tablet_image) }}" @endif name="hero_promos[{{ $slotIdx }}][tablet_image]">
                                             @if($promo && $promo->tablet_image)
-                                                <img src="{{ asset($promo->tablet_image) }}" alt="Tablet {{ $slotInfo['title'] }}" class="mt-1 rounded" style="max-height: 45px;">
+                                                <img src="{{ asset($promo->tablet_image) }}" alt="Tablet {{ $slotInfo['title'] }}" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                             @endif
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label mb-1">Mobile Image <small class="text-muted">({{ $slotInfo['mob'] }}, opt.)</small></label>
-                                            <input type="file" class="form-control form-control-sm" name="hero_promos[{{ $slotIdx }}][mobile_image]">
+                                            <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="{{ $slotInfo['placement'] }}" data-device="mobile_image" @if($promo && $promo->mobile_image) data-existing-src="{{ asset($promo->mobile_image) }}" @endif name="hero_promos[{{ $slotIdx }}][mobile_image]">
                                             @if($promo && $promo->mobile_image)
-                                                <img src="{{ asset($promo->mobile_image) }}" alt="Mobile {{ $slotInfo['title'] }}" class="mt-1 rounded" style="max-height: 45px;">
+                                                <img src="{{ asset($promo->mobile_image) }}" alt="Mobile {{ $slotInfo['title'] }}" class="mt-1 rounded banner-existing-thumb" style="max-height: 45px;">
                                             @endif
                                         </div>
                                     </div>
@@ -295,15 +296,15 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-1">PC Image * <small class="text-muted">(1080×640 px)</small></label>
-                                <input type="file" class="form-control form-control-sm" name="new_hero_slides[${idx}][image]" required>
+                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="image" name="new_hero_slides[${idx}][image]" required>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-1">Tablet Image <small class="text-muted">(960×580 px, opt.)</small></label>
-                                <input type="file" class="form-control form-control-sm" name="new_hero_slides[${idx}][tablet_image]">
+                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="tablet_image" name="new_hero_slides[${idx}][tablet_image]">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label mb-1">Mobile Image <small class="text-muted">(750×480 px, opt.)</small></label>
-                                <input type="file" class="form-control form-control-sm" name="new_hero_slides[${idx}][mobile_image]">
+                                <input type="file" class="form-control form-control-sm banner-crop-input" accept="image/*" data-placement="hero_slider" data-device="mobile_image" name="new_hero_slides[${idx}][mobile_image]">
                             </div>
                         </div>
                     </div>
@@ -316,4 +317,5 @@
         });
     })();
 </script>
+@include('backEnd.partials.image_cropper_modal')
 @endsection

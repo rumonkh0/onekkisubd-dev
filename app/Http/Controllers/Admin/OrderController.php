@@ -785,7 +785,7 @@ class OrderController extends Controller
         // Initialize the query for orders with related shipping, order, status, customer, and product
         $query = OrderDetails::with(['shipping', 'order.status', 'order.customer', 'order.user', 'product']);
 
-        // Filter by order_status (defaults to 6: Completed, but allows any status, all, or delivered+completed)
+        // Filter by order_status (defaults to Completed & Delivered: 6, 12, 13, and allows any status or all)
         if ($request->filled('order_status')) {
             $statusId = $request->order_status;
             if ($statusId === 'delivered_completed') {
@@ -793,14 +793,19 @@ class OrderController extends Controller
                     $q->whereIn('order_status', ['6', '12', '13']);
                 });
             } elseif ($statusId !== 'all') {
-                $query->whereHas('order', function ($q) use ($statusId) {
-                    $q->where('order_status', $statusId);
+                $selectedStatus = OrderStatus::find($statusId);
+                $matchingStatusIds = $selectedStatus && $selectedStatus->slug
+                    ? OrderStatus::where('slug', $selectedStatus->slug)->pluck('id')->all()
+                    : [$statusId];
+
+                $query->whereHas('order', function ($q) use ($matchingStatusIds) {
+                    $q->whereIn('order_status', $matchingStatusIds);
                 });
             }
         } else {
-            // Default to Completed orders (status 6)
+            // Default to Completed & Delivered orders (6: Completed, 12: Delivered, 13: Partial Delivery)
             $query->whereHas('order', function ($q) {
-                $q->where('order_status', 6);
+                $q->whereIn('order_status', ['6', '12', '13']);
             });
         }
 
@@ -848,9 +853,20 @@ class OrderController extends Controller
         $matched_order_ids = (clone $query)->pluck('order_details.order_id')->unique();
         $discounts = (float) Order::whereIn('id', $matched_order_ids)->sum('discount');
 
-        $orders = $query->orderBy('order_details.id', 'DESC')->paginate(20)->withQueryString();
+        $orderedQuery = $query->orderBy('order_details.created_at', 'DESC')
+            ->orderBy('order_details.id', 'DESC');
 
-        return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'totalPurchase', 'total_item', 'total_sales', 'discounts'));
+        $perPage = ($request->boolean('print') || $request->input('per_page') === 'all')
+            ? max((clone $orderedQuery)->count(), 1)
+            : 20;
+
+        $orders = $orderedQuery->paginate($perPage)->withQueryString();
+
+        $viewName = $request->boolean('print')
+            ? 'backEnd.reports.order_print'
+            : 'backEnd.reports.order';
+
+        return view($viewName, compact('orders', 'users', 'order_statuses', 'totalPurchase', 'total_item', 'total_sales', 'discounts'));
     }
 
 

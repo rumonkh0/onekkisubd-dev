@@ -24,17 +24,45 @@
                 display: none !important;
             }
             .content-page {
-                margin-left: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                min-height: 0 !important;
+            }
+            html,
+            body,
+            #wrapper,
+            .content-page,
+            .content,
+            .container-fluid,
+            .table-responsive {
+                display: block !important;
+                position: static !important;
+                overflow: visible !important;
+                height: auto !important;
+                width: 100% !important;
+            }
+            .row,
+            .card,
+            .card-body {
+                display: block !important;
+                position: static !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .col-12 {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: none !important;
                 padding: 0 !important;
             }
             .container-fluid {
-                width: 100% !important;
                 padding: 0 !important;
             }
             .card {
                 border: none !important;
                 box-shadow: none !important;
                 padding: 0 !important;
+                margin: 0 !important;
             }
             .card-body {
                 padding: 0 !important;
@@ -48,7 +76,18 @@
             .table {
                 width: 100% !important;
                 border-collapse: collapse !important;
-                font-size: 12px !important;
+                font-size: 10px !important;
+                white-space: normal !important;
+            }
+            .table thead {
+                display: table-header-group;
+            }
+            .table tfoot {
+                display: table-row-group;
+            }
+            .table tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
             }
             .table th, .table td {
                 border: 1px solid #333 !important;
@@ -109,15 +148,14 @@
         </div>
         <div class="d-flex flex-wrap gap-2 pt-2 border-top small text-muted">
             @if(request('keyword')) <span><strong>Search:</strong> "{{ request('keyword') }}" &bull; </span> @endif
-            @if(request('order_status'))
-                @php
-                    $selSt = $order_statuses->firstWhere('id', request('order_status'));
-                    $statusLabel = request('order_status') == 'all'
-                        ? 'All Statuses'
-                        : (request('order_status') == 'delivered_completed' ? 'Completed & Delivered' : ($selSt->name ?? 'Completed'));
-                @endphp
-                <span><strong>Status:</strong> {{ $statusLabel }} &bull; </span>
-            @endif
+            @php
+                $reqStatus = request('order_status', 'delivered_completed');
+                $selSt = $order_statuses->firstWhere('id', $reqStatus);
+                $statusLabel = $reqStatus == 'all'
+                    ? 'All Statuses'
+                    : ($reqStatus == 'delivered_completed' ? 'Completed & Delivered' : ($selSt->name ?? 'Completed & Delivered'));
+            @endphp
+            <span><strong>Status:</strong> {{ $statusLabel }} &bull; </span>
             @if(request('user_id'))
                 @php $selUsr = $users->firstWhere('id', request('user_id')); @endphp
                 <span><strong>Assigned:</strong> {{ $selUsr->name ?? 'Selected' }} &bull; </span>
@@ -253,15 +291,12 @@
                                 <div class="form-group">
                                     <label for="order_status" class="form-label fw-semibold">Order Status</label>
                                     <select class="form-control select2" id="order_status" name="order_status">
-                                        <option value="6" {{ request('order_status', '6') == '6' ? 'selected' : '' }}>Completed (Default)</option>
-                                        <option value="delivered_completed" {{ request('order_status') == 'delivered_completed' ? 'selected' : '' }}>Completed & Delivered</option>
+                                        <option value="delivered_completed" {{ request('order_status', 'delivered_completed') == 'delivered_completed' ? 'selected' : '' }}>Completed & Delivered (Default)</option>
                                         <option value="all" {{ request('order_status') == 'all' ? 'selected' : '' }}>All Statuses</option>
                                         @foreach ($order_statuses->unique('name') as $status)
-                                            @if($status->id != 6)
-                                                <option value="{{ $status->id }}" {{ (string) request('order_status') === (string) $status->id ? 'selected' : '' }}>
-                                                    {{ $status->name }}
-                                                </option>
-                                            @endif
+                                            <option value="{{ $status->id }}" {{ (string) request('order_status') === (string) $status->id ? 'selected' : '' }}>
+                                                {{ $status->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -314,7 +349,7 @@
                             <span class="text-muted">Showing <strong>{{ $orders->firstItem() ?? 0 }}</strong> to <strong>{{ $orders->lastItem() ?? 0 }}</strong> of <strong>{{ $orders->total() }}</strong> entries</span>
                         </div>
                         <div class="col-sm-6 text-end">
-                            <button onclick="window.print()" class="btn btn-success me-1"><i class="fe-printer me-1"></i> Print</button>
+                            <a href="{{ route('admin.order_report', array_merge(request()->query(), ['print' => 1])) }}" class="btn btn-success me-1"><i class="fe-printer me-1"></i> Print All ({{ $orders->total() }})</a>
                             <button id="export-excel-button" class="btn btn-info"><i class="fe-download me-1"></i> Export Excel</button>
                         </div>
                     </div>
@@ -456,6 +491,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('.select2').select2();
+
+        @if(request()->boolean('print'))
+            window.addEventListener('load', function() {
+                window.print();
+            });
+        @endif
 
         $('#export-excel-button').on('click', function() {
             var filename = "Order-Report-" + new Date().toISOString().slice(0, 10);

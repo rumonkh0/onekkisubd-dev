@@ -635,7 +635,11 @@
                  ========================================================================== -->
         @if(isset($dealofthe_products) && $dealofthe_products->count() > 0)
             <section id="deal-of-the-day"
-                class="relative overflow-hidden bg-[#faf5ea] py-12 lg:py-16 border-y border-amber-200/70">
+                class="relative overflow-hidden bg-sand py-12 lg:py-16 border-y border-amber-200/70">
+                <!-- Background texture (matching Top Categories) -->
+                <div class="pointer-events-none absolute inset-0 opacity-70"
+                    style="background-image: radial-gradient(ellipse at 20% 20%, rgba(255,255,255,0.9), transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.8), transparent 55%);">
+                </div>
                 <!-- Warm decorative tea sunbeam watermark -->
                 <svg viewBox="0 0 64 64"
                     class="pointer-events-none absolute -right-5 top-8 h-24 w-24 rotate-[25deg] opacity-25 animate-float-slow"
